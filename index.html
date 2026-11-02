@@ -31,10 +31,41 @@
   </style>
 </head>
 <body>
-  <div class="panel">
-    <h1>Om Sai Instruments ERP</h1>
-    <p class="status">Website is working successfully!</p>
-    <p>ERP setup is in progress.</p>
-  </div>
+  <h1>Website is working successfully!</h1>
+  <p id="supabase-status">Supabase तपासत आहे...</p>
+
+  <!-- Supabase code इथून सुरू -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL =
+      "https://ngemyvxgmwxsaisjwoek.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      "PASTE_YOUR_ANON_PUBLIC_KEY_HERE";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+    supabaseClient.auth.getSession()
+      .then(({ error }) => {
+        const status = document.getElementById("supabase-status");
+
+        if (error) {
+          status.textContent = "Supabase connection error.";
+        } else {
+          status.textContent =
+            "Supabase connection initialized successfully.";
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        document.getElementById("supabase-status").textContent =
+          "Supabase setup needs checking.";
+      });
+  </script>
+  <!-- Supabase code इथे संपतो -->
+
 </body>
 </html>
