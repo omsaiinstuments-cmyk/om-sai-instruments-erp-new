@@ -119,7 +119,7 @@ const emptyData = () => ({
 });
 let data = emptyData();
 let dirty = false;
-
+let editingId = null;
 function say(message, bad=false){
   const el=document.getElementById("status");
   if(el){el.textContent=message;el.className="status "+(bad?"bad":"good");}
