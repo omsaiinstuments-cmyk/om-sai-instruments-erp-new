@@ -28,7 +28,8 @@ header h1{margin:0;font-size:22px;letter-spacing:.5px}
 .field label{display:block;font-size:12px;font-weight:bold;margin:0 0 4px}
 .field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:7px;background:white}
 .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.stat{padding:12px}.stat strong{display:block;font-size:22px;overflow-wrap:anywhere}
+.stat{padding:12px}
+.stat strong{display:block;font-size:22px;overflow-wrap:anywhere}
 .small{font-size:12px;color:#64748b}
 .tablewrap{overflow:auto;margin-top:10px}
 table{width:100%;border-collapse:collapse;min-width:650px;font-size:12px}
@@ -48,9 +49,21 @@ body:not(.logged-in) #erpHeader,body:not(.logged-in) #accountBar,body:not(.logge
 body.logged-in #loginScreen{display:none!important}
 body.logged-in #erpHeader,body.logged-in #accountBar{display:block}
 .notice{padding:10px;background:#fff8e6;border:1px solid #f3d38a;border-radius:8px;margin-bottom:12px}
-@media(max-width:800px){.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:repeat(3,1fr)}.nav{font-size:11px;padding:7px}.formgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:480px){.formgrid{grid-template-columns:1fr}.sidebar{grid-template-columns:repeat(2,1fr)}}
-@media print{#erpHeader,#accountBar,.sidebar,.noprint,.btn{display:none!important}.layout{display:block}.panel{border:0}}
+@media(max-width:800px){
+.layout{grid-template-columns:1fr}
+.sidebar{display:grid;grid-template-columns:repeat(3,1fr)}
+.nav{font-size:11px;padding:7px}
+.formgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:480px){
+.formgrid{grid-template-columns:1fr}
+.sidebar{grid-template-columns:repeat(2,1fr)}
+}
+@media print{
+#erpHeader,#accountBar,.sidebar,.noprint,.btn{display:none!important}
+.layout{display:block}
+.panel{border:0}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
@@ -61,10 +74,13 @@ body.logged-in #erpHeader,body.logged-in #accountBar{display:block}
 <section id="loginScreen">
  <div class="login-card">
   <img class="logo" src="https://omsaiinstuments.netlify.app/assets/om-sai-logo.png" alt="Company Logo" onerror="this.style.display='none'">
-  <h1>OM SAI INSTRUMENTS</h1><p>ERP Login</p>
+  <h1>OM SAI INSTRUMENTS</h1>
+  <p>ERP Login</p>
   <form id="loginForm">
-   <label>Email</label><input id="loginEmail" type="email" autocomplete="username" required>
-   <label>Password</label><input id="loginPassword" type="password" autocomplete="current-password" required>
+   <label>Email</label>
+   <input id="loginEmail" type="email" autocomplete="username" required>
+   <label>Password</label>
+   <input id="loginPassword" type="password" autocomplete="current-password" required>
    <button class="btn" type="submit">Login</button>
   </form>
   <div id="loginError" role="alert"></div>
@@ -74,204 +90,930 @@ body.logged-in #erpHeader,body.logged-in #accountBar{display:block}
 
 <header id="erpHeader">
  <img class="logo" src="https://omsaiinstuments.netlify.app/assets/om-sai-logo.png" alt="Company Logo" onerror="this.style.display='none'">
- <div><h1>OM SAI INSTRUMENTS ERP</h1>Industrial Instruments • Sales • Purchase • Inventory</div>
+ <div>
+  <h1>OM SAI INSTRUMENTS ERP</h1>
+  Industrial Instruments • Sales • Purchase • Inventory
+ </div>
 </header>
+
 <div id="accountBar">
  <span id="accountEmail"></span>
  <button class="btn secondary" onclick="go('backup')">Backup / Cloud Setup</button>
  <button class="btn danger" onclick="globalLogout()">Logout</button>
 </div>
+
 <div class="wrap" id="erpWrap">
- <div class="notice"><b>महत्त्वाची टीप:</b> हे GST नसलेले Invoice/Quotation टेम्पलेट आहे. लागू कायद्यानुसार आवश्यक कर आणि तपशील अकाउंटंटच्या सल्ल्याने सेट करा. नियमित JSON Backup डाउनलोड करा.</div>
- <div class="layout"><nav class="sidebar" id="nav"></nav><main id="app"></main></div>
+ <div class="notice">
+  <b>महत्त्वाची टीप:</b> या टेम्पलेटमध्ये GST calculation स्वतंत्रपणे लागू केलेले नाही.
+  लागू कायद्यानुसार आवश्यक कर आणि तपशील अकाउंटंटच्या सल्ल्याने सेट करा.
+  नियमित JSON Backup डाउनलोड करा.
+ </div>
+ <div class="layout">
+  <nav class="sidebar" id="nav"></nav>
+  <main id="app"></main>
+ </div>
 </div>
 
 <script>
 (()=>{
 "use strict";
+
 const KEY="omSaiInstrumentsERP_v3",CFG="omSaiERP_cloud_config_v1";
 const T=["products","customers","suppliers","sales","purchases","stock","serials","payments","quotations"];
+
 const menus=[
-["dashboard","Dashboard"],["products","Product Master"],["customers","Customer Master"],
-["quotations","Quotation"],["sales","Invoice"],["purchases","Purchase Entry"],
-["stockio","Stock In / Out"],["stockreg","Stock Register"],["serials","Serial Number Register"],
-["suppliers","Supplier Master"],["payments","Payment / Outstanding"],["reports","Reports / Export"],["backup","Backup / Cloud Setup"]
+["dashboard","Dashboard"],
+["products","Product Master"],
+["customers","Customer Master"],
+["quotations","Quotation"],
+["sales","Invoice"],
+["purchases","Purchase Entry"],
+["stockio","Stock In / Out"],
+["stockreg","Stock Register"],
+["serials","Serial Number Register"],
+["suppliers","Supplier Master"],
+["payments","Payment / Outstanding"],
+["reports","Reports / Export"],
+["backup","Backup / Cloud Setup"]
 ];
-const $=x=>document.getElementById(x),N=x=>Number(x)||0;
+
+const $=x=>document.getElementById(x);
+const N=x=>Number(x)||0;
 const M=x=>"₹"+N(x).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
 const id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const today=()=>new Date().toISOString().slice(0,10);
-const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const clean=x=>String(x??"").trim().replace(/\s+/g," ");
-function norm(x){const o={};T.forEach(k=>o[k]=Array.isArray(x?.[k])?x[k]:[]);return o}
-function load(){for(const k of [KEY,"omSaiInstrumentsERP_v2"]){try{const x=JSON.parse(localStorage.getItem(k)||"null");if(x)return norm(x.data||x)}catch(e){}}return norm({})}
-let db=load(),page="dashboard",client=null,user=null,editingRecord=null,editingProductId=null;
 
-function persist(){localStorage.setItem(KEY,JSON.stringify(db))}
-function cfg(){try{return JSON.parse(localStorage.getItem(CFG)||"{}")}catch(e){return {}}}
-function init(){const c=cfg();if(!c.url||!c.key||!window.supabase)return null;if(!client)client=window.supabase.createClient(c.url,c.key);return client}
-function balance(pid){const p=db.products.find(x=>x.id===pid);if(!p)return 0;return N(p.opening)+db.stock.filter(x=>x.product===pid&&x.direction==="In").reduce((s,x)=>s+N(x.qty),0)+db.purchases.filter(x=>x.product===pid).reduce((s,x)=>s+N(x.qty),0)-db.stock.filter(x=>x.product===pid&&x.direction==="Out").reduce((s,x)=>s+N(x.qty),0)-db.sales.filter(x=>x.product===pid).reduce((s,x)=>s+N(x.qty),0)}
+const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+
+const clean=x=>String(x??"").trim().replace(/\s+/g," ");
+
+function norm(x){
+ const o={};
+ T.forEach(k=>o[k]=Array.isArray(x?.[k])?x[k]:[]);
+ return o;
+}
+
+function load(){
+ for(const k of [KEY,"omSaiInstrumentsERP_v2"]){
+  try{
+   const x=JSON.parse(localStorage.getItem(k)||"null");
+   if(x)return norm(x.data||x);
+  }catch(e){}
+ }
+ return norm({});
+}
+
+let db=load(),page="dashboard",client=null,user=null;
+let editingRecord=null,editingProductId=null;
+
+function persist(){
+ localStorage.setItem(KEY,JSON.stringify(db));
+}
+
+function cfg(){
+ try{return JSON.parse(localStorage.getItem(CFG)||"{}")}
+ catch(e){return {}}
+}
+
+function init(){
+ const c=cfg();
+ if(!c.url||!c.key||!window.supabase)return null;
+ if(!client)client=window.supabase.createClient(c.url,c.key);
+ return client;
+}
+
+function balance(pid){
+ const p=db.products.find(x=>x.id===pid);
+ if(!p)return 0;
+ return N(p.opening)
+  +db.stock.filter(x=>x.product===pid&&x.direction==="In").reduce((s,x)=>s+N(x.qty),0)
+  +db.purchases.filter(x=>x.product===pid).reduce((s,x)=>s+N(x.qty),0)
+  -db.stock.filter(x=>x.product===pid&&x.direction==="Out").reduce((s,x)=>s+N(x.qty),0)
+  -db.sales.filter(x=>x.product===pid).reduce((s,x)=>s+N(x.qty),0);
+}
+
 function words(num){
  num=Math.floor(Math.abs(N(num)));
  if(num===0)return "Zero";
  const a=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
  const b=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
- function under(n){if(n<20)return a[n];if(n<100)return b[Math.floor(n/10)]+(n%10?" "+a[n%10]:"");return a[Math.floor(n/100)]+" Hundred"+(n%100?" "+under(n%100):"")}
+ function under(n){
+  if(n<20)return a[n];
+  if(n<100)return b[Math.floor(n/10)]+(n%10?" "+a[n%10]:"");
+  return a[Math.floor(n/100)]+" Hundred"+(n%100?" "+under(n%100):"");
+ }
  let out=[];
- [[10000000,"Crore"],[100000,"Lakh"],[1000,"Thousand"],[100,"Hundred"]].forEach(([v,w])=>{if(num>=v){let q=Math.floor(num/v);out.push(under(q)+" "+w);num%=v}});
- if(num)out.push(under(num));return out.join(" ");
+ [[10000000,"Crore"],[100000,"Lakh"],[1000,"Thousand"],[100,"Hundred"]].forEach(([v,w])=>{
+  if(num>=v){
+   let q=Math.floor(num/v);
+   out.push(under(q)+" "+w);
+   num%=v;
+  }
+ });
+ if(num)out.push(under(num));
+ return out.join(" ");
 }
-function amountWords(n){n=Math.max(0,N(n));const rupees=Math.floor(n+0.000001),paise=Math.round((n-rupees)*100);return "Indian Rupees "+words(rupees)+(paise?" and "+words(paise)+" Paise":"")+" Only."}
-function tbl(head,rows){return `<div class="tablewrap"><table><thead><tr>${head.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${rows.length?rows.join(""):`<tr><td colspan="${head.length}">No records found</td></tr>`}</tbody></table></div>`}
-function field(n,t,type="text",req=false,extra=""){return `<div class="field"><label>${t}${req?" *":""}</label><input name="${n}" type="${type}" ${req?"required":""} ${extra}></div>`}
-function sel(n,t,arr,req=true,label=x=>x.name||x.code||x.serial){return `<div class="field"><label>${t}${req?" *":""}</label><select name="${n}" ${req?"required":""}><option value="">Select ${t}</option>${arr.map(x=>`<option value="${esc(x.id)}">${esc(label(x))}</option>`).join("")}</select></div>`}
-function setFormValues(f,obj){if(!f||!obj)return;for(const [k,v] of Object.entries(obj)){const nm=k==="partyId"&&f.elements.party?"party":k;const el=f.elements[nm];if(el&&el.type!=="file")el.value=v??""}}
-function form(title,fields){return `<section class="panel"><h2>${title}</h2><form id="f" class="formgrid">${fields}</form><button class="btn" id="saveBtn" form="f">Save</button><button class="btn secondary" type="button" onclick="cancelEdit()">Clear / Cancel</button></section>`}
-function list(type,heads,cols){return tbl([...heads,"Action"],db[type].map(x=>`<tr>${cols.map(fn=>`<td>${esc(fn(x))}</td>`).join("")}<td>${type==="sales"?`<button class="btn" onclick="downloadDocumentPDF('sales','${esc(x.id)}')">Invoice PDF</button>`:""}${type==="quotations"?`<button class="btn" onclick="downloadDocumentPDF('quotations','${esc(x.id)}')">Quotation PDF</button>${!x.converted?`<button class="btn" onclick="convertQuotation('${esc(x.id)}')">Convert to Invoice</button>`:"<span>Converted</span>"}`:""}<button class="btn" onclick="editRecord('${type}','${esc(x.id)}')">Edit</button><button class="btn danger" onclick="del('${type}','${esc(x.id)}')">Delete</button></td></tr>`))}
-function attach(type,maker){const f=$("f");if(!f)return;f.onsubmit=async e=>{e.preventDefault();const v=Object.fromEntries(new FormData(f).entries());const old=editingRecord?.type===type?db[type].find(x=>x.id===editingRecord.id):null;let r;try{r=maker(v,old)}catch(err){alert(err.message);return}if(!r)return;if(old){const ix=db[type].findIndex(x=>x.id===old.id);db[type][ix]={...old,...r,id:old.id}}else{r.id=id();db[type].push(r)}try{persist()}catch(err){alert("Save failed. Backup घ्या.");return}editingRecord=null;editingProductId=null;render();if(user)try{await cloudSave()}catch(err){alert("Local save झाले; Cloud sync अयशस्वी: "+err.message)}else alert("Record saved locally.")}}
-window.cancelEdit=()=>{editingRecord=null;editingProductId=null;render()};
-window.go=p=>{if(!user)return;page=p;editingRecord=null;editingProductId=null;render()};
-window.editRecord=(type,rid)=>{const x=db[type].find(y=>y.id===rid);if(!x)return;if(type==="products"){editingProductId=rid}else editingRecord={type,id:rid};render();setFormValues($("f"),type==="sales"||type==="purchases"||type==="quotations"?{...x,party:x.partyId}:x);if($("saveBtn"))$("saveBtn").textContent="Update"};
-window.del=async(type,rid)=>{if(!confirm("ही नोंद Delete करायची?"))return;db[type]=db[type].filter(x=>x.id!==rid);persist();render();if(user)try{await cloudSave()}catch(e){alert(e.message)}};
-function duplicateProduct(v,exclude=null){if(!clean(v.code)||!clean(v.name))throw Error("Product Code आणि Product Name आवश्यक आहेत.");if(db.products.some(p=>p.id!==exclude&&p.code.toLowerCase()===clean(v.code).toLowerCase()))throw Error("Duplicate Product Code.");}
 
-/* Professional invoice and quotation PDF */
-window.downloadDocumentPDF=function(type,rid){
- const x=db[type]?.find(y=>y.id===rid);if(!x)return alert("Record not found.");
- if(!window.jspdf?.jsPDF)return alert("PDF library load झाली नाही. Internet connection तपासा.");
+function amountWords(n){
+ n=Math.max(0,N(n));
+ const rupees=Math.floor(n+0.000001);
+ const paise=Math.round((n-rupees)*100);
+ return "Indian Rupees "+words(rupees)+(paise?" and "+words(paise)+" Paise":"")+" Only.";
+}
+
+function tbl(head,rows){
+ return `<div class="tablewrap"><table><thead><tr>${head.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${rows.length?rows.join(""):`<tr><td colspan="${head.length}">No records found</td></tr>`}</tbody></table></div>`;
+}
+
+function field(n,t,type="text",req=false,extra=""){
+ return `<div class="field"><label>${t}${req?" *":""}</label><input name="${n}" type="${type}" ${req?"required":""} ${extra}></div>`;
+}
+
+function sel(n,t,arr,req=true,label=x=>x.name||x.code||x.serial){
+ return `<div class="field"><label>${t}${req?" *":""}</label><select name="${n}" ${req?"required":""}><option value="">Select ${t}</option>${arr.map(x=>`<option value="${esc(x.id)}">${esc(label(x))}</option>`).join("")}</select></div>`;
+}
+
+function setFormValues(f,obj){
+ if(!f||!obj)return;
+ for(const [k,v] of Object.entries(obj)){
+  const nm=k==="partyId"&&f.elements.party?"party":k;
+  const el=f.elements[nm];
+  if(el&&el.type!=="file")el.value=v??"";
+ }
+}
+
+function form(title,fields){
+ return `<section class="panel"><h2>${title}</h2><form id="f" class="formgrid">${fields}</form><button class="btn" id="saveBtn" form="f">Save</button><button class="btn secondary" type="button" onclick="cancelEdit()">Clear / Cancel</button></section>`;
+}
+
+function list(type,heads,cols){
+ return tbl([...heads,"Action"],db[type].map(x=>`<tr>
+ ${cols.map(fn=>`<td>${esc(fn(x))}</td>`).join("")}
+ <td>
+ ${type==="sales"?`<button class="btn" onclick="downloadDocumentPDF('sales','${esc(x.id)}')">Invoice PDF</button>`:""}
+ ${type==="quotations"?`<button class="btn" onclick="downloadDocumentPDF('quotations','${esc(x.id)}')">Quotation PDF</button>${!x.converted?`<button class="btn" onclick="convertQuotation('${esc(x.id)}')">Convert to Invoice</button>`:"<span>Converted</span>"}`:""}
+ <button class="btn" onclick="editRecord('${type}','${esc(x.id)}')">Edit</button>
+ <button class="btn danger" onclick="del('${type}','${esc(x.id)}')">Delete</button>
+ </td></tr>`));
+}
+
+function attach(type,maker){
+ const f=$("f");
+ if(!f)return;
+ f.onsubmit=async e=>{
+  e.preventDefault();
+  const v=Object.fromEntries(new FormData(f).entries());
+  const old=editingRecord?.type===type?db[type].find(x=>x.id===editingRecord.id):null;
+  let r;
+  try{r=maker(v,old)}catch(err){alert(err.message);return}
+  if(!r)return;
+  if(old){
+   const ix=db[type].findIndex(x=>x.id===old.id);
+   db[type][ix]={...old,...r,id:old.id};
+  }else{
+   r.id=id();
+   db[type].push(r);
+  }
+  try{persist()}catch(err){alert("Save failed. Backup घ्या.");return}
+  editingRecord=null;
+  editingProductId=null;
+  render();
+  if(user){
+   try{await cloudSave()}
+   catch(err){alert("Local save झाले; Cloud sync अयशस्वी: "+err.message)}
+  }else alert("Record saved locally.");
+ };
+}
+
+window.cancelEdit=()=>{
+ editingRecord=null;
+ editingProductId=null;
+ render();
+};
+
+window.go=p=>{
+ if(!user)return;
+ page=p;
+ editingRecord=null;
+ editingProductId=null;
+ render();
+};
+
+window.editRecord=(type,rid)=>{
+ const x=db[type].find(y=>y.id===rid);
+ if(!x)return;
+ if(type==="products")editingProductId=rid;
+ else editingRecord={type,id:rid};
+ render();
+ setFormValues($("f"),type==="sales"||type==="purchases"||type==="quotations"?{...x,party:x.partyId}:x);
+ if($("saveBtn"))$("saveBtn").textContent="Update";
+};
+
+window.del=async(type,rid)=>{
+ if(!confirm("ही नोंद Delete करायची?"))return;
+ db[type]=db[type].filter(x=>x.id!==rid);
+ persist();
+ render();
+ if(user)try{await cloudSave()}catch(e){alert(e.message)}
+};
+
+function duplicateProduct(v,exclude=null){
+ if(!clean(v.code)||!clean(v.name))throw Error("Product Code आणि Product Name आवश्यक आहेत.");
+ if(db.products.some(p=>p.id!==exclude&&p.code.toLowerCase()===clean(v.code).toLowerCase()))throw Error("Duplicate Product Code.");
+}
+
+/* =====================================================
+   PROFESSIONAL INVOICE / QUOTATION PDF
+   ===================================================== */
+
+window.downloadDocumentPDF=async function(type,rid){
+ const x=db[type]?.find(y=>y.id===rid);
+ if(!x)return alert("Record not found.");
+
+ if(!window.jspdf?.jsPDF)
+  return alert("PDF library load झाली नाही. Internet connection तपासा.");
+
  try{
-  const {jsPDF}=window.jspdf,d=new jsPDF({unit:"mm",format:"a4"});
+  const {jsPDF}=window.jspdf;
+  const d=new jsPDF({unit:"mm",format:"a4"});
   const W=210,L=14,R=196;
-  const isQ=type==="quotations",title=isQ?"QUOTATION":"TAX INVOICE";
-  const money=v=>"Rs. "+N(v).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
-  const line=(y)=>{d.setDrawColor(218,226,235);d.line(L,y,R,y)};
-  const txt=(s,x,y,size=9,style="normal",color=[35,48,62])=>{d.setFont("helvetica",style);d.setFontSize(size);d.setTextColor(...color);d.text(String(s??""),x,y)};
-  const wrapped=(s,x,y,max,size=9)=>{d.setFont("helvetica","normal");d.setFontSize(size);const lines=d.splitTextToSize(String(s||"-"),max);d.text(lines,x,y);return lines.length*4.5};
-  // Corporate header band
-  d.setFillColor(16,43,70);d.rect(0,0,W,39,"F");
-  d.setFillColor(214,168,79);d.rect(0,39,W,1.5,"F");
-  d.setFillColor(255,255,255);d.roundedRect(L,7,23,23,2,2,"F");
-  // A logo image can be inserted here once its actual public image URL is confirmed.
-  txt("OSI",L+4.8,21,16,"bold",[16,43,70]);
-  txt("OM SAI INSTRUMENTS",43,14,17,"bold",[255,255,255]);
-  txt("INDUSTRIAL INSTRUMENTS & SUPPLIES",43,21,8,"normal",[226,236,246]);
-  txt("Professional Business Document",43,28,8,"normal",[226,236,246]);
-  txt(title,145,15,12,"bold",[255,255,255]);
-  txt(isQ?"PRICE QUOTATION":"GST NOT APPLICABLE IN THIS TEMPLATE",145,22,6.5,"normal",[226,236,246]);
+  const isQ=type==="quotations";
+  const title=isQ?"QUOTATION":"TAX INVOICE";
+
+  const money=v=>"Rs. "+N(v).toLocaleString("en-IN",{
+   minimumFractionDigits:2,
+   maximumFractionDigits:2
+  });
+
+  const line=y=>{
+   d.setDrawColor(218,226,235);
+   d.setLineWidth(.25);
+   d.line(L,y,R,y);
+  };
+
+  const txt=(s,px,py,size=9,style="normal",color=[35,48,62])=>{
+   d.setFont("helvetica",style);
+   d.setFontSize(size);
+   d.setTextColor(...color);
+   d.text(String(s??""),px,py);
+  };
+
+  // Load the company logo. If blocked by CORS, use OSI fallback.
+  let logoData=null;
+  try{
+   const response=await fetch("https://omsaiinstuments.netlify.app/assets/om-sai-logo.png");
+   if(response.ok){
+    const blob=await response.blob();
+    logoData=await new Promise((resolve,reject)=>{
+     const reader=new FileReader();
+     reader.onload=()=>resolve(reader.result);
+     reader.onerror=reject;
+     reader.readAsDataURL(blob);
+    });
+   }
+  }catch(e){
+   console.warn("Logo could not be loaded; using OSI fallback.",e);
+  }
+
+  // Company header band
+  d.setFillColor(16,43,70);
+  d.rect(0,0,W,39,"F");
+  d.setFillColor(214,168,79);
+  d.rect(0,39,W,1.5,"F");
+
+  d.setFillColor(255,255,255);
+  d.roundedRect(L,7,23,23,2,2,"F");
+
+  if(logoData){
+   try{d.addImage(logoData,"PNG",L+1,8,21,21)}
+   catch(e){txt("OSI",L+4,21,16,"bold",[16,43,70])}
+  }else{
+   txt("OSI",L+4,21,16,"bold",[16,43,70]);
+  }
+
+  txt("OM SAI INSTRUMENTS",43,14,16,"bold",[255,255,255]);
+  txt("INDUSTRIAL INSTRUMENTS & SUPPLIES",43,21,7.5,"normal",[226,236,246]);
+  txt("Bhandup East, Mumbai",43,27,8,"normal",[226,236,246]);
+  txt("+91 90764 48381",43,33,8,"normal",[226,236,246]);
+
+  txt(title,145,15,11,"bold",[255,255,255]);
+  txt(isQ?"PRICE QUOTATION":"BUSINESS INVOICE",145,22,7,"normal",[226,236,246]);
+
+  // Document number and dates
   txt("Document No.",L,49,8,"normal",[100,116,139]);
   txt(x.doc||"-",L,55,10,"bold");
   txt("Date",111,49,8,"normal",[100,116,139]);
   txt(x.date||"-",111,55,10,"bold");
-  if(isQ&&x.validity){txt("Valid Until",155,49,8,"normal",[100,116,139]);txt(x.validity,155,55,9,"bold")}
+
+  if(isQ&&x.validity){
+   txt("Valid Until",155,49,8,"normal",[100,116,139]);
+   txt(x.validity,155,55,9,"bold");
+  }
+
   line(61);
-  d.setFillColor(244,247,251);d.roundedRect(L,66,182,30,2,2,"F");
+
+  // Customer panel
+  d.setFillColor(244,247,251);
+  d.roundedRect(L,66,182,30,2,2,"F");
   txt("BILL TO",L+5,73,8,"bold",[23,105,170]);
   txt(x.partyName||"-",L+5,80,11,"bold");
-  let ay=85;
-  if(x.address){const al=d.splitTextToSize(String(x.address),165);d.setFontSize(8);d.setTextColor(75,85,99);d.text(al,L+5,ay);ay+=al.length*4}
-  if(x.mobile)txt("Mobile: "+x.mobile,L+5,ay+1,8);
-  if(x.email)txt("Email: "+x.email,L+75,ay+1,8);
-  const start=103;
+
+  let customerY=85;
+  if(x.address){
+   const addressLines=d.splitTextToSize(String(x.address),165);
+   d.setFont("helvetica","normal");
+   d.setFontSize(8);
+   d.setTextColor(75,85,99);
+   d.text(addressLines,L+5,customerY);
+   customerY+=addressLines.length*4;
+  }
+  if(x.mobile)txt("Mobile: "+x.mobile,L+5,customerY+1,8);
+  if(x.email)txt("Email: "+x.email,100,customerY+1,8);
+
+  // Items table
+  const subtotal=N(x.subtotal ?? (N(x.qty)*N(x.rate)));
+  const discount=N(x.discount);
+  const total=N(x.total ?? Math.max(0,subtotal-discount));
+
   d.autoTable({
-   startY:start,
+   startY:103,
    head:[["#","DESCRIPTION","QTY","RATE","DISCOUNT","AMOUNT"]],
-   body:[["1",String(x.productName||"-"),String(x.qty??0),money(x.rate),money(x.discount),money(x.total)]],
+   body:[[
+    "1",
+    String(x.productName||"-"),
+    String(x.qty??0),
+    money(x.rate),
+    money(discount),
+    money(subtotal)
+   ]],
    theme:"grid",
-   margin:{left:L,right:14},
-   styles:{font:"helvetica",fontSize:9,cellPadding:4,textColor:[35,48,62],lineColor:[220,228,237],lineWidth:.2},
-   headStyles:{fillColor:[16,43,70],textColor:[255,255,255],fontStyle:"bold"},
-   columnStyles:{0:{cellWidth:9},1:{cellWidth:61},2:{cellWidth:18,halign:"right"},3:{cellWidth:29,halign:"right"},4:{cellWidth:29,halign:"right"},5:{cellWidth:29,halign:"right"}}
+   margin:{left:L,right:14,bottom:24},
+   styles:{
+    font:"helvetica",
+    fontSize:8,
+    cellPadding:4,
+    textColor:[35,48,62],
+    lineColor:[220,228,237],
+    lineWidth:.2,
+    overflow:"linebreak"
+   },
+   headStyles:{
+    fillColor:[16,43,70],
+    textColor:[255,255,255],
+    fontStyle:"bold"
+   },
+   columnStyles:{
+    0:{cellWidth:9},
+    1:{cellWidth:61},
+    2:{cellWidth:18,halign:"right"},
+    3:{cellWidth:29,halign:"right"},
+    4:{cellWidth:29,halign:"right"},
+    5:{cellWidth:29,halign:"right"}
+   }
   });
+
   let y=(d.lastAutoTable?.finalY||125)+10;
-  d.setFillColor(244,247,251);d.roundedRect(111,y-5,85,33,2,2,"F");
+
+  // Totals panel
+  if(y+48>265){d.addPage();y=25}
+
+  d.setFillColor(244,247,251);
+  d.roundedRect(111,y-5,85,33,2,2,"F");
+
   txt("Subtotal",117,y+2,9);
-  txt(money(x.subtotal),190,y+2,9,"normal",[35,48,62]);d.text(money(x.subtotal),190,y+2,{align:"right"});
+  d.text(money(subtotal),190,y+2,{align:"right"});
+
   txt("Discount",117,y+9,9);
-  d.text(money(x.discount),190,y+9,{align:"right"});
-  d.setDrawColor(214,168,79);d.setLineWidth(.5);d.line(117,y+12,190,y+12);
+  d.text(money(discount),190,y+9,{align:"right"});
+
+  d.setDrawColor(214,168,79);
+  d.setLineWidth(.5);
+  d.line(117,y+12,190,y+12);
+
   txt("FINAL AMOUNT",117,y+20,9,"bold",[16,43,70]);
-  d.setFont("helvetica","bold");d.setFontSize(11);d.setTextColor(23,105,170);d.text(money(x.total),190,y+20,{align:"right"});
+  d.setFont("helvetica","bold");
+  d.setFontSize(11);
+  d.setTextColor(23,105,170);
+  d.text(money(total),190,y+20,{align:"right"});
+
   y+=38;
+
+  // Amount in words
+  if(y+30>265){d.addPage();y=25}
+
   txt("AMOUNT IN WORDS",L,y,8,"bold",[23,105,170]);
-  const wordLines=d.splitTextToSize(amountWords(x.total),178);
-  d.setFillColor(244,247,251);d.roundedRect(L,y+3,182,Math.max(13,wordLines.length*5+5),2,2,"F");
-  d.setFont("helvetica","normal");d.setFontSize(9);d.setTextColor(35,48,62);d.text(wordLines,L+4,y+10);
+  const wordLines=d.splitTextToSize(amountWords(total),174);
+
+  d.setFillColor(244,247,251);
+  d.roundedRect(L,y+3,182,Math.max(13,wordLines.length*5+5),2,2,"F");
+
+  d.setFont("helvetica","normal");
+  d.setFontSize(9);
+  d.setTextColor(35,48,62);
+  d.text(wordLines,L+4,y+10);
+
   y+=Math.max(25,wordLines.length*5+14);
-  if(!isQ){txt("PAYMENT SUMMARY",L,y,8,"bold",[23,105,170]);y+=6;txt("Amount Paid: "+money(x.paid),L,y,9);txt("Balance Due: "+money(Math.max(0,N(x.total)-N(x.paid))),111,y,9,"bold");y+=9}
-  txt(isQ?"QUOTATION TERMS":"TERMS & CONDITIONS",L,y,8,"bold",[23,105,170]);y+=5;
+
+  // Payment summary for invoices
+  if(!isQ){
+   if(y+18>265){d.addPage();y=25}
+   txt("PAYMENT SUMMARY",L,y,8,"bold",[23,105,170]);
+   y+=6;
+   txt("Amount Paid: "+money(x.paid),L,y,9);
+   txt("Balance Due: "+money(Math.max(0,total-N(x.paid))),111,y,9,"bold");
+   y+=9;
+  }
+
+  // Terms
+  if(y+48>265){d.addPage();y=25}
+
+  txt(isQ?"QUOTATION TERMS":"TERMS & CONDITIONS",L,y,8,"bold",[23,105,170]);
+  y+=5;
+
   const terms=x.terms||"Prices are as stated above. Please contact us for payment terms.";
-  y+=wrapped(terms,L,y,178,8);
-  y+=6;line(y);y+=8;
+  const termLines=d.splitTextToSize(terms,178);
+
+  d.setFont("helvetica","normal");
+  d.setFontSize(8);
+  d.setTextColor(35,48,62);
+  d.text(termLines,L,y);
+
+  y+=termLines.length*4+8;
+
+  if(y+30>278){d.addPage();y=30}
+
+  line(y);
+  y+=8;
+
   txt("Thank you for your business.",L,y,9,"bold",[16,43,70]);
-  txt("For OM SAI INSTRUMENTS",R,y+1,9,"bold",[16,43,70]);
-  d.setDrawColor(150,160,170);d.line(145,y+18,R,y+18);
-  txt("Authorized Signature",151,y+23,8,"normal",[100,116,139]);
+
+  // Right-aligned company signature
+  d.setFont("helvetica","bold");
+  d.setFontSize(8.5);
+  d.setTextColor(16,43,70);
+  d.text("For OM SAI INSTRUMENTS",R,y,{align:"right"});
+
+  d.setDrawColor(150,160,170);
+  d.line(145,y+15,R,y+15);
+
+  d.setFont("helvetica","normal");
+  d.setFontSize(8);
+  d.setTextColor(100,116,139);
+  d.text("Authorized Signature",R,y+20,{align:"right"});
+
+  // Footer on each page
   const pages=d.internal.getNumberOfPages();
-  for(let p=1;p<=pages;p++){d.setPage(p);d.setDrawColor(220,228,237);d.line(L,285,R,285);txt("OM SAI INSTRUMENTS  |  Business Document",L,291,7,"normal",[100,116,139]);d.text("Page "+p+" of "+pages,R,291,{align:"right"})}
-  d.save((isQ?"Quotation-":"Invoice-")+String(x.doc||"document").replace(/[^\w.-]/g,"_")+".pdf");
- }catch(e){console.error(e);alert("PDF तयार करताना त्रुटी आली: "+e.message)}
+  for(let p=1;p<=pages;p++){
+   d.setPage(p);
+   d.setDrawColor(220,228,237);
+   d.line(L,285,R,285);
+   d.setFont("helvetica","normal");
+   d.setFontSize(7);
+   d.setTextColor(100,116,139);
+   d.text("OM SAI INSTRUMENTS | Business Document",L,291);
+   d.text("Page "+p+" of "+pages,R,291,{align:"right"});
+  }
+
+  const filename=(isQ?"Quotation-":"Invoice-")+
+   String(x.doc||"document").replace(/[^\w.-]/g,"_")+".pdf";
+
+  d.save(filename);
+
+ }catch(e){
+  console.error(e);
+  alert("PDF तयार करताना त्रुटी आली: "+e.message);
+ }
 };
 
+/* Convert Quotation into Invoice */
 window.convertQuotation=async rid=>{
  const q=db.quotations.find(x=>x.id===rid);
  if(!q||q.converted)return alert("Quotation आधीच convert झाले आहे किंवा सापडले नाही.");
  if(!confirm("या Quotation वरून Invoice तयार करायचे?"))return;
+
  const doc="OSI-"+new Date().getFullYear()+"-"+String(db.sales.length+1).padStart(4,"0");
  const inv={...q,id:id(),doc,quotationId:q.id,converted:false,paid:0};
- db.sales.push(inv);q.converted=true;q.invoiceDoc=doc;
- persist();page="sales";render();
+
+ db.sales.push(inv);
+ q.converted=true;
+ q.invoiceDoc=doc;
+ persist();
+ page="sales";
+ render();
+
  if(user)try{await cloudSave()}catch(e){alert("Invoice local save झाले; Cloud sync अयशस्वी: "+e.message)}
  alert("Invoice तयार झाले: "+doc);
 };
 
 function render(){
- if(!user){document.body.classList.remove("logged-in");$("nav").innerHTML="";$("app").innerHTML="";return}
- document.body.classList.add("logged-in");$("accountEmail").textContent=user.email||"";
+ if(!user){
+  document.body.classList.remove("logged-in");
+  $("nav").innerHTML="";
+  $("app").innerHTML="";
+  return;
+ }
+
+ document.body.classList.add("logged-in");
+ $("accountEmail").textContent=user.email||"";
  $("nav").innerHTML=menus.map(m=>`<button class="nav ${page===m[0]?"active":""}" onclick="go('${m[0]}')">${m[1]}</button>`).join("");
+
  let h="",a=null;
- if(page==="dashboard")h=`<section class="panel"><h2>Dashboard</h2><div class="stats">${[["Products",db.products.length],["Customers",db.customers.length],["Quotations",db.quotations.length],["Invoices",db.sales.length],["Sales",M(db.sales.reduce((s,x)=>s+N(x.total),0))],["Purchases",M(db.purchases.reduce((s,x)=>s+N(x.total),0))]].map(x=>`<div class="stat"><strong>${x[1]}</strong>${x[0]}</div>`).join("")}</div></section>`;
- if(page==="products"){const p=db.products.find(x=>x.id===editingProductId);h=`<section class="panel"><h2>${p?"Edit Product":"Add Product"}</h2><form id="f" class="formgrid">${field("code","Product Code","text",true)}${field("name","Product Name","text",true)}${field("make","Make / Brand")}${field("model","Model")}${field("unit","Unit")}${field("opening","Opening Stock","number",false,'min="0" step="any"')}${field("reorder","Reorder Level","number",false,'min="0" step="any"')}${field("cost","Purchase Cost ₹","number",false,'min="0" step="any"')}${field("price","Selling Price ₹","number",false,'min="0" step="any"')}</form><button class="btn" id="saveBtn" form="f">Save Product</button><input id="productSearch" placeholder="Search products" oninput="renderProductTable()"><div id="productTableArea"></div></section>`;a=["products",v=>{duplicateProduct(v,editingProductId);return {code:clean(v.code),name:clean(v.name),make:clean(v.make),model:clean(v.model),unit:clean(v.unit)||"pcs",opening:N(v.opening),reorder:N(v.reorder),cost:N(v.cost),price:N(v.price)}}]}
- if(page==="customers"||page==="suppliers"){const t=page;h=form(t==="customers"?"Customer Master":"Supplier Master",field("name","Name","text",true)+field("mobile","Mobile")+field("email","Email","email")+field("gstin","GSTIN (optional)")+field("city","City")+field("address","Address"))+`<section class="panel"><h2>Records</h2>${list(t,["Name","Mobile","Email","City","Address"],[x=>x.name,x=>x.mobile,x=>x.email,x=>x.city,x=>x.address])}</section>`;a=[t,v=>({name:clean(v.name),mobile:v.mobile,email:v.email,gstin:v.gstin,city:v.city,address:v.address})]}
- if(page==="quotations"||page==="sales"){
-  const quote=page==="quotations",t=page,parties=db.customers;
-  const auto=quote?"QTN-"+new Date().getFullYear()+"-"+String(db.quotations.length+1).padStart(4,"0"):"OSI-"+new Date().getFullYear()+"-"+String(db.sales.length+1).padStart(4,"0");
-  h=form(quote?"Create Professional Quotation":"Create Professional Invoice",
-  field("doc","Document Number","text",true,`value="${auto}"`)+sel("party","Customer",parties)+field("date","Date","date",true,`value="${today()}"`)+sel("product","Product",db.products)+field("qty","Quantity","number",true,'min=".001" step="any"')+field("rate","Rate ₹","number",true,'min="0" step="any"')+field("discount","Discount ₹","number",false,'min="0" step="any" value="0"')+(quote?field("validity","Quotation Valid Until","date",false):field("paid","Paid ₹","number",false,'min="0" step="any" value="0"'))+`<div class="field" style="grid-column:1/-1"><label>Terms & Conditions</label><input name="terms" value="Prices are as stated above. Please contact us for payment terms."></div>`)
-  +`<section class="panel"><h2>${quote?"Quotation List":"Invoice List"}</h2>${list(t,["No.","Customer","Date","Product","Qty","Rate","Discount","Final Amount","Amount in Words"],[x=>x.doc,x=>x.partyName,x=>x.date,x=>x.productName,x=>x.qty,x=>M(x.rate),x=>M(x.discount),x=>M(x.total),x=>amountWords(x.total)])}</section>`;
-  a=[t,(v,old)=>{
-   const p=db.products.find(x=>x.id===v.product),party=parties.find(x=>x.id===v.party);
-   if(!p||!party)throw Error("Customer आणि Product निवडा.");
-   if(db[t].some(x=>x.id!==old?.id&&x.doc===v.doc))throw Error("Document number आधीपासून आहे.");
-   const qty=N(v.qty),rate=N(v.rate),discount=N(v.discount),subtotal=qty*rate,total=Math.max(0,subtotal-discount),paid=quote?0:N(v.paid);
-   if(qty<=0||rate<0||discount>subtotal||paid<0||paid>total)throw Error("Quantity, Rate, Discount किंवा Paid amount तपासा.");
-   if(!quote){let available=balance(p.id);if(old?.product===p.id)available+=N(old.qty);if(qty>available)throw Error("Stock कमी आहे. Available: "+available)}
-   return {doc:clean(v.doc),partyId:party.id,partyName:party.name,address:party.address||"",mobile:party.mobile||"",email:party.email||"",date:v.date,product:p.id,productName:p.name,qty,rate,discount,subtotal,total,paid,terms:v.terms||"",validity:v.validity||"",converted:old?.converted||false};
+
+ if(page==="dashboard"){
+  h=`<section class="panel"><h2>Dashboard</h2><div class="stats">${[
+   ["Products",db.products.length],
+   ["Customers",db.customers.length],
+   ["Quotations",db.quotations.length],
+   ["Invoices",db.sales.length],
+   ["Sales",M(db.sales.reduce((s,x)=>s+N(x.total),0))],
+   ["Purchases",M(db.purchases.reduce((s,x)=>s+N(x.total),0))]
+  ].map(x=>`<div class="stat"><strong>${x[1]}</strong>${x[0]}</div>`).join("")}</div></section>`;
+ }
+
+ if(page==="products"){
+  const p=db.products.find(x=>x.id===editingProductId);
+  h=`<section class="panel">
+   <h2>${p?"Edit Product":"Add Product"}</h2>
+   <form id="f" class="formgrid">
+   ${field("code","Product Code","text",true)}
+   ${field("name","Product Name","text",true)}
+   ${field("make","Make / Brand")}
+   ${field("model","Model")}
+   ${field("unit","Unit")}
+   ${field("opening","Opening Stock","number",false,'min="0" step="any"')}
+   ${field("reorder","Reorder Level","number",false,'min="0" step="any"')}
+   ${field("cost","Purchase Cost ₹","number",false,'min="0" step="any"')}
+   ${field("price","Selling Price ₹","number",false,'min="0" step="any"')}
+   </form>
+   <button class="btn" id="saveBtn" form="f">Save Product</button>
+   <input id="productSearch" placeholder="Search products" oninput="renderProductTable()">
+   <div id="productTableArea"></div>
+   </section>`;
+  a=["products",v=>{
+   duplicateProduct(v,editingProductId);
+   return {
+    code:clean(v.code),name:clean(v.name),make:clean(v.make),
+    model:clean(v.model),unit:clean(v.unit)||"pcs",
+    opening:N(v.opening),reorder:N(v.reorder),cost:N(v.cost),price:N(v.price)
+   };
   }];
  }
- if(page==="purchases"){h=form("Purchase Entry",field("doc","Bill No.","text",true)+sel("party","Supplier",db.suppliers)+field("date","Date","date",true,`value="${today()}"`)+sel("product","Product",db.products)+field("qty","Quantity","number",true,'min=".001" step="any"')+field("rate","Rate ₹","number",true,'min="0" step="any"')+field("paid","Paid ₹","number",false,'min="0" step="any" value="0"'))+`<section class="panel"><h2>Purchase Bills</h2>${list("purchases",["No.","Supplier","Date","Product","Qty","Total","Paid"],[x=>x.doc,x=>x.partyName,x=>x.date,x=>x.productName,x=>x.qty,x=>M(x.total),x=>M(x.paid)])}</section>`;a=["purchases",v=>{const p=db.products.find(x=>x.id===v.product),party=db.suppliers.find(x=>x.id===v.party);if(!p||!party)throw Error("Supplier आणि Product निवडा.");const qty=N(v.qty),rate=N(v.rate),subtotal=qty*rate;if(qty<=0||rate<0||N(v.paid)<0||N(v.paid)>subtotal)throw Error("Quantity, Rate किंवा Paid तपासा.");return {doc:clean(v.doc),partyId:party.id,partyName:party.name,date:v.date,product:p.id,productName:p.name,qty,rate,subtotal,total:subtotal,paid:N(v.paid)}}]}
- if(page==="stockio"){h=form("Stock In / Out",sel("product","Product",db.products)+`<div class="field"><label>Direction</label><select name="direction"><option>In</option><option>Out</option></select></div>`+field("qty","Quantity","number",true,'min=".001" step="any"')+field("date","Date","date",true,`value="${today()}"`)+field("reference","Reference")+field("notes","Notes"))+`<section class="panel"><h2>Stock History</h2>${list("stock",["Date","Product","Direction","Qty","Reference"],[x=>x.date,x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.direction,x=>x.qty,x=>x.reference])}</section>`;a=["stock",v=>{if(N(v.qty)<=0)throw Error("Quantity तपासा.");if(v.direction==="Out"&&N(v.qty)>balance(v.product))throw Error("Stock कमी आहे.");return {...v,qty:N(v.qty)}}]}
- if(page==="stockreg")h=`<section class="panel"><h2>Stock Register</h2>${tbl(["Code","Product","Opening","Balance"],db.products.map(p=>`<tr><td>${esc(p.code)}</td><td>${esc(p.name)}</td><td>${N(p.opening)}</td><td>${balance(p.id)}</td></tr>`))}</section>`;
- if(page==="serials"){h=form("Serial Number Register",sel("product","Product",db.products)+field("serial","Serial Number","text",true)+field("status","Status")+field("customer","Customer / Location")+field("calibration","Last Calibration","date")+field("nextcal","Next Calibration Due","date")+field("certificate","Certificate No.")+field("warranty","Warranty Until","date"))+`<section class="panel"><h2>Serial Register</h2>${list("serials",["Product","Serial","Status","Customer"],[x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.serial,x=>x.status,x=>x.customer])}</section>`;a=["serials",v=>v]}
- if(page==="payments"){h=form("Payment Entry",field("type","Type")+field("party","Party","text",true)+field("date","Date","date",true,`value="${today()}"`)+field("amount","Amount ₹","number",true,'min=".01" step="any"')+field("reference","Reference")+field("notes","Notes"))+`<section class="panel"><h2>Payments</h2>${list("payments",["Type","Party","Date","Amount"],[x=>x.type,x=>x.party,x=>x.date,x=>M(x.amount)])}</section>`;a=["payments",v=>({...v,amount:N(v.amount)})]}
- if(page==="reports")h=`<section class="panel"><h2>Reports / Export</h2><p>Total Sales: <b>${M(db.sales.reduce((s,x)=>s+N(x.total),0))}</b></p><p>Total Purchases: <b>${M(db.purchases.reduce((s,x)=>s+N(x.total),0))}</b></p><button class="btn" onclick="window.print()">Print</button>${T.map(t=>`<button class="btn secondary" onclick="csv('${t}')">${t} CSV</button>`).join("")}</section>`;
- if(page==="backup")h=`<section class="panel"><h2>Backup / Restore</h2><button class="btn" onclick="backup()">Download JSON Backup</button><div class="field"><label>Restore JSON</label><input type="file" accept=".json" onchange="restore(event)"></div><hr><h2>Supabase Cloud Setup</h2><div class="formgrid"><div class="field"><label>Supabase URL</label><input id="cloudUrl" type="url"></div><div class="field"><label>Publishable / Anon Key</label><input id="cloudKey" type="password"></div></div><button class="btn" onclick="saveCloudSettings()">Save Cloud Settings</button><button class="btn secondary" onclick="createAccount()">Create Account</button><button class="btn" onclick="sync()">Sync / Merge Cloud</button><p id="cloudStatus" class="small"></p><p class="small">फक्त Publishable/Anon Key वापरा. Secret किंवा service_role key वापरू नका.</p></section>`;
+
+ if(page==="customers"||page==="suppliers"){
+  const t=page;
+  h=form(t==="customers"?"Customer Master":"Supplier Master",
+   field("name","Name","text",true)+
+   field("mobile","Mobile")+
+   field("email","Email","email")+
+   field("gstin","GSTIN (optional)")+
+   field("city","City")+
+   field("address","Address")
+  )+`<section class="panel"><h2>Records</h2>${list(t,["Name","Mobile","Email","City","Address"],[x=>x.name,x=>x.mobile,x=>x.email,x=>x.city,x=>x.address])}</section>`;
+  a=[t,v=>({name:clean(v.name),mobile:v.mobile,email:v.email,gstin:v.gstin,city:v.city,address:v.address})];
+ }
+
+ if(page==="quotations"||page==="sales"){
+  const quote=page==="quotations",t=page,parties=db.customers;
+  const auto=quote
+   ?"QTN-"+new Date().getFullYear()+"-"+String(db.quotations.length+1).padStart(4,"0")
+   :"OSI-"+new Date().getFullYear()+"-"+String(db.sales.length+1).padStart(4,"0");
+
+  h=form(quote?"Create Professional Quotation":"Create Professional Invoice",
+   field("doc","Document Number","text",true,`value="${auto}"`)+
+   sel("party","Customer",parties)+
+   field("date","Date","date",true,`value="${today()}"`)+
+   sel("product","Product",db.products)+
+   field("qty","Quantity","number",true,'min=".001" step="any"')+
+   field("rate","Rate ₹","number",true,'min="0" step="any"')+
+   field("discount","Discount ₹","number",false,'min="0" step="any" value="0"')+
+   (quote?field("validity","Quotation Valid Until","date",false):field("paid","Paid ₹","number",false,'min="0" step="any" value="0"'))+
+   `<div class="field" style="grid-column:1/-1"><label>Terms & Conditions</label><input name="terms" value="Prices are as stated above. Please contact us for payment terms."></div>`
+  )+`<section class="panel"><h2>${quote?"Quotation List":"Invoice List"}</h2>${list(t,["No.","Customer","Date","Product","Qty","Rate","Discount","Final Amount","Amount in Words"],[x=>x.doc,x=>x.partyName,x=>x.date,x=>x.productName,x=>x.qty,x=>M(x.rate),x=>M(x.discount),x=>M(x.total),x=>amountWords(x.total)])}</section>`;
+
+  a=[t,(v,old)=>{
+   const p=db.products.find(x=>x.id===v.product);
+   const party=parties.find(x=>x.id===v.party);
+
+   if(!p||!party)throw Error("Customer आणि Product निवडा.");
+   if(db[t].some(x=>x.id!==old?.id&&x.doc===v.doc))throw Error("Document number आधीपासून आहे.");
+
+   const qty=N(v.qty),rate=N(v.rate),discount=N(v.discount);
+   const subtotal=qty*rate,total=Math.max(0,subtotal-discount);
+   const paid=quote?0:N(v.paid);
+
+   if(qty<=0||rate<0||discount>subtotal||paid<0||paid>total)
+    throw Error("Quantity, Rate, Discount किंवा Paid amount तपासा.");
+
+   if(!quote){
+    let available=balance(p.id);
+    if(old?.product===p.id)available+=N(old.qty);
+    if(qty>available)throw Error("Stock कमी आहे. Available: "+available);
+   }
+
+   return {
+    doc:clean(v.doc),partyId:party.id,partyName:party.name,
+    address:party.address||"",mobile:party.mobile||"",email:party.email||"",
+    date:v.date,product:p.id,productName:p.name,qty,rate,discount,
+    subtotal,total,paid,terms:v.terms||"",validity:v.validity||"",
+    converted:old?.converted||false
+   };
+  }];
+ }
+
+ if(page==="purchases"){
+  h=form("Purchase Entry",
+   field("doc","Bill No.","text",true)+
+   sel("party","Supplier",db.suppliers)+
+   field("date","Date","date",true,`value="${today()}"`)+
+   sel("product","Product",db.products)+
+   field("qty","Quantity","number",true,'min=".001" step="any"')+
+   field("rate","Rate ₹","number",true,'min="0" step="any"')+
+   field("paid","Paid ₹","number",false,'min="0" step="any" value="0"')
+  )+`<section class="panel"><h2>Purchase Bills</h2>${list("purchases",["No.","Supplier","Date","Product","Qty","Total","Paid"],[x=>x.doc,x=>x.partyName,x=>x.date,x=>x.productName,x=>x.qty,x=>M(x.total),x=>M(x.paid)])}</section>`;
+
+  a=["purchases",v=>{
+   const p=db.products.find(x=>x.id===v.product);
+   const party=db.suppliers.find(x=>x.id===v.party);
+   if(!p||!party)throw Error("Supplier आणि Product निवडा.");
+   const qty=N(v.qty),rate=N(v.rate),subtotal=qty*rate;
+   if(qty<=0||rate<0||N(v.paid)<0||N(v.paid)>subtotal)throw Error("Quantity, Rate किंवा Paid तपासा.");
+   return {doc:clean(v.doc),partyId:party.id,partyName:party.name,date:v.date,product:p.id,productName:p.name,qty,rate,subtotal,total:subtotal,paid:N(v.paid)};
+  }];
+ }
+
+ if(page==="stockio"){
+  h=form("Stock In / Out",
+   sel("product","Product",db.products)+
+   `<div class="field"><label>Direction</label><select name="direction"><option>In</option><option>Out</option></select></div>`+
+   field("qty","Quantity","number",true,'min=".001" step="any"')+
+   field("date","Date","date",true,`value="${today()}"`)+
+   field("reference","Reference")+field("notes","Notes")
+  )+`<section class="panel"><h2>Stock History</h2>${list("stock",["Date","Product","Direction","Qty","Reference"],[x=>x.date,x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.direction,x=>x.qty,x=>x.reference])}</section>`;
+
+  a=["stock",v=>{
+   if(N(v.qty)<=0)throw Error("Quantity तपासा.");
+   if(v.direction==="Out"&&N(v.qty)>balance(v.product))throw Error("Stock कमी आहे.");
+   return {...v,qty:N(v.qty)};
+  }];
+ }
+
+ if(page==="stockreg"){
+  h=`<section class="panel"><h2>Stock Register</h2>${tbl(["Code","Product","Opening","Balance"],db.products.map(p=>`<tr><td>${esc(p.code)}</td><td>${esc(p.name)}</td><td>${N(p.opening)}</td><td>${balance(p.id)}</td></tr>`))}</section>`;
+ }
+
+ if(page==="serials"){
+  h=form("Serial Number Register",
+   sel("product","Product",db.products)+
+   field("serial","Serial Number","text",true)+
+   field("status","Status")+
+   field("customer","Customer / Location")+
+   field("calibration","Last Calibration","date")+
+   field("nextcal","Next Calibration Due","date")+
+   field("certificate","Certificate No.")+
+   field("warranty","Warranty Until","date")
+  )+`<section class="panel"><h2>Serial Register</h2>${list("serials",["Product","Serial","Status","Customer"],[x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.serial,x=>x.status,x=>x.customer])}</section>`;
+  a=["serials",v=>v];
+ }
+
+ if(page==="payments"){
+  h=form("Payment Entry",
+   field("type","Type")+
+   field("party","Party","text",true)+
+   field("date","Date","date",true,`value="${today()}"`)+
+   field("amount","Amount ₹","number",true,'min=".01" step="any"')+
+   field("reference","Reference")+
+   field("notes","Notes")
+  )+`<section class="panel"><h2>Payments</h2>${list("payments",["Type","Party","Date","Amount"],[x=>x.type,x=>x.party,x=>x.date,x=>M(x.amount)])}</section>`;
+  a=["payments",v=>({...v,amount:N(v.amount)})];
+ }
+
+ if(page==="reports"){
+  h=`<section class="panel"><h2>Reports / Export</h2>
+  <p>Total Sales: <b>${M(db.sales.reduce((s,x)=>s+N(x.total),0))}</b></p>
+  <p>Total Purchases: <b>${M(db.purchases.reduce((s,x)=>s+N(x.total),0))}</b></p>
+  <button class="btn" onclick="window.print()">Print</button>
+  ${T.map(t=>`<button class="btn secondary" onclick="csv('${t}')">${t} CSV</button>`).join("")}
+  </section>`;
+ }
+
+ if(page==="backup"){
+  h=`<section class="panel"><h2>Backup / Restore</h2>
+  <button class="btn" onclick="backup()">Download JSON Backup</button>
+  <div class="field"><label>Restore JSON</label><input type="file" accept=".json" onchange="restore(event)"></div>
+  <hr>
+  <h2>Supabase Cloud Setup</h2>
+  <div class="formgrid">
+   <div class="field"><label>Supabase URL</label><input id="cloudUrl" type="url"></div>
+   <div class="field"><label>Publishable / Anon Key</label><input id="cloudKey" type="password"></div>
+  </div>
+  <button class="btn" onclick="saveCloudSettings()">Save Cloud Settings</button>
+  <button class="btn secondary" onclick="createAccount()">Create Account</button>
+  <button class="btn" onclick="sync()">Sync / Merge Cloud</button>
+  <p id="cloudStatus" class="small"></p>
+  <p class="small">फक्त Publishable/Anon Key वापरा. Secret किंवा service_role key वापरू नका.</p>
+  </section>`;
+ }
+
  $("app").innerHTML=h;
- if(page==="products"){const p=db.products.find(x=>x.id===editingProductId);if(p)setFormValues($("f"),p);attach("products",v=>{duplicateProduct(v,editingProductId);return {code:clean(v.code),name:clean(v.name),make:clean(v.make),model:clean(v.model),unit:clean(v.unit)||"pcs",opening:N(v.opening),reorder:N(v.reorder),cost:N(v.cost),price:N(v.price)}});renderProductTable()}
- else if(a){const old=editingRecord?.type===a[0]?db[a[0]].find(x=>x.id===editingRecord.id):null;if(old)setFormValues($("f"),old);attach(a[0],a[1])}
- if(page==="backup"){const c=cfg();$("cloudUrl").value=c.url||"";$("cloudKey").value=c.key||""}
+
+ if(page==="products"){
+  const p=db.products.find(x=>x.id===editingProductId);
+  if(p)setFormValues($("f"),p);
+
+  attach("products",v=>{
+   duplicateProduct(v,editingProductId);
+   return {
+    code:clean(v.code),name:clean(v.name),make:clean(v.make),
+    model:clean(v.model),unit:clean(v.unit)||"pcs",
+    opening:N(v.opening),reorder:N(v.reorder),cost:N(v.cost),price:N(v.price)
+   };
+  });
+  renderProductTable();
+ }else if(a){
+  const old=editingRecord?.type===a[0]?db[a[0]].find(x=>x.id===editingRecord.id):null;
+  if(old)setFormValues($("f"),old);
+  attach(a[0],a[1]);
+ }
+
+ if(page==="backup"){
+  const c=cfg();
+  $("cloudUrl").value=c.url||"";
+  $("cloudKey").value=c.key||"";
+ }
 }
-window.renderProductTable=()=>{if(page!=="products")return;const q=($("productSearch")?.value||"").toLowerCase();const rows=db.products.filter(p=>[p.code,p.name,p.make,p.model].join(" ").toLowerCase().includes(q));$("productTableArea").innerHTML=tbl(["Code","Name","Make","Model","Stock","Price","Action"],rows.map(p=>`<tr><td>${esc(p.code)}</td><td>${esc(p.name)}</td><td>${esc(p.make)}</td><td>${esc(p.model)}</td><td>${balance(p.id)}</td><td>${M(p.price)}</td><td><button class="btn" onclick="editRecord('products','${esc(p.id)}')">Edit</button><button class="btn danger" onclick="del('products','${esc(p.id)}')">Delete</button></td></tr>`))};
-window.backup=()=>{const b=new Blob([JSON.stringify({version:3,exportedAt:new Date().toISOString(),data:db},null,2)],{type:"application/json"});const u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download="om-sai-erp-backup-"+today()+".json";a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
-window.restore=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!confirm("Restore replaces local data. Continue?"))return;db=norm(x.data||x);persist();render();alert("Backup restored.")}catch(err){alert("Invalid JSON backup")}};r.readAsText(f)};
-window.csv=t=>{let rows;if(t==="stockreg")rows=[["Code","Product","Opening","Balance"],...db.products.map(p=>[p.code,p.name,p.opening,balance(p.id)])];else{const arr=db[t]||[],keys=arr.length?Object.keys(arr[0]):[];rows=[keys,...arr.map(x=>keys.map(k=>x[k]))]}const s="\ufeff"+rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");const b=new Blob([s],{type:"text/csv;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=t+"-"+today()+".csv";a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
-window.saveCloudSettings=()=>{const url=$("cloudUrl").value.trim().replace(/\/+$/,""),key=$("cloudKey").value.trim();if(!/^https:\/\/.+\.supabase\.co$/.test(url)||!key)return alert("Valid Supabase URL आणि Publishable/Anon Key भरा.");localStorage.setItem(CFG,JSON.stringify({url,key}));client=null;init();alert("Cloud settings saved. Logout करून पुन्हा Login करा.")};
-window.createAccount=async()=>{try{const c=init();if(!c)throw Error("आधी Cloud Settings सेव्ह करा.");const email=prompt("Account email:");if(!email)return;const password=prompt("Password (किमान 8 अक्षरे):");if(!password||password.length<8)throw Error("Password किमान 8 अक्षरांचा हवा.");const {error}=await c.auth.signUp({email,password});if(error)throw error;alert("Account request पूर्ण झाली. Email confirmation लागू असल्यास ईमेल तपासा.")}catch(e){alert(e.message)}};
-window.globalLogin=async()=>{const er=$("loginError");er.textContent="";try{const c=init();if(!c)throw Error("Supabase Cloud Settings उपलब्ध नाहीत. आधी सेटअप करा.");const {data,error}=await c.auth.signInWithPassword({email:$("loginEmail").value.trim(),password:$("loginPassword").value});if(error)throw error;user=data.user;render();await sync(false)}catch(e){er.textContent=e.message||"Login failed."}};
-window.globalLogout=async()=>{try{const c=init();if(c)await c.auth.signOut()}catch(e){}user=null;page="dashboard";document.body.classList.remove("logged-in");$("loginScreen").style.display="flex";$("app").innerHTML="";$("nav").innerHTML="";$("loginPassword").value=""};
-async function cloudSave(){const c=init();if(!c)throw Error("Cloud config missing");const {data:{user:u},error:ue}=await c.auth.getUser();if(ue)throw ue;if(!u)throw Error("Login first");const {error}=await c.from("erp_data").upsert({user_id:u.id,payload:db,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(error)throw error;user=u}
-window.sync=async(showAlert=true)=>{try{const c=init();if(!c)throw Error("Cloud settings सेव्ह करा.");const {data:{user:u},error:ue}=await c.auth.getUser();if(ue)throw ue;if(!u)throw Error("Login करा.");user=u;const {data,error}=await c.from("erp_data").select("payload").eq("user_id",u.id).maybeSingle();if(error)throw error;if(data?.payload){const remote=norm(data.payload),merged=norm({});T.forEach(t=>{const m=new Map();remote[t].forEach(x=>{if(x?.id)m.set(x.id,x)});db[t].forEach(x=>{if(x?.id)m.set(x.id,x)});merged[t]=[...m.values()]});db=merged}persist();await cloudSave();render();if($("cloudStatus"))$("cloudStatus").textContent="Sync complete";if(showAlert)alert("Cloud sync complete.")}catch(e){if(showAlert)alert("Sync failed: "+e.message);else $("loginError").textContent="Login झाले; Cloud sync अयशस्वी: "+e.message}};
-$("loginForm").addEventListener("submit",e=>{e.preventDefault();globalLogin()});
-try{const c=init();if(c)c.auth.getSession().then(({data,error})=>{if(!error&&data.session){user=data.session.user;render()}})}catch(e){}
+
+window.renderProductTable=()=>{
+ if(page!=="products")return;
+ const q=($("productSearch")?.value||"").toLowerCase();
+ const rows=db.products.filter(p=>[p.code,p.name,p.make,p.model].join(" ").toLowerCase().includes(q));
+ $("productTableArea").innerHTML=tbl(
+  ["Code","Name","Make","Model","Stock","Price","Action"],
+  rows.map(p=>`<tr>
+   <td>${esc(p.code)}</td><td>${esc(p.name)}</td>
+   <td>${esc(p.make)}</td><td>${esc(p.model)}</td>
+   <td>${balance(p.id)}</td><td>${M(p.price)}</td>
+   <td><button class="btn" onclick="editRecord('products','${esc(p.id)}')">Edit</button>
+   <button class="btn danger" onclick="del('products','${esc(p.id)}')">Delete</button></td>
+  </tr>`)
+ );
+};
+
+window.backup=()=>{
+ const b=new Blob([JSON.stringify({version:3,exportedAt:new Date().toISOString(),data:db},null,2)],{type:"application/json"});
+ const u=URL.createObjectURL(b),a=document.createElement("a");
+ a.href=u;a.download="om-sai-erp-backup-"+today()+".json";a.click();
+ setTimeout(()=>URL.revokeObjectURL(u),1000);
+};
+
+window.restore=e=>{
+ const f=e.target.files[0];
+ if(!f)return;
+ const r=new FileReader();
+ r.onload=()=>{
+  try{
+   const x=JSON.parse(r.result);
+   if(!confirm("Restore replaces local data. Continue?"))return;
+   db=norm(x.data||x);
+   persist();
+   render();
+   alert("Backup restored.");
+  }catch(err){alert("Invalid JSON backup")}
+ };
+ r.readAsText(f);
+};
+
+window.csv=t=>{
+ let rows;
+ if(t==="stockreg"){
+  rows=[["Code","Product","Opening","Balance"],...db.products.map(p=>[p.code,p.name,p.opening,balance(p.id)])];
+ }else{
+  const arr=db[t]||[],keys=arr.length?Object.keys(arr[0]):[];
+  rows=[keys,...arr.map(x=>keys.map(k=>x[k]))];
+ }
+ const s="\ufeff"+rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");
+ const b=new Blob([s],{type:"text/csv;charset=utf-8"});
+ const u=URL.createObjectURL(b),a=document.createElement("a");
+ a.href=u;a.download=t+"-"+today()+".csv";a.click();
+ setTimeout(()=>URL.revokeObjectURL(u),1000);
+};
+
+window.saveCloudSettings=()=>{
+ const url=$("cloudUrl").value.trim().replace(/\/+$/,"");
+ const key=$("cloudKey").value.trim();
+ if(!/^https:\/\/.+\.supabase\.co$/.test(url)||!key)
+  return alert("Valid Supabase URL आणि Publishable/Anon Key भरा.");
+ localStorage.setItem(CFG,JSON.stringify({url,key}));
+ client=null;
+ init();
+ alert("Cloud settings saved. Logout करून पुन्हा Login करा.");
+};
+
+window.createAccount=async()=>{
+ try{
+  const c=init();
+  if(!c)throw Error("आधी Cloud Settings सेव्ह करा.");
+  const email=prompt("Account email:");
+  if(!email)return;
+  const password=prompt("Password (किमान 8 अक्षरे):");
+  if(!password||password.length<8)throw Error("Password किमान 8 अक्षरांचा हवा.");
+  const {error}=await c.auth.signUp({email,password});
+  if(error)throw error;
+  alert("Account request पूर्ण झाली. Email confirmation लागू असल्यास ईमेल तपासा.");
+ }catch(e){alert(e.message)}
+};
+
+window.globalLogin=async()=>{
+ const er=$("loginError");
+ er.textContent="";
+ try{
+  const c=init();
+  if(!c)throw Error("Supabase Cloud Settings उपलब्ध नाहीत. आधी सेटअप करा.");
+  const {data,error}=await c.auth.signInWithPassword({
+   email:$("loginEmail").value.trim(),
+   password:$("loginPassword").value
+  });
+  if(error)throw error;
+  user=data.user;
+  render();
+  await sync(false);
+ }catch(e){er.textContent=e.message||"Login failed."}
+};
+
+window.globalLogout=async()=>{
+ try{const c=init();if(c)await c.auth.signOut()}catch(e){}
+ user=null;
+ page="dashboard";
+ document.body.classList.remove("logged-in");
+ $("loginScreen").style.display="flex";
+ $("app").innerHTML="";
+ $("nav").innerHTML="";
+ $("loginPassword").value="";
+};
+
+async function cloudSave(){
+ const c=init();
+ if(!c)throw Error("Cloud config missing");
+ const {data:{user:u},error:ue}=await c.auth.getUser();
+ if(ue)throw ue;
+ if(!u)throw Error("Login first");
+ const {error}=await c.from("erp_data").upsert({
+  user_id:u.id,payload:db,updated_at:new Date().toISOString()
+ },{onConflict:"user_id"});
+ if(error)throw error;
+ user=u;
+}
+
+window.sync=async(showAlert=true)=>{
+ try{
+  const c=init();
+  if(!c)throw Error("Cloud settings सेव्ह करा.");
+  const {data:{user:u},error:ue}=await c.auth.getUser();
+  if(ue)throw ue;
+  if(!u)throw Error("Login करा.");
+  user=u;
+
+  const {data,error}=await c.from("erp_data").select("payload").eq("user_id",u.id).maybeSingle();
+  if(error)throw error;
+
+  if(data?.payload){
+   const remote=norm(data.payload),merged=norm({});
+   T.forEach(t=>{
+    const m=new Map();
+    remote[t].forEach(x=>{if(x?.id)m.set(x.id,x)});
+    db[t].forEach(x=>{if(x?.id)m.set(x.id,x)});
+    merged[t]=[...m.values()];
+   });
+   db=merged;
+  }
+
+  persist();
+  await cloudSave();
+  render();
+  if($("cloudStatus"))$("cloudStatus").textContent="Sync complete";
+  if(showAlert)alert("Cloud sync complete.");
+ }catch(e){
+  if(showAlert)alert("Sync failed: "+e.message);
+  else $("loginError").textContent="Login झाले; Cloud sync अयशस्वी: "+e.message;
+ }
+};
+
+$("loginForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ globalLogin();
+});
+
+try{
+ const c=init();
+ if(c)c.auth.getSession().then(({data,error})=>{
+  if(!error&&data.session){
+   user=data.session.user;
+   render();
+  }
+ });
+}catch(e){}
+
 document.body.classList.remove("logged-in");
 })();
 </script>
