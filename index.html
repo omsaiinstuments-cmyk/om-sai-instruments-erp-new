@@ -166,6 +166,31 @@ th{background:#f7f9fc}
     </div>
     <button class="btn login-btn" type="submit">LOGIN →</button>
     <div id="loginError"></div>
+    
+<button class="btn secondary login-btn" type="button"
+ onclick="toggleFirstSetup()">
+ First-Time Supabase Setup
+</button>
+
+<div id="firstSetup" style="display:none;margin-top:16px;padding:12px;border:1px solid #dbe3ec;border-radius:10px">
+ <h3>Cloud Setup</h3>
+ <p class="small">Enter your Supabase Project URL and Publishable Key.</p>
+
+ <div class="field">
+  <label>Supabase Project URL</label>
+  <input id="firstUrl" type="url" placeholder="https://your-project.supabase.co">
+ </div>
+
+ <div class="field">
+  <label>Supabase Publishable Key</label>
+  <input id="firstKey" type="password" placeholder="sb_publishable_...">
+ </div>
+
+ <button class="btn login-btn" type="button" onclick="saveFirstSetup()">
+  Save Cloud Settings
+ </button>
+ <p id="firstSetupStatus" class="small"></p>
+</div>
    </form>
    <p class="small">
     First-time setup: configure Supabase URL and Publishable Key.
