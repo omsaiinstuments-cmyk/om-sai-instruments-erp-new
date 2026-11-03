@@ -5,884 +5,580 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OM SAI INSTRUMENTS SECURITY SYSTEMS ERP</title>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.4/jspdf.plugin.autotable.min.js"></script>
-
 <style>
-:root {
-  --primary:#123b66;
-  --secondary:#1769aa;
-  --bg:#f3f6fa;
-  --border:#dce3eb;
-  --text:#182230;
-  --danger:#c62828;
-  --success:#18794e;
-}
-* { box-sizing:border-box; }
-body {
-  margin:0; font-family:Arial,Helvetica,sans-serif;
-  background:var(--bg); color:var(--text);
-}
-header {
-  background:var(--primary); color:#fff; padding:16px;
-  display:flex; align-items:center; gap:14px;
-}
-header img {
-  width:58px;height:58px;object-fit:contain;background:#fff;
-  border-radius:8px;padding:4px;
-}
-header h1 {font-size:20px;margin:0 0 5px;}
-header p {margin:0;font-size:12px;color:#d9e9fb;}
-.container {max-width:1400px;margin:auto;padding:16px;}
-.card {
-  background:#fff;border:1px solid var(--border);border-radius:10px;
-  padding:16px;margin-bottom:16px;box-shadow:0 2px 7px #00000008;
-}
-h2 {font-size:19px;margin:0 0 14px;color:var(--primary);}
-h3 {font-size:15px;margin:12px 0;}
-.grid {
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
-  gap:12px;
-}
-label {display:block;font-size:12px;font-weight:bold;margin-bottom:5px;}
-input,select,textarea {
-  width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:6px;
-  background:#fff;font-size:14px;min-width:0;
-}
-textarea {min-height:70px;resize:vertical;}
-button {
-  background:var(--secondary);color:#fff;border:0;border-radius:6px;
-  padding:10px 13px;cursor:pointer;font-weight:bold;margin:3px;
-}
-button:hover {filter:brightness(.92);}
-button.secondary {background:#526477;}
-button.danger {background:var(--danger);}
-button.success {background:var(--success);}
-button:disabled {opacity:.5;cursor:not-allowed;}
-nav {
-  display:flex;flex-wrap:wrap;gap:5px;padding:10px;
-  background:#fff;border-bottom:1px solid var(--border);
-}
-nav button {font-size:12px;margin:0;}
-.page {display:none;}
-.page.active {display:block;}
-.table-wrap {overflow-x:auto;}
-table {border-collapse:collapse;width:100%;font-size:12px;background:#fff;}
-th,td {border:1px solid var(--border);padding:8px;text-align:left;}
-th {background:#eaf1f8;color:var(--primary);}
-.empty {text-align:center;color:#667085;padding:20px;}
-.stat {
-  background:#fff;border:1px solid var(--border);border-radius:9px;padding:15px;
-}
-.stat strong {display:block;font-size:22px;color:var(--primary);margin-top:7px;}
-.muted {color:#667085;font-size:12px;}
-.status {padding:9px;background:#eef5fc;border-radius:6px;margin:10px 0;font-size:13px;}
-#loginPanel {max-width:420px;margin:35px auto;}
-.hidden {display:none!important;}
-.actions {display:flex;flex-wrap:wrap;gap:4px;}
-hr {border:0;border-top:1px solid var(--border);margin:16px 0;}
-@media(max-width:600px) {
-  header h1 {font-size:16px;}
-  header img {width:46px;height:46px;}
-  .container {padding:8px;}
-  .card {padding:12px;}
-}
+:root{--primary:#123b66;--secondary:#1769aa;--bg:#f3f6fa;--border:#dce3eb;--text:#182230;--danger:#c62828;--success:#18794e}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+header{background:var(--primary);color:#fff;padding:16px;display:flex;align-items:center;gap:14px}
+header img{width:58px;height:58px;object-fit:contain;background:#fff;border-radius:8px;padding:4px}
+header h1{font-size:20px;margin:0 0 5px}
+header p{margin:0;font-size:12px;color:#d9e9fb}
+.container{max-width:1400px;margin:auto;padding:16px}
+.card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px;box-shadow:0 2px 7px #00000008}
+h2{font-size:19px;margin:0 0 14px;color:var(--primary)}
+h3{font-size:15px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+label{display:block;font-size:12px;font-weight:bold;margin-bottom:5px}
+input,select,textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;font-size:14px;min-width:0}
+textarea{min-height:70px;resize:vertical}
+button{background:var(--secondary);color:#fff;border:0;border-radius:6px;padding:10px 13px;cursor:pointer;font-weight:bold;margin:3px}
+button:hover{filter:brightness(.92)}
+button.secondary{background:#526477}
+button.danger{background:var(--danger)}
+button.success{background:var(--success)}
+nav{display:flex;flex-wrap:wrap;gap:5px;padding:10px;background:#fff;border-bottom:1px solid var(--border)}
+nav button{font-size:12px;margin:0}
+.page{display:none}
+.page.active{display:block}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12px;background:#fff}
+th,td{border:1px solid var(--border);padding:8px;text-align:left}
+th{background:#eaf1f8;color:var(--primary)}
+.empty{text-align:center;color:#667085;padding:20px}
+.stat{background:#fff;border:1px solid var(--border);border-radius:9px;padding:15px}
+.stat strong{display:block;font-size:22px;color:var(--primary);margin-top:7px}
+.muted{color:#667085;font-size:12px}
+.status{padding:9px;background:#eef5fc;border-radius:6px;margin:10px 0;font-size:13px}
+#loginPanel{max-width:420px;margin:35px auto}
+.hidden{display:none!important}
+.actions{display:flex;flex-wrap:wrap;gap:4px}
+hr{border:0;border-top:1px solid var(--border);margin:16px 0}
+@media(max-width:600px){header h1{font-size:16px}header img{width:46px;height:46px}.container{padding:8px}.card{padding:12px}}
 </style>
 </head>
-
 <body>
 <header>
-  <img id="companyLogo"
-       src="https://omsaiinstuments.netlify.app/assets/om-sai-logo.png"
-       alt="Company Logo"
-       onerror="this.style.display='none'">
-  <div>
-    <h1>OM SAI INSTRUMENTS SECURITY SYSTEMS</h1>
-    <p>Security Systems • Sales • Purchase • Inventory • Accounts</p>
-  </div>
+<img id="companyLogo" src="https://omsaiinstuments.netlify.app/assets/om-sai-logo.png" alt="Company Logo" onerror="this.style.display='none'">
+<div><h1>OM SAI INSTRUMENTS SECURITY SYSTEMS</h1><p>Security Systems • Sales • Purchase • Inventory • Accounts</p></div>
 </header>
 
 <section id="loginPanel" class="card">
-  <h2>ERP Login</h2>
-  <div class="grid">
-    <div>
-      <label>Email</label>
-      <input id="loginEmail" type="email" placeholder="Registered email">
-    </div>
-    <div>
-      <label>Password</label>
-      <input id="loginPassword" type="password" placeholder="Password">
-    </div>
-  </div>
-  <button onclick="login()">Login</button>
-  <button class="secondary" onclick="signUp()">Create Account</button>
-  <div id="loginMessage" class="status">Configure Supabase below or use local mode.</div>
+<h2>ERP Login</h2>
+<div class="grid">
+<div><label>Email</label><input id="loginEmail" type="email" placeholder="Registered email"></div>
+<div><label>Password</label><input id="loginPassword" type="password" placeholder="Password"></div>
+</div>
+<button onclick="login()">Login</button>
+<button class="secondary" onclick="signUp()">Create Account</button>
+<div id="loginMessage" class="status">Configure Supabase below or use local mode.</div>
 </section>
 
 <section id="setupPanel" class="container">
-  <div class="card">
-    <h2>Supabase Configuration</h2>
-    <p class="muted">Enter your Supabase Project URL and Publishable Key. These values are saved in this browser only.</p>
-    <div class="grid">
-      <div>
-        <label>Supabase Project URL</label>
-        <input id="sbUrl" placeholder="https://YOUR_PROJECT.supabase.co">
-      </div>
-      <div>
-        <label>Supabase Publishable Key</label>
-        <input id="sbKey" placeholder="sb_publishable_...">
-      </div>
-    </div>
-    <button onclick="configureSupabase()">Connect Supabase</button>
-    <button class="secondary" onclick="continueLocal()">Continue in Local Mode</button>
-    <div id="connectionStatus" class="status">Not connected.</div>
-  </div>
+<div class="card">
+<h2>Supabase Configuration</h2>
+<p class="muted">Enter your Supabase Project URL and Publishable Key. These are saved in this browser.</p>
+<div class="grid">
+<div><label>Supabase Project URL</label><input id="sbUrl" placeholder="https://YOUR_PROJECT.supabase.co"></div>
+<div><label>Supabase Publishable Key</label><input id="sbKey" placeholder="sb_publishable_..."></div>
+</div>
+<button onclick="configureSupabase()">Connect Supabase</button>
+<button class="secondary" onclick="continueLocal()">Continue in Local Mode</button>
+<div id="connectionStatus" class="status">Not connected.</div>
+</div>
 </section>
 
 <div id="app" class="hidden">
 <nav>
-  <button onclick="showPage('dashboard')">Dashboard</button>
-  <button onclick="showPage('products')">Products</button>
-  <button onclick="showPage('customers')">Customers</button>
-  <button onclick="showPage('suppliers')">Suppliers</button>
-  <button onclick="showPage('invoice')">Sales Invoice</button>
-  <button onclick="showPage('purchases')">Purchase Entry</button>
-  <button onclick="showPage('stock')">Stock Register</button>
-  <button onclick="showPage('serials')">Serial Numbers</button>
-  <button onclick="showPage('payments')">Payments</button>
-  <button onclick="showPage('reports')">Reports</button>
-  <button onclick="showPage('backup')">Backup / Cloud</button>
-  <button class="danger" onclick="logout()">Logout</button>
+<button onclick="showPage('dashboard')">Dashboard</button>
+<button onclick="showPage('products')">Products</button>
+<button onclick="showPage('customers')">Customers</button>
+<button onclick="showPage('suppliers')">Suppliers</button>
+<button onclick="showPage('quotations')">Quotation</button>
+<button onclick="showPage('invoice')">Sales Invoice</button>
+<button onclick="showPage('purchases')">Purchase Entry</button>
+<button onclick="showPage('stock')">Stock Register</button>
+<button onclick="showPage('serials')">Serial Numbers</button>
+<button onclick="showPage('payments')">Payments</button>
+<button onclick="showPage('reports')">Reports</button>
+<button onclick="showPage('backup')">Backup / Cloud</button>
+<button class="danger" onclick="logout()">Logout</button>
 </nav>
-
 <main class="container">
+
 <section id="dashboard" class="page active">
-  <div class="card"><h2>Dashboard</h2>
-    <div class="grid">
-      <div class="stat">Products<strong id="statProducts">0</strong></div>
-      <div class="stat">Customers<strong id="statCustomers">0</strong></div>
-      <div class="stat">Invoices<strong id="statInvoices">0</strong></div>
-      <div class="stat">Stock Units<strong id="statStock">0</strong></div>
-      <div class="stat">Invoice Total<strong id="statSales">₹0.00</strong></div>
-      <div class="stat">Outstanding<strong id="statDue">₹0.00</strong></div>
-    </div>
-  </div>
-  <div class="card">
-    <h2>Company Information</h2>
-    <p><strong>OM SAI INSTRUMENTS SECURITY SYSTEMS</strong></p>
-    <p class="muted">Add your address, GSTIN, phone number and email to invoices after verifying the details.</p>
-  </div>
+<div class="card"><h2>Dashboard</h2><div class="grid">
+<div class="stat">Products<strong id="statProducts">0</strong></div>
+<div class="stat">Customers<strong id="statCustomers">0</strong></div>
+<div class="stat">Quotations<strong id="statQuotations">0</strong></div>
+<div class="stat">Invoices<strong id="statInvoices">0</strong></div>
+<div class="stat">Stock Units<strong id="statStock">0</strong></div>
+<div class="stat">Invoice Total<strong id="statSales">₹0.00</strong></div>
+<div class="stat">Outstanding<strong id="statDue">₹0.00</strong></div>
+</div></div>
+<div class="card"><h2>Company Information</h2><p><strong>OM SAI INSTRUMENTS SECURITY SYSTEMS</strong></p><p class="muted">Verify your address, GSTIN, phone number and email before issuing invoices.</p></div>
 </section>
 
 <section id="products" class="page">
-  <div class="card">
-    <h2>Product Master</h2>
-    <input id="productId" type="hidden">
-    <div class="grid">
-      <div><label>Product Code</label><input id="productCode"></div>
-      <div><label>Product Name</label><input id="productName"></div>
-      <div><label>Category</label><input id="productCategory"></div>
-      <div><label>Unit</label><input id="productUnit" value="Nos"></div>
-      <div><label>Purchase Price</label><input id="productCost" type="number" min="0" value="0"></div>
-      <div><label>Sale Price</label><input id="productPrice" type="number" min="0" value="0"></div>
-      <div><label>Opening Stock</label><input id="productOpening" type="number" min="0" value="0"></div>
-      <div><label>GST %</label><input id="productGst" type="number" min="0" max="100" value="18"></div>
-    </div>
-    <button onclick="saveProduct()">Save Product</button>
-    <button class="secondary" onclick="clearProduct()">Clear</button>
-  </div>
-  <div class="card"><h2>Products List</h2><div id="productTable" class="table-wrap"></div></div>
+<div class="card"><h2>Product Master</h2><input id="productId" type="hidden">
+<div class="grid">
+<div><label>Product Code</label><input id="productCode"></div>
+<div><label>Product Name</label><input id="productName"></div>
+<div><label>Category</label><input id="productCategory"></div>
+<div><label>Unit</label><input id="productUnit" value="Nos"></div>
+<div><label>Purchase Price</label><input id="productCost" type="number" min="0" value="0"></div>
+<div><label>Sale Price</label><input id="productPrice" type="number" min="0" value="0"></div>
+<div><label>Opening Stock</label><input id="productOpening" type="number" min="0" value="0"></div>
+<div><label>GST %</label><input id="productGst" type="number" min="0" max="100" value="18"></div>
+</div>
+<button onclick="saveProduct()">Save Product</button><button class="secondary" onclick="clearProduct()">Clear</button>
+</div>
+<div class="card"><h2>Products List</h2><div id="productTable" class="table-wrap"></div></div>
 </section>
 
 <section id="customers" class="page">
-  <div class="card">
-    <h2>Customer Master</h2>
-    <input id="customerId" type="hidden">
-    <div class="grid">
-      <div><label>Customer Name</label><input id="customerName"></div>
-      <div><label>Phone</label><input id="customerPhone"></div>
-      <div><label>Email</label><input id="customerEmail" type="email"></div>
-      <div><label>GSTIN</label><input id="customerGst"></div>
-      <div><label>Address</label><textarea id="customerAddress"></textarea></div>
-    </div>
-    <button onclick="saveCustomer()">Save Customer</button>
-    <button class="secondary" onclick="clearCustomer()">Clear</button>
-  </div>
-  <div class="card"><h2>Customer List</h2><div id="customerTable" class="table-wrap"></div></div>
+<div class="card"><h2>Customer Master</h2><input id="customerId" type="hidden">
+<div class="grid">
+<div><label>Customer Name</label><input id="customerName"></div>
+<div><label>Phone</label><input id="customerPhone"></div>
+<div><label>Email</label><input id="customerEmail" type="email"></div>
+<div><label>GSTIN</label><input id="customerGst"></div>
+<div><label>Address</label><textarea id="customerAddress"></textarea></div>
+</div>
+<button onclick="saveCustomer()">Save Customer</button><button class="secondary" onclick="clearCustomer()">Clear</button>
+</div>
+<div class="card"><h2>Customer List</h2><div id="customerTable" class="table-wrap"></div></div>
 </section>
 
 <section id="suppliers" class="page">
-  <div class="card">
-    <h2>Supplier Master</h2>
-    <input id="supplierId" type="hidden">
-    <div class="grid">
-      <div><label>Supplier Name</label><input id="supplierName"></div>
-      <div><label>Phone</label><input id="supplierPhone"></div>
-      <div><label>Email</label><input id="supplierEmail" type="email"></div>
-      <div><label>GSTIN</label><input id="supplierGst"></div>
-      <div><label>Address</label><textarea id="supplierAddress"></textarea></div>
-    </div>
-    <button onclick="saveSupplier()">Save Supplier</button>
-    <button class="secondary" onclick="clearSupplier()">Clear</button>
-  </div>
-  <div class="card"><h2>Supplier List</h2><div id="supplierTable" class="table-wrap"></div></div>
+<div class="card"><h2>Supplier Master</h2><input id="supplierId" type="hidden">
+<div class="grid">
+<div><label>Supplier Name</label><input id="supplierName"></div>
+<div><label>Phone</label><input id="supplierPhone"></div>
+<div><label>Email</label><input id="supplierEmail" type="email"></div>
+<div><label>GSTIN</label><input id="supplierGst"></div>
+<div><label>Address</label><textarea id="supplierAddress"></textarea></div>
+</div>
+<button onclick="saveSupplier()">Save Supplier</button><button class="secondary" onclick="clearSupplier()">Clear</button>
+</div>
+<div class="card"><h2>Supplier List</h2><div id="supplierTable" class="table-wrap"></div></div>
+</section>
+
+<section id="quotations" class="page">
+<div class="card"><h2>Quotation / Estimate</h2>
+<div class="grid">
+<div><label>Quotation Number</label><input id="quoteNo" placeholder="Auto generated if blank"></div>
+<div><label>Date</label><input id="quoteDate" type="date"></div>
+<div><label>Valid Until</label><input id="quoteValidUntil" type="date"></div>
+<div><label>Customer</label><select id="quoteCustomer"></select></div>
+<div><label>Discount Amount (₹)</label><input id="quoteDiscount" type="number" min="0" value="0" oninput="renderQuoteItems()"></div>
+</div>
+<hr><h3>Add Quotation Item</h3>
+<div class="grid">
+<div><label>Product</label><select id="quoteProduct" onchange="quoteProductChanged()"></select></div>
+<div><label>Quantity</label><input id="quoteQty" type="number" min="1" value="1"></div>
+<div><label>Rate (₹)</label><input id="quoteRate" type="number" min="0" step="0.01"></div>
+<div><label>GST %</label><input id="quoteGst" type="number" min="0" max="100" value="18"></div>
+</div>
+<button onclick="addQuoteItem()">Add Item</button>
+<div id="quoteItems" class="table-wrap"></div>
+<div id="quoteTotals" class="status">Quotation Total: ₹0.00</div>
+<button class="success" onclick="saveQuotation()">Save Quotation</button>
+<button onclick="printQuotation()">Print / Save PDF</button>
+<button class="secondary" onclick="clearQuotation()">New Quotation</button>
+</div>
+<div class="card"><h2>Saved Quotations</h2><div id="quotationTable" class="table-wrap"></div></div>
 </section>
 
 <section id="invoice" class="page">
-  <div class="card">
-    <h2>Sales / Tax Invoice</h2>
-    <div class="grid">
-      <div><label>Invoice Number</label><input id="invoiceNo"></div>
-      <div><label>Date</label><input id="invoiceDate" type="date"></div>
-      <div><label>Customer</label><select id="invoiceCustomer"></select></div>
-      <div><label>Discount Amount (₹)</label><input id="invoiceDiscount" type="number" min="0" value="0" oninput="renderInvoiceItems()"></div>
-    </div>
-    <hr>
-    <h3>Add Invoice Item</h3>
-    <div class="grid">
-      <div><label>Product</label><select id="invoiceProduct"></select></div>
-      <div><label>Quantity</label><input id="invoiceQty" type="number" min="1" value="1"></div>
-    </div>
-    <button onclick="addInvoiceItem()">Add Item</button>
-    <div id="invoiceItems" class="table-wrap"></div>
-    <div id="invoiceTotals" class="status">Subtotal: ₹0.00</div>
-    <button class="success" onclick="saveInvoice()">Save Invoice</button>
-    <button onclick="downloadInvoicePDF()">Download Invoice PDF</button>
-  </div>
-  <div class="card"><h2>Saved Invoices</h2><div id="invoiceTable" class="table-wrap"></div></div>
+<div class="card"><h2>Sales / Tax Invoice</h2>
+<div class="grid">
+<div><label>Invoice Number</label><input id="invoiceNo"></div>
+<div><label>Date</label><input id="invoiceDate" type="date"></div>
+<div><label>Customer</label><select id="invoiceCustomer"></select></div>
+<div><label>Discount Amount (₹)</label><input id="invoiceDiscount" type="number" min="0" value="0" oninput="renderInvoiceItems()"></div>
+</div>
+<hr><h3>Add Invoice Item</h3>
+<div class="grid">
+<div><label>Product</label><select id="invoiceProduct"></select></div>
+<div><label>Quantity</label><input id="invoiceQty" type="number" min="1" value="1"></div>
+</div>
+<button onclick="addInvoiceItem()">Add Item</button>
+<div id="invoiceItems" class="table-wrap"></div>
+<div id="invoiceTotals" class="status">Subtotal: ₹0.00</div>
+<button class="success" onclick="saveInvoice()">Save Invoice</button>
+<button onclick="downloadInvoicePDF()">Download Invoice PDF</button>
+</div>
+<div class="card"><h2>Saved Invoices</h2><div id="invoiceTable" class="table-wrap"></div></div>
 </section>
 
 <section id="purchases" class="page">
-  <div class="card">
-    <h2>Purchase Entry</h2>
-    <div class="grid">
-      <div><label>Purchase Number</label><input id="purchaseNo"></div>
-      <div><label>Date</label><input id="purchaseDate" type="date"></div>
-      <div><label>Supplier</label><select id="purchaseSupplier"></select></div>
-      <div><label>Product</label><select id="purchaseProduct"></select></div>
-      <div><label>Quantity</label><input id="purchaseQty" type="number" min="1" value="1"></div>
-      <div><label>Unit Cost</label><input id="purchaseCost" type="number" min="0" value="0"></div>
-    </div>
-    <button onclick="savePurchase()">Save Purchase / Stock In</button>
-  </div>
-  <div class="card"><h2>Purchase Register</h2><div id="purchaseTable" class="table-wrap"></div></div>
+<div class="card"><h2>Purchase Entry</h2><div class="grid">
+<div><label>Purchase Number</label><input id="purchaseNo"></div>
+<div><label>Date</label><input id="purchaseDate" type="date"></div>
+<div><label>Supplier</label><select id="purchaseSupplier"></select></div>
+<div><label>Product</label><select id="purchaseProduct"></select></div>
+<div><label>Quantity</label><input id="purchaseQty" type="number" min="1" value="1"></div>
+<div><label>Unit Cost</label><input id="purchaseCost" type="number" min="0" value="0"></div>
+</div><button onclick="savePurchase()">Save Purchase / Stock In</button></div>
+<div class="card"><h2>Purchase Register</h2><div id="purchaseTable" class="table-wrap"></div></div>
 </section>
 
 <section id="stock" class="page">
-  <div class="card">
-    <h2>Stock In / Out</h2>
-    <div class="grid">
-      <div><label>Product</label><select id="stockProduct"></select></div>
-      <div><label>Transaction</label><select id="stockType"><option value="in">Stock In</option><option value="out">Stock Out</option></select></div>
-      <div><label>Quantity</label><input id="stockQty" type="number" min="1" value="1"></div>
-      <div><label>Reference / Note</label><input id="stockNote"></div>
-    </div>
-    <button onclick="stockMovement()">Save Stock Movement</button>
-  </div>
-  <div class="card"><h2>Current Stock</h2><div id="stockTable" class="table-wrap"></div></div>
-  <div class="card"><h2>Stock Movement Register</h2><div id="movementTable" class="table-wrap"></div></div>
+<div class="card"><h2>Stock In / Out</h2><div class="grid">
+<div><label>Product</label><select id="stockProduct"></select></div>
+<div><label>Transaction</label><select id="stockType"><option value="in">Stock In</option><option value="out">Stock Out</option></select></div>
+<div><label>Quantity</label><input id="stockQty" type="number" min="1" value="1"></div>
+<div><label>Reference / Note</label><input id="stockNote"></div>
+</div><button onclick="stockMovement()">Save Stock Movement</button></div>
+<div class="card"><h2>Current Stock</h2><div id="stockTable" class="table-wrap"></div></div>
+<div class="card"><h2>Stock Movement Register</h2><div id="movementTable" class="table-wrap"></div></div>
 </section>
 
 <section id="serials" class="page">
-  <div class="card">
-    <h2>Serial Number Register</h2>
-    <div class="grid">
-      <div><label>Product</label><select id="serialProduct"></select></div>
-      <div><label>Serial Number</label><input id="serialNumber"></div>
-      <div><label>Customer / Location</label><input id="serialCustomer"></div>
-      <div><label>Warranty End Date</label><input id="serialWarranty" type="date"></div>
-      <div><label>Status</label><select id="serialStatus"><option>In Stock</option><option>Sold</option><option>Service</option><option>Returned</option></select></div>
-    </div>
-    <button onclick="saveSerial()">Save Serial Number</button>
-  </div>
-  <div class="card"><h2>Serial Register</h2><div id="serialTable" class="table-wrap"></div></div>
+<div class="card"><h2>Serial Number Register</h2><div class="grid">
+<div><label>Product</label><select id="serialProduct"></select></div>
+<div><label>Serial Number</label><input id="serialNumber"></div>
+<div><label>Customer / Location</label><input id="serialCustomer"></div>
+<div><label>Warranty End Date</label><input id="serialWarranty" type="date"></div>
+<div><label>Status</label><select id="serialStatus"><option>In Stock</option><option>Sold</option><option>Service</option><option>Returned</option></select></div>
+</div><button onclick="saveSerial()">Save Serial Number</button></div>
+<div class="card"><h2>Serial Register</h2><div id="serialTable" class="table-wrap"></div></div>
 </section>
 
 <section id="payments" class="page">
-  <div class="card">
-    <h2>Payment / Outstanding Entry</h2>
-    <div class="grid">
-      <div><label>Type</label><select id="paymentType"><option value="received">Customer Payment Received</option><option value="paid">Supplier Payment Paid</option></select></div>
-      <div><label>Party Name</label><input id="paymentParty"></div>
-      <div><label>Date</label><input id="paymentDate" type="date"></div>
-      <div><label>Amount (₹)</label><input id="paymentAmount" type="number" min="0.01" step="0.01"></div>
-      <div><label>Mode</label><select id="paymentMode"><option>Bank Transfer</option><option>UPI</option><option>Cash</option><option>Cheque</option><option>Other</option></select></div>
-      <div><label>Reference / Note</label><input id="paymentNote"></div>
-    </div>
-    <button onclick="savePayment()">Save Payment</button>
-  </div>
-  <div class="card"><h2>Payment Register</h2><div id="paymentTable" class="table-wrap"></div></div>
+<div class="card"><h2>Payment / Outstanding Entry</h2><div class="grid">
+<div><label>Type</label><select id="paymentType"><option value="received">Customer Payment Received</option><option value="paid">Supplier Payment Paid</option></select></div>
+<div><label>Party Name</label><input id="paymentParty"></div>
+<div><label>Date</label><input id="paymentDate" type="date"></div>
+<div><label>Amount (₹)</label><input id="paymentAmount" type="number" min="0.01" step="0.01"></div>
+<div><label>Mode</label><select id="paymentMode"><option>Bank Transfer</option><option>UPI</option><option>Cash</option><option>Cheque</option><option>Other</option></select></div>
+<div><label>Reference / Note</label><input id="paymentNote"></div>
+</div><button onclick="savePayment()">Save Payment</button></div>
+<div class="card"><h2>Payment Register</h2><div id="paymentTable" class="table-wrap"></div></div>
 </section>
 
 <section id="reports" class="page">
-  <div class="card">
-    <h2>Reports / Export</h2>
-    <p class="muted">Export records as CSV for Excel.</p>
-    <div class="actions">
-      <button onclick="exportCSV('products')">Products CSV</button>
-      <button onclick="exportCSV('customers')">Customers CSV</button>
-      <button onclick="exportCSV('suppliers')">Suppliers CSV</button>
-      <button onclick="exportCSV('invoices')">Invoices CSV</button>
-      <button onclick="exportCSV('purchases')">Purchases CSV</button>
-      <button onclick="exportCSV('movements')">Stock Movements CSV</button>
-      <button onclick="exportCSV('serials')">Serials CSV</button>
-      <button onclick="exportCSV('payments')">Payments CSV</button>
-    </div>
-  </div>
+<div class="card"><h2>Reports / Export</h2><p class="muted">Export records as CSV for Excel.</p><div class="actions">
+<button onclick="exportCSV('products')">Products CSV</button>
+<button onclick="exportCSV('customers')">Customers CSV</button>
+<button onclick="exportCSV('suppliers')">Suppliers CSV</button>
+<button onclick="exportCSV('quotations')">Quotations CSV</button>
+<button onclick="exportCSV('invoices')">Invoices CSV</button>
+<button onclick="exportCSV('purchases')">Purchases CSV</button>
+<button onclick="exportCSV('movements')">Stock Movements CSV</button>
+<button onclick="exportCSV('serials')">Serials CSV</button>
+<button onclick="exportCSV('payments')">Payments CSV</button>
+</div></div>
 </section>
 
 <section id="backup" class="page">
-  <div class="card">
-    <h2>Backup / Restore</h2>
-    <button onclick="downloadBackup()">Download JSON Backup</button>
-    <label>Restore from JSON backup</label>
-    <input id="backupFile" type="file" accept=".json,application/json">
-    <button onclick="restoreBackup()">Restore Backup</button>
-    <hr>
-    <h3>Supabase Cloud</h3>
-    <p class="muted">Cloud sync requires a table named <code>erp_backup</code> with columns <code>user_id</code> (UUID, primary key), <code>payload</code> (JSONB), and <code>updated_at</code> (timestamp). Enable Row Level Security and create policies allowing authenticated users to access only their own row.</p>
-    <button onclick="saveCloud()">Save to Cloud</button>
-    <button onclick="loadCloud()">Sync / Merge Cloud</button>
-    <div id="cloudStatus" class="status">Cloud not synced.</div>
-  </div>
+<div class="card"><h2>Backup / Restore</h2>
+<button onclick="downloadBackup()">Download JSON Backup</button>
+<label>Restore from JSON backup</label><input id="backupFile" type="file" accept=".json,application/json">
+<button onclick="restoreBackup()">Restore Backup</button>
+<hr><h3>Supabase Cloud</h3>
+<p class="muted">Cloud sync requires an erp_backup table with user_id UUID primary key, payload JSONB and updated_at timestamp. Enable RLS and allow authenticated users to access only their own row.</p>
+<button onclick="saveCloud()">Save to Cloud</button><button onclick="loadCloud()">Sync / Merge Cloud</button>
+<div id="cloudStatus" class="status">Cloud not synced.</div>
+</div>
 </section>
 </main>
 </div>
 
 <script>
 "use strict";
+const COMPANY="OM SAI INSTRUMENTS SECURITY SYSTEMS";
+const LOGO_URL="https://omsaiinstuments.netlify.app/assets/om-sai-logo.png";
+const TABLES=["products","customers","suppliers","invoices","quotations","purchases","movements","serials","payments"];
+let db={products:[],customers:[],suppliers:[],invoices:[],quotations:[],purchases:[],movements:[],serials:[],payments:[]};
+let supabaseClient=null,cloudUser=null,currentInvoiceItems=[],currentQuoteItems=[];
+const $=id=>document.getElementById(id);
+const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);
+const money=n=>"₹"+Number(n||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+const today=()=>new Date().toISOString().slice(0,10);
+const safe=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-const COMPANY = "OM SAI INSTRUMENTS SECURITY SYSTEMS";
-const LOGO_URL = "https://omsaiinstuments.netlify.app/assets/om-sai-logo.png";
-
-const TABLES = [
-  "products","customers","suppliers","invoices","purchases",
-  "movements","serials","payments"
-];
-
-let db = {
-  products:[], customers:[], suppliers:[], invoices:[], purchases:[],
-  movements:[], serials:[], payments:[]
-};
-
-let supabaseClient = null;
-let cloudUser = null;
-let currentInvoiceItems = [];
-
-const $ = id => document.getElementById(id);
-const uid = () => (crypto.randomUUID ? crypto.randomUUID() :
-  Date.now().toString(36)+Math.random().toString(36).slice(2));
-const money = n => "₹"+Number(n||0).toLocaleString("en-IN",{
-  minimumFractionDigits:2,maximumFractionDigits:2
-});
-const today = () => new Date().toISOString().slice(0,10);
-const safe = value => String(value ?? "").replace(/[&<>"']/g, c => ({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-}[c]));
-
-function saveLocal() {
-  localStorage.setItem("osiss_erp_data_v1",JSON.stringify(db));
-  renderAll();
+function saveLocal(){localStorage.setItem("osiss_erp_data_v1",JSON.stringify(db));renderAll()}
+function loadLocal(){
+ try{const raw=localStorage.getItem("osiss_erp_data_v1");if(raw){const parsed=JSON.parse(raw);TABLES.forEach(k=>{if(Array.isArray(parsed[k]))db[k]=parsed[k]})}}catch(e){console.error(e)}
 }
-function loadLocal() {
-  try {
-    const raw = localStorage.getItem("osiss_erp_data_v1");
-    if(raw) {
-      const parsed = JSON.parse(raw);
-      TABLES.forEach(k => { if(Array.isArray(parsed[k])) db[k]=parsed[k]; });
-    }
-  } catch(e) { console.error(e); }
+function showMessage(id,message){if($(id))$(id).textContent=message}
+function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));$(id).classList.add("active");renderAll()}
+function startApp(){$("loginPanel").classList.add("hidden");$("setupPanel").classList.add("hidden");$("app").classList.remove("hidden");renderAll()}
+function continueLocal(){loadLocal();startApp()}
+function configureSupabase(){
+ const url=$("sbUrl").value.trim(),key=$("sbKey").value.trim();
+ if(!url||!key){showMessage("connectionStatus","Please enter Supabase URL and Publishable Key.");return false}
+ try{
+  if(!/^https:\/\/[a-zA-Z0-9-]+\.supabase\.co\/?$/.test(url)){showMessage("connectionStatus","Please check your Supabase Project URL.");return false}
+  supabaseClient=window.supabase.createClient(url,key);
+  localStorage.setItem("osiss_sb_url",url);localStorage.setItem("osiss_sb_key",key);
+  showMessage("connectionStatus","Supabase client configured. You can log in now.");return true
+ }catch(e){showMessage("connectionStatus","Configuration error: "+e.message);return false}
 }
-function showMessage(id,message) {
-  if($(id)) $(id).textContent=message;
-}
-function showPage(id) {
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  $(id).classList.add("active");
-  renderAll();
-}
-function startApp() {
-  $("loginPanel").classList.add("hidden");
-  $("setupPanel").classList.add("hidden");
-  $("app").classList.remove("hidden");
-  renderAll();
-}
-function continueLocal() {
-  loadLocal();
-  startApp();
-}
-function configureSupabase() {
-  const url=$("sbUrl").value.trim();
-  const key=$("sbKey").value.trim();
-  if(!url || !key) {
-    showMessage("connectionStatus","Please enter the Supabase URL and Publishable Key.");
-    return;
-  }
-  try {
-    localStorage.setItem("osiss_sb_url",url);
-    localStorage.setItem("osiss_sb_key",key);
-    supabaseClient=window.supabase.createClient(url,key);
-    showMessage("connectionStatus","Supabase client configured. Log in to use authenticated cloud sync.");
-  } catch(e) {
-    showMessage("connectionStatus","Supabase configuration error: "+e.message);
-  }
-}
-async function login() {
-  if(!supabaseClient) configureSupabase();
-  if(!supabaseClient) return;
-  const email=$("loginEmail").value.trim();
-  const password=$("loginPassword").value;
-  if(!email||!password) {
-    showMessage("loginMessage","Enter email and password.");
-    return;
-  }
+async function login(){
+ try{
+  if(!supabaseClient&&!configureSupabase())return;
+  const email=$("loginEmail").value.trim(),password=$("loginPassword").value;
+  if(!email||!password){showMessage("loginMessage","Enter email and password.");return}
+  showMessage("loginMessage","Connecting...");
   const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
-  if(error) { showMessage("loginMessage",error.message); return; }
-  cloudUser=data.user;
-  loadLocal();
-  startApp();
-  showMessage("cloudStatus","Logged in to Supabase.");
+  if(error){showMessage("loginMessage",error.message);return}
+  cloudUser=data.user;loadLocal();startApp();showMessage("cloudStatus","Logged in to Supabase.")
+ }catch(e){showMessage("loginMessage","Login failed: "+e.message+" Check internet, URL and key.")}
 }
-async function signUp() {
-  if(!supabaseClient) configureSupabase();
-  if(!supabaseClient) return;
-  const email=$("loginEmail").value.trim();
-  const password=$("loginPassword").value;
-  if(!email||password.length<6) {
-    showMessage("loginMessage","Enter email and a password of at least 6 characters.");
-    return;
-  }
+async function signUp(){
+ try{
+  if(!supabaseClient&&!configureSupabase())return;
+  const email=$("loginEmail").value.trim(),password=$("loginPassword").value;
+  if(!email||password.length<6){showMessage("loginMessage","Enter email and password of at least 6 characters.");return}
   const {error}=await supabaseClient.auth.signUp({email,password});
-  showMessage("loginMessage",error ? error.message : "Signup submitted. Check your email if confirmation is enabled.");
+  showMessage("loginMessage",error?error.message:"Signup submitted. Check your email if confirmation is enabled.")
+ }catch(e){showMessage("loginMessage","Signup failed: "+e.message)}
 }
-async function logout() {
-  if(supabaseClient) await supabaseClient.auth.signOut();
-  cloudUser=null;
-  $("app").classList.add("hidden");
-  $("loginPanel").classList.remove("hidden");
-  $("setupPanel").classList.remove("hidden");
+async function logout(){
+ if(supabaseClient)await supabaseClient.auth.signOut();
+ cloudUser=null;$("app").classList.add("hidden");$("loginPanel").classList.remove("hidden");$("setupPanel").classList.remove("hidden")
 }
-function loadSupabaseConfig() {
-  $("sbUrl").value=localStorage.getItem("osiss_sb_url")||"";
-  $("sbKey").value=localStorage.getItem("osiss_sb_key")||"";
-  if($("sbUrl").value && $("sbKey").value) configureSupabase();
+function loadSupabaseConfig(){
+ $("sbUrl").value=localStorage.getItem("osiss_sb_url")||"";
+ $("sbKey").value=localStorage.getItem("osiss_sb_key")||"";
+ if($("sbUrl").value&&$("sbKey").value)configureSupabase()
 }
-
-function clearProduct() {
-  ["productId","productCode","productName","productCategory"].forEach(id=>$(id).value="");
-  $("productUnit").value="Nos";$("productCost").value="0";
-  $("productPrice").value="0";$("productOpening").value="0";$("productGst").value="18";
+function clearProduct(){["productId","productCode","productName","productCategory"].forEach(id=>$(id).value="");$("productUnit").value="Nos";$("productCost").value="0";$("productPrice").value="0";$("productOpening").value="0";$("productGst").value="18"}
+function saveProduct(){
+ const name=$("productName").value.trim();if(!name)return alert("Enter product name.");
+ const id=$("productId").value||uid(),old=db.products.find(p=>p.id===id);
+ const x={id,code:$("productCode").value.trim(),name,category:$("productCategory").value.trim(),unit:$("productUnit").value.trim()||"Nos",cost:+$("productCost").value||0,price:+$("productPrice").value||0,opening:+$("productOpening").value||0,gst:+$("productGst").value||0};
+ if(old)Object.assign(old,x);else db.products.push(x);clearProduct();saveLocal()
 }
-function saveProduct() {
-  const name=$("productName").value.trim();
-  if(!name) return alert("Enter product name.");
-  const id=$("productId").value||uid();
-  const existing=db.products.find(p=>p.id===id);
-  const item={
-    id,code:$("productCode").value.trim(),name,
-    category:$("productCategory").value.trim(),
-    unit:$("productUnit").value.trim()||"Nos",
-    cost:+$("productCost").value||0,price:+$("productPrice").value||0,
-    opening:+$("productOpening").value||0,gst:+$("productGst").value||0
-  };
-  if(existing) Object.assign(existing,item);
-  else db.products.push(item);
-  clearProduct();saveLocal();
+function editProduct(id){
+ const p=db.products.find(x=>x.id===id);if(!p)return;
+ $("productId").value=p.id;$("productCode").value=p.code||"";$("productName").value=p.name;$("productCategory").value=p.category||"";$("productUnit").value=p.unit||"Nos";$("productCost").value=p.cost||0;$("productPrice").value=p.price||0;$("productOpening").value=p.opening||0;$("productGst").value=p.gst||0;showPage("products")
 }
-function editProduct(id) {
-  const p=db.products.find(x=>x.id===id);if(!p)return;
-  $("productId").value=p.id;$("productCode").value=p.code||"";
-  $("productName").value=p.name;$("productCategory").value=p.category||"";
-  $("productUnit").value=p.unit||"Nos";$("productCost").value=p.cost||0;
-  $("productPrice").value=p.price||0;$("productOpening").value=p.opening||0;
-  $("productGst").value=p.gst||0;showPage("products");
+function clearCustomer(){["customerId","customerName","customerPhone","customerEmail","customerGst","customerAddress"].forEach(id=>$(id).value="")}
+function saveCustomer(){
+ const name=$("customerName").value.trim();if(!name)return alert("Enter customer name.");
+ const id=$("customerId").value||uid(),x={id,name,phone:$("customerPhone").value,email:$("customerEmail").value,gst:$("customerGst").value,address:$("customerAddress").value},old=db.customers.find(a=>a.id===id);
+ if(old)Object.assign(old,x);else db.customers.push(x);clearCustomer();saveLocal()
 }
-function clearCustomer() {
-  ["customerId","customerName","customerPhone","customerEmail","customerGst","customerAddress"].forEach(id=>$(id).value="");
+function editCustomer(id){
+ const x=db.customers.find(a=>a.id===id);if(!x)return;
+ $("customerId").value=x.id;$("customerName").value=x.name;$("customerPhone").value=x.phone||"";$("customerEmail").value=x.email||"";$("customerGst").value=x.gst||"";$("customerAddress").value=x.address||"";showPage("customers")
 }
-function saveCustomer() {
-  const name=$("customerName").value.trim();if(!name)return alert("Enter customer name.");
-  const id=$("customerId").value||uid();
-  const x={id,name,phone:$("customerPhone").value,email:$("customerEmail").value,
-    gst:$("customerGst").value,address:$("customerAddress").value};
-  const old=db.customers.find(a=>a.id===id);
-  if(old)Object.assign(old,x);else db.customers.push(x);
-  clearCustomer();saveLocal();
+function saveSupplier(){
+ const name=$("supplierName").value.trim();if(!name)return alert("Enter supplier name.");
+ const id=$("supplierId").value||uid(),x={id,name,phone:$("supplierPhone").value,email:$("supplierEmail").value,gst:$("supplierGst").value,address:$("supplierAddress").value},old=db.suppliers.find(a=>a.id===id);
+ if(old)Object.assign(old,x);else db.suppliers.push(x);
+ ["supplierId","supplierName","supplierPhone","supplierEmail","supplierGst","supplierAddress"].forEach(i=>$(i).value="");saveLocal()
 }
-function editCustomer(id) {
-  const x=db.customers.find(a=>a.id===id);if(!x)return;
-  $("customerId").value=x.id;$("customerName").value=x.name;
-  $("customerPhone").value=x.phone||"";$("customerEmail").value=x.email||"";
-  $("customerGst").value=x.gst||"";$("customerAddress").value=x.address||"";
-  showPage("customers");
+function editSupplier(id){
+ const x=db.suppliers.find(a=>a.id===id);if(!x)return;
+ $("supplierId").value=x.id;$("supplierName").value=x.name;$("supplierPhone").value=x.phone||"";$("supplierEmail").value=x.email||"";$("supplierGst").value=x.gst||"";$("supplierAddress").value=x.address||"";showPage("suppliers")
 }
-function saveSupplier() {
-  const name=$("supplierName").value.trim();if(!name)return alert("Enter supplier name.");
-  const id=$("supplierId").value||uid();
-  const x={id,name,phone:$("supplierPhone").value,email:$("supplierEmail").value,
-    gst:$("supplierGst").value,address:$("supplierAddress").value};
-  const old=db.suppliers.find(a=>a.id===id);
-  if(old)Object.assign(old,x);else db.suppliers.push(x);
-  ["supplierId","supplierName","supplierPhone","supplierEmail","supplierGst","supplierAddress"].forEach(i=>$(i).value="");
-  saveLocal();
+function currentStock(productId){
+ const p=db.products.find(x=>x.id===productId);if(!p)return 0;
+ let qty=Number(p.opening)||0;db.movements.filter(m=>m.productId===productId).forEach(m=>qty+=m.type==="in"?Number(m.qty):-Number(m.qty));return qty
 }
-function editSupplier(id) {
-  const x=db.suppliers.find(a=>a.id===id);if(!x)return;
-  $("supplierId").value=x.id;$("supplierName").value=x.name;
-  $("supplierPhone").value=x.phone||"";$("supplierEmail").value=x.email||"";
-  $("supplierGst").value=x.gst||"";$("supplierAddress").value=x.address||"";
-  showPage("suppliers");
+function addMovement(productId,type,qty,note,reference){db.movements.push({id:uid(),date:today(),productId,type,qty:Number(qty),note:note||"",reference:reference||""})}
+function savePurchase(){
+ const supplierId=$("purchaseSupplier").value,productId=$("purchaseProduct").value,qty=+$("purchaseQty").value,cost=+$("purchaseCost").value;
+ if(!productId||!supplierId||qty<=0)return alert("Select supplier/product and enter valid quantity.");
+ const x={id:uid(),number:$("purchaseNo").value||"PUR-"+Date.now(),date:$("purchaseDate").value||today(),supplierId,productId,qty,cost,total:qty*cost};
+ db.purchases.push(x);addMovement(productId,"in",qty,"Purchase entry",x.number);saveLocal();$("purchaseNo").value="";$("purchaseQty").value="1"
 }
-function currentStock(productId) {
-  const p=db.products.find(x=>x.id===productId);if(!p)return 0;
-  let qty=Number(p.opening)||0;
-  db.movements.filter(m=>m.productId===productId).forEach(m=>{
-    qty += m.type==="in" ? Number(m.qty) : -Number(m.qty);
-  });
-  return qty;
+function stockMovement(){
+ const productId=$("stockProduct").value,type=$("stockType").value,qty=+$("stockQty").value;
+ if(!productId||qty<=0)return alert("Select product and quantity.");
+ if(type==="out"&&currentStock(productId)<qty)return alert("Insufficient stock.");
+ addMovement(productId,type,qty,$("stockNote").value,"MANUAL");$("stockQty").value="1";$("stockNote").value="";saveLocal()
 }
-function addMovement(productId,type,qty,note,reference) {
-  db.movements.push({id:uid(),date:today(),productId,type,qty:Number(qty),note:note||"",reference:reference||""});
+function addInvoiceItem(){
+ const p=db.products.find(x=>x.id===$("invoiceProduct").value),qty=+$("invoiceQty").value;
+ if(!p||qty<=0)return alert("Select product and valid quantity.");
+ const found=currentInvoiceItems.find(i=>i.productId===p.id);
+ if(found)found.qty+=qty;else currentInvoiceItems.push({productId:p.id,name:p.name,qty,price:p.price,gst:p.gst||0});
+ $("invoiceQty").value="1";renderInvoiceItems()
 }
-function savePurchase() {
-  const supplierId=$("purchaseSupplier").value, productId=$("purchaseProduct").value;
-  const qty=+$("purchaseQty").value,cost=+$("purchaseCost").value;
-  if(!productId||!supplierId||qty<=0)return alert("Select supplier/product and enter a valid quantity.");
-  const x={id:uid(),number:$("purchaseNo").value||"PUR-"+Date.now(),
-    date:$("purchaseDate").value||today(),supplierId,productId,qty,cost,total:qty*cost};
-  db.purchases.push(x);
-  addMovement(productId,"in",qty,"Purchase entry",x.number);
-  saveLocal();
-  $("purchaseNo").value="";$("purchaseQty").value="1";
+function removeInvoiceItem(i){currentInvoiceItems.splice(i,1);renderInvoiceItems()}
+function invoiceCalc(){
+ const subtotal=currentInvoiceItems.reduce((s,i)=>s+i.qty*i.price,0),tax=currentInvoiceItems.reduce((s,i)=>s+i.qty*i.price*(i.gst||0)/100,0),discount=Math.max(0,+$("invoiceDiscount").value||0);
+ return{subtotal,tax,discount,total:Math.max(0,subtotal+tax-discount)}
 }
-function stockMovement() {
-  const productId=$("stockProduct").value,type=$("stockType").value,qty=+$("stockQty").value;
-  if(!productId||qty<=0)return alert("Select product and quantity.");
-  if(type==="out"&&currentStock(productId)<qty)return alert("Insufficient stock.");
-  addMovement(productId,type,qty,$("stockNote").value,"MANUAL");
-  $("stockQty").value="1";$("stockNote").value="";saveLocal();
+function renderInvoiceItems(){
+ if(!$("invoiceItems"))return;
+ const rows=currentInvoiceItems.map((i,n)=>`<tr><td>${safe(i.name)}</td><td>${i.qty}</td><td>${money(i.price)}</td><td>${i.gst}%</td><td>${money(i.qty*i.price)}</td><td><button class="danger" onclick="removeInvoiceItem(${n})">Remove</button></td></tr>`).join("");
+ $("invoiceItems").innerHTML=htmlTable(["Product","Qty","Rate","GST","Amount before GST","Action"],rows);
+ const t=invoiceCalc();$("invoiceTotals").innerHTML=`Subtotal: <strong>${money(t.subtotal)}</strong> &nbsp; GST: <strong>${money(t.tax)}</strong> &nbsp; Discount: <strong>${money(t.discount)}</strong> &nbsp; Final Amount: <strong>${money(t.total)}</strong>`
 }
-function addInvoiceItem() {
-  const product=db.products.find(p=>p.id===$("invoiceProduct").value);
-  const qty=+$("invoiceQty").value;
-  if(!product||qty<=0)return alert("Select a product and valid quantity.");
-  const found=currentInvoiceItems.find(i=>i.productId===product.id);
-  if(found)found.qty+=qty;
-  else currentInvoiceItems.push({productId:product.id,name:product.name,qty,price:product.price,gst:product.gst||0});
-  $("invoiceQty").value="1";renderInvoiceItems();
+function saveInvoice(){
+ if(!currentInvoiceItems.length)return alert("Add at least one item.");
+ const customerId=$("invoiceCustomer").value;if(!customerId)return alert("Select a customer.");
+ for(const i of currentInvoiceItems)if(currentStock(i.productId)<i.qty)return alert("Insufficient stock for "+i.name+". Record opening stock or purchase first.");
+ const t=invoiceCalc(),x={id:uid(),number:$("invoiceNo").value||"INV-"+Date.now(),date:$("invoiceDate").value||today(),customerId,items:JSON.parse(JSON.stringify(currentInvoiceItems)),...t};
+ db.invoices.push(x);x.items.forEach(i=>addMovement(i.productId,"out",i.qty,"Sales invoice",x.number));
+ currentInvoiceItems=[];$("invoiceNo").value="";$("invoiceDiscount").value="0";renderInvoiceItems();saveLocal();alert("Invoice saved.")
 }
-function removeInvoiceItem(index) {
-  currentInvoiceItems.splice(index,1);renderInvoiceItems();
+function saveSerial(){
+ const productId=$("serialProduct").value,number=$("serialNumber").value.trim();
+ if(!productId||!number)return alert("Select product and enter serial number.");
+ if(db.serials.some(s=>s.number.toLowerCase()===number.toLowerCase()))return alert("Serial number already exists.");
+ db.serials.push({id:uid(),productId,number,customer:$("serialCustomer").value,warranty:$("serialWarranty").value,status:$("serialStatus").value,date:today()});
+ $("serialNumber").value="";$("serialCustomer").value="";saveLocal()
 }
-function invoiceCalc() {
-  const subtotal=currentInvoiceItems.reduce((s,i)=>s+i.qty*i.price,0);
-  const tax=currentInvoiceItems.reduce((s,i)=>s+i.qty*i.price*(i.gst||0)/100,0);
-  const discount=Math.max(0,+$("invoiceDiscount").value||0);
-  return {subtotal,tax,discount,total:Math.max(0,subtotal+tax-discount)};
+function savePayment(){
+ const amount=+$("paymentAmount").value;if(amount<=0||!$("paymentParty").value.trim())return alert("Enter party name and valid amount.");
+ db.payments.push({id:uid(),type:$("paymentType").value,party:$("paymentParty").value.trim(),date:$("paymentDate").value||today(),amount,mode:$("paymentMode").value,note:$("paymentNote").value});
+ $("paymentAmount").value="";$("paymentParty").value="";$("paymentNote").value="";saveLocal()
 }
-function renderInvoiceItems() {
-  const rows=currentInvoiceItems.map((i,n)=>`<tr>
-    <td>${safe(i.name)}</td><td>${i.qty}</td><td>${money(i.price)}</td>
-    <td>${i.gst}%</td><td>${money(i.qty*i.price)}</td>
-    <td><button class="danger" onclick="removeInvoiceItem(${n})">Remove</button></td>
-  </tr>`).join("");
-  $("invoiceItems").innerHTML=`<table><thead><tr><th>Product</th><th>Qty</th><th>Rate</th><th>GST</th><th>Amount before GST</th><th>Action</th></tr></thead><tbody>${rows||'<tr><td colspan="6" class="empty">No items added.</td></tr>'}</tbody></table>`;
-  const t=invoiceCalc();
-  $("invoiceTotals").innerHTML=`Subtotal: <strong>${money(t.subtotal)}</strong> &nbsp; GST: <strong>${money(t.tax)}</strong> &nbsp; Discount: <strong>${money(t.discount)}</strong> &nbsp; Final Amount: <strong>${money(t.total)}</strong>`;
-}
-function saveInvoice() {
-  if(!currentInvoiceItems.length)return alert("Add at least one item.");
-  const customerId=$("invoiceCustomer").value;
-  if(!customerId)return alert("Select a customer.");
-  for(const item of currentInvoiceItems) {
-    if(currentStock(item.productId)<item.qty) {
-      return alert("Insufficient stock for "+item.name+". Please record opening stock or purchase first.");
-    }
-  }
-  const t=invoiceCalc();
-  const x={id:uid(),number:$("invoiceNo").value||"INV-"+Date.now(),
-    date:$("invoiceDate").value||today(),customerId,
-    items:JSON.parse(JSON.stringify(currentInvoiceItems)),...t};
-  db.invoices.push(x);
-  x.items.forEach(i=>addMovement(i.productId,"out",i.qty,"Sales invoice",x.number));
-  currentInvoiceItems=[];$("invoiceNo").value="";$("invoiceDiscount").value="0";
-  renderInvoiceItems();saveLocal();
-  alert("Invoice saved.");
-}
-function saveSerial() {
-  const productId=$("serialProduct").value,number=$("serialNumber").value.trim();
-  if(!productId||!number)return alert("Select a product and enter serial number.");
-  if(db.serials.some(s=>s.number.toLowerCase()===number.toLowerCase()))return alert("Serial number already exists.");
-  db.serials.push({id:uid(),productId,number,customer:$("serialCustomer").value,
-    warranty:$("serialWarranty").value,status:$("serialStatus").value,date:today()});
-  $("serialNumber").value="";$("serialCustomer").value="";saveLocal();
-}
-function savePayment() {
-  const amount=+$("paymentAmount").value;
-  if(amount<=0||!$("paymentParty").value.trim())return alert("Enter party name and valid amount.");
-  db.payments.push({id:uid(),type:$("paymentType").value,party:$("paymentParty").value.trim(),
-    date:$("paymentDate").value||today(),amount,mode:$("paymentMode").value,note:$("paymentNote").value});
-  $("paymentAmount").value="";$("paymentParty").value="";$("paymentNote").value="";
-  saveLocal();
-}
-function deleteRecord(table,id) {
-  if(!confirm("Delete this record? This may affect reports. Please confirm."))return;
-  db[table]=db[table].filter(x=>x.id!==id);saveLocal();
-}
-function htmlTable(headers,rows) {
-  return `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows||`<tr><td colspan="${headers.length}" class="empty">No records.</td></tr>`}</tbody></table>`;
-}
-function options(selectId,items,labelFn,first="Select") {
-  const sel=$(selectId),old=sel.value;
-  sel.innerHTML=`<option value="">${first}</option>`+items.map(x=>`<option value="${safe(x.id)}">${safe(labelFn(x))}</option>`).join("");
-  if(items.some(x=>x.id===old))sel.value=old;
-}
-function renderAll() {
-  if(!$("app")||$("app").classList.contains("hidden"))return;
-  $("productTable").innerHTML=htmlTable(["Code","Product","Category","Cost","Sale Price","Stock","Actions"],
-    db.products.map(p=>`<tr><td>${safe(p.code)}</td><td>${safe(p.name)}</td><td>${safe(p.category)}</td><td>${money(p.cost)}</td><td>${money(p.price)}</td><td>${currentStock(p.id)}</td><td><button onclick="editProduct('${p.id}')">Edit</button><button class="danger" onclick="deleteRecord('products','${p.id}')">Delete</button></td></tr>`).join(""));
-  $("customerTable").innerHTML=htmlTable(["Name","Phone","Email","GSTIN","Address","Actions"],
-    db.customers.map(x=>`<tr><td>${safe(x.name)}</td><td>${safe(x.phone)}</td><td>${safe(x.email)}</td><td>${safe(x.gst)}</td><td>${safe(x.address)}</td><td><button onclick="editCustomer('${x.id}')">Edit</button><button class="danger" onclick="deleteRecord('customers','${x.id}')">Delete</button></td></tr>`).join(""));
-  $("supplierTable").innerHTML=htmlTable(["Name","Phone","Email","GSTIN","Address","Actions"],
-    db.suppliers.map(x=>`<tr><td>${safe(x.name)}</td><td>${safe(x.phone)}</td><td>${safe(x.email)}</td><td>${safe(x.gst)}</td><td>${safe(x.address)}</td><td><button onclick="editSupplier('${x.id}')">Edit</button><button class="danger" onclick="deleteRecord('suppliers','${x.id}')">Delete</button></td></tr>`).join(""));
-  options("invoiceCustomer",db.customers,x=>x.name);
-  options("purchaseSupplier",db.suppliers,x=>x.name);
-  ["invoiceProduct","purchaseProduct","stockProduct","serialProduct"].forEach(id=>options(id,db.products,x=>x.name));
-  $("purchaseTable").innerHTML=htmlTable(["Number","Date","Supplier","Product","Qty","Unit Cost","Total"],
-    db.purchases.map(x=>`<tr><td>${safe(x.number)}</td><td>${safe(x.date)}</td><td>${safe(db.suppliers.find(s=>s.id===x.supplierId)?.name||"")}</td><td>${safe(db.products.find(p=>p.id===x.productId)?.name||"")}</td><td>${x.qty}</td><td>${money(x.cost)}</td><td>${money(x.total)}</td></tr>`).join(""));
-  $("stockTable").innerHTML=htmlTable(["Code","Product","Opening","Current Stock","Unit"],
-    db.products.map(p=>`<tr><td>${safe(p.code)}</td><td>${safe(p.name)}</td><td>${p.opening||0}</td><td>${currentStock(p.id)}</td><td>${safe(p.unit)}</td></tr>`).join(""));
-  $("movementTable").innerHTML=htmlTable(["Date","Product","Type","Qty","Note","Reference"],
-    db.movements.slice().reverse().map(m=>`<tr><td>${safe(m.date)}</td><td>${safe(db.products.find(p=>p.id===m.productId)?.name||"")}</td><td>${safe(m.type)}</td><td>${m.qty}</td><td>${safe(m.note)}</td><td>${safe(m.reference)}</td></tr>`).join(""));
-  $("serialTable").innerHTML=htmlTable(["Product","Serial Number","Customer / Location","Warranty","Status","Actions"],
-    db.serials.map(s=>`<tr><td>${safe(db.products.find(p=>p.id===s.productId)?.name||"")}</td><td>${safe(s.number)}</td><td>${safe(s.customer)}</td><td>${safe(s.warranty)}</td><td>${safe(s.status)}</td><td><button class="danger" onclick="deleteRecord('serials','${s.id}')">Delete</button></td></tr>`).join(""));
-  $("paymentTable").innerHTML=htmlTable(["Date","Type","Party","Amount","Mode","Note"],
-    db.payments.map(p=>`<tr><td>${safe(p.date)}</td><td>${safe(p.type)}</td><td>${safe(p.party)}</td><td>${money(p.amount)}</td><td>${safe(p.mode)}</td><td>${safe(p.note)}</td></tr>`).join(""));
-  $("invoiceTable").innerHTML=htmlTable(["Number","Date","Customer","Subtotal","GST","Discount","Final Amount","Actions"],
-    db.invoices.map(x=>`<tr><td>${safe(x.number)}</td><td>${safe(x.date)}</td><td>${safe(db.customers.find(c=>c.id===x.customerId)?.name||"")}</td><td>${money(x.subtotal)}</td><td>${money(x.tax)}</td><td>${money(x.discount)}</td><td>${money(x.total)}</td><td><button onclick="downloadInvoicePDF('${x.id}')">PDF</button><button class="danger" onclick="deleteRecord('invoices','${x.id}')">Delete</button></td></tr>`).join(""));
-  $("statProducts").textContent=db.products.length;
-  $("statCustomers").textContent=db.customers.length;
-  $("statInvoices").textContent=db.invoices.length;
-  $("statStock").textContent=db.products.reduce((s,p)=>s+currentStock(p.id),0);
-  $("statSales").textContent=money(db.invoices.reduce((s,x)=>s+x.total,0));
-  const received=db.payments.filter(p=>p.type==="received").reduce((s,p)=>s+p.amount,0);
-  const due=db.invoices.reduce((s,x)=>s+x.total,0)-received;
-  $("statDue").textContent=money(Math.max(0,due));
-  renderInvoiceItems();
+function deleteRecord(table,id){if(!confirm("Delete this record?"))return;db[table]=db[table].filter(x=>x.id!==id);saveLocal()}
+function htmlTable(headers,rows){return`<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows||`<tr><td colspan="${headers.length}" class="empty">No records.</td></tr>`}</tbody></table>`}
+function options(id,items,labelFn,first="Select"){
+ const sel=$(id),old=sel.value;sel.innerHTML=`<option value="">${first}</option>`+items.map(x=>`<option value="${safe(x.id)}">${safe(labelFn(x))}</option>`).join("");if(items.some(x=>x.id===old))sel.value=old
 }
 
-function amountWords(n) {
-  n=Math.round(Number(n)||0);
-  if(n===0)return "Zero Rupees Only";
-  const ones=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
-  const tens=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
-  function under1000(v) {
-    let s="";
-    if(v>=100){s+=ones[Math.floor(v/100)]+" Hundred ";v%=100;}
-    if(v>=20){s+=tens[Math.floor(v/10)]+" ";v%=10;}
-    if(v>0)s+=ones[v]+" ";
-    return s.trim();
-  }
-  let out="";
-  const units=[[10000000,"Crore"],[100000,"Lakh"],[1000,"Thousand"],[1,""]];
-  for(const [value,label] of units) {
-    const part=Math.floor(n/value);
-    if(part){out+=under1000(part)+" "+label+" ";n%=value;}
-  }
-  return out.trim()+" Rupees Only";
+/* QUOTATION MODULE */
+function clearQuotation(){
+ currentQuoteItems=[];$("quoteNo").value="";$("quoteDate").value=today();$("quoteValidUntil").value="";
+ $("quoteCustomer").value="";$("quoteDiscount").value="0";$("quoteQty").value="1";$("quoteRate").value="";$("quoteGst").value="18";renderQuoteItems()
 }
-async function getLogoData() {
-  try {
-    const response=await fetch(LOGO_URL,{mode:"cors"});
-    if(!response.ok)throw new Error("Logo unavailable");
-    const blob=await response.blob();
-    return await new Promise((resolve,reject)=>{
-      const reader=new FileReader();
-      reader.onload=()=>resolve(reader.result);
-      reader.onerror=reject;
-      reader.readAsDataURL(blob);
-    });
-  } catch(e) { return null; }
+function quoteProductChanged(){
+ const p=db.products.find(x=>x.id===$("quoteProduct").value);if(!p)return;
+ $("quoteRate").value=Number(p.price||0);$("quoteGst").value=Number(p.gst||0)
 }
-async function downloadInvoicePDF(id) {
-  const inv=id ? db.invoices.find(x=>x.id===id) : null;
-  const customer=inv ? db.customers.find(c=>c.id===inv.customerId) :
-    db.customers.find(c=>c.id===$("invoiceCustomer").value);
-  const items=inv ? inv.items : currentInvoiceItems;
-  if(!items.length)return alert("Invoice has no items.");
-  const totals=inv ? inv : invoiceCalc();
-  const number=inv ? inv.number : ($("invoiceNo").value||"DRAFT");
-  const date=inv ? inv.date : ($("invoiceDate").value||today());
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF({unit:"mm",format:"a4"});
-  const pageWidth=doc.internal.pageSize.getWidth();
-  const margin=14;
-  const logo=await getLogoData();
-
-  doc.setFillColor(18,59,102);
-  doc.rect(0,0,pageWidth,38,"F");
-
-  if(logo) {
-    try { doc.addImage(logo,"PNG",margin,7,23,23,undefined,"FAST"); }
-    catch(e) { doc.setFillColor(255,255,255);doc.circle(margin+11,18,10,"F");doc.setTextColor(18,59,102);doc.setFontSize(10);doc.text("OSI",margin+5,19); }
-  } else {
-    doc.setFillColor(255,255,255);doc.circle(margin+11,18,10,"F");
-    doc.setTextColor(18,59,102);doc.setFontSize(10);doc.setFont("helvetica","bold");
-    doc.text("OSI",margin+5,19);
-  }
-
-  doc.setTextColor(255,255,255);
-  doc.setFont("helvetica","bold");doc.setFontSize(14);
-  doc.text(COMPANY,logo ? 42 : 38,14);
-  doc.setFont("helvetica","normal");doc.setFontSize(8);
-  doc.text("SECURITY SYSTEMS • SALES • PURCHASE • INVENTORY",logo ? 42 : 38,21);
-  doc.setFontSize(10);doc.text("TAX INVOICE",pageWidth-margin,31,{align:"right"});
-
-  doc.setTextColor(30,41,59);
-  doc.setFontSize(10);doc.setFont("helvetica","bold");
-  doc.text("Invoice No:",margin,48);doc.setFont("helvetica","normal");
-  doc.text(String(number),margin+24,48);
-  doc.setFont("helvetica","bold");doc.text("Date:",pageWidth/2,48);
-  doc.setFont("helvetica","normal");doc.text(String(date),pageWidth/2+12,48);
-
-  doc.setFont("helvetica","bold");doc.text("Bill To",margin,59);
-  doc.setFont("helvetica","normal");
-  doc.text(String(customer?.name||"Customer"),margin,65);
-  const addressLines=doc.splitTextToSize(String(customer?.address||""),75);
-  doc.text(addressLines,margin,70);
-  let customerY=70+addressLines.length*4;
-  if(customer?.gst)doc.text("GSTIN: "+customer.gst,margin,customerY+2);
-
-  const rows=items.map((i,index)=>{
-    const base=Number(i.qty)*Number(i.price);
-    return [index+1,String(i.name),String(i.qty),money(i.price),
-      String(i.gst||0)+"%",money(base),money(base*(Number(i.gst)||0)/100)];
-  });
-  doc.autoTable({
-    startY:Math.max(87,customerY+12),
-    head:[["#","Description","Qty","Rate","GST","Taxable Value","GST Amount"]],
-    body:rows,
-    theme:"grid",
-    margin:{left:margin,right:margin},
-    styles:{fontSize:8,cellPadding:3,overflow:"linebreak"},
-    headStyles:{fillColor:[18,59,102],textColor:255},
-    columnStyles:{0:{cellWidth:8},2:{cellWidth:12},4:{cellWidth:14}}
-  });
-
-  let y=doc.lastAutoTable.finalY+8;
-  if(y>240){doc.addPage();y=20;}
-  const right=pageWidth-margin;
-  doc.setFontSize(9);
-  doc.text("Subtotal:",right-48,y);
-  doc.text(money(totals.subtotal),right,y,{align:"right"});
-  y+=6;
-  doc.text("GST:",right-48,y);
-  doc.text(money(totals.tax),right,y,{align:"right"});
-  y+=6;
-  doc.text("Discount:",right-48,y);
-  doc.text("- "+money(totals.discount),right,y,{align:"right"});
-  y+=7;
-  doc.setDrawColor(18,59,102);doc.line(right-52,y-3,right,y-3);
-  doc.setFont("helvetica","bold");doc.setFontSize(11);
-  doc.text("Final Amount:",right-48,y+3);
-  doc.text(money(totals.total),right,y+3,{align:"right"});
-  y+=13;
-
-  doc.setFont("helvetica","normal");doc.setFontSize(8);
-  const words=doc.splitTextToSize("Amount in words: "+amountWords(totals.total),pageWidth-2*margin);
-  if(y+words.length*4>263){doc.addPage();y=20;}
-  doc.text(words,margin,y);
-  y+=words.length*4+8;
-
-  if(y>255){doc.addPage();y=20;}
-  doc.setFont("helvetica","bold");doc.setFontSize(9);
-  doc.text("Terms & Conditions",margin,y);
-  doc.setFont("helvetica","normal");doc.setFontSize(8);
-  doc.text("1. Please verify the goods and invoice details.",margin,y+5);
-  doc.text("2. Subject to applicable laws and agreed payment terms.",margin,y+10);
-
-  const signY=Math.min(275,Math.max(y+23,250));
-  doc.setFont("helvetica","normal");doc.setFontSize(9);
-  doc.text("For "+COMPANY,pageWidth-margin,signY,{align:"right"});
-  doc.setDrawColor(100,116,139);
-  doc.line(pageWidth-68,signY+18,pageWidth-margin,signY+18);
-  doc.setFontSize(8);
-  doc.text("Authorised Signatory",pageWidth-margin,signY+23,{align:"right"});
-
-  const pageCount=doc.internal.getNumberOfPages();
-  for(let p=1;p<=pageCount;p++){
-    doc.setPage(p);
-    doc.setDrawColor(220,227,235);
-    doc.line(margin,285,pageWidth-margin,285);
-    doc.setTextColor(100,116,139);doc.setFontSize(8);
-    doc.text(COMPANY+" | Business Document",margin,290);
-    doc.text("Page "+p+" of "+pageCount,pageWidth-margin,290,{align:"right"});
-  }
-  doc.save(String(number).replace(/[^a-z0-9_-]/gi,"_")+".pdf");
+function addQuoteItem(){
+ const p=db.products.find(x=>x.id===$("quoteProduct").value),qty=Number($("quoteQty").value);
+ const rate=$("quoteRate").value===""?Number(p?.price||0):Number($("quoteRate").value),gst=Number($("quoteGst").value)||0;
+ if(!p)return alert("Select a product.");
+ if(!Number.isFinite(qty)||qty<=0)return alert("Enter valid quantity.");
+ if(!Number.isFinite(rate)||rate<0||gst<0||gst>100)return alert("Check rate and GST.");
+ currentQuoteItems.push({productId:p.id,name:p.name,qty,price:rate,gst});
+ $("quoteQty").value="1";renderQuoteItems()
+}
+function removeQuoteItem(i){currentQuoteItems.splice(i,1);renderQuoteItems()}
+function quoteCalc(items=currentQuoteItems){
+ const subtotal=items.reduce((s,i)=>s+Number(i.qty)*Number(i.price),0);
+ const tax=items.reduce((s,i)=>s+Number(i.qty)*Number(i.price)*Number(i.gst||0)/100,0);
+ const discount=Math.max(0,Number($("quoteDiscount").value)||0);
+ return{subtotal,tax,discount,total:Math.max(0,subtotal+tax-discount)}
+}
+function renderQuoteItems(){
+ if(!$("quoteItems"))return;
+ const rows=currentQuoteItems.map((i,n)=>`<tr><td>${safe(i.name)}</td><td>${i.qty}</td><td>${money(i.price)}</td><td>${i.gst}%</td><td>${money(i.qty*i.price)}</td><td><button class="danger" onclick="removeQuoteItem(${n})">Remove</button></td></tr>`).join("");
+ $("quoteItems").innerHTML=htmlTable(["Product","Qty","Rate","GST","Taxable Amount","Action"],rows);
+ const t=quoteCalc();$("quoteTotals").innerHTML=`Subtotal: <strong>${money(t.subtotal)}</strong> &nbsp; GST: <strong>${money(t.tax)}</strong> &nbsp; Discount: <strong>${money(t.discount)}</strong> &nbsp; Total: <strong>${money(t.total)}</strong>`
+}
+function saveQuotation(){
+ if(!currentQuoteItems.length)return alert("Add at least one item.");
+ const customerId=$("quoteCustomer").value;if(!customerId)return alert("Select a customer.");
+ const number=$("quoteNo").value.trim()||"QUO-"+Date.now();
+ if(db.quotations.some(q=>q.number===number))return alert("Quotation number already exists. Enter another number.");
+ const t=quoteCalc();
+ db.quotations.push({id:uid(),number,date:$("quoteDate").value||today(),validUntil:$("quoteValidUntil").value||"",customerId,items:JSON.parse(JSON.stringify(currentQuoteItems)),...t,status:"Draft"});
+ $("quoteNo").value=number;saveLocal();alert("Quotation saved.")
+}
+function deleteQuotation(id){if(!confirm("Delete this quotation?"))return;db.quotations=db.quotations.filter(q=>q.id!==id);saveLocal()}
+function convertQuotationToInvoice(id){
+ const q=db.quotations.find(x=>x.id===id);if(!q)return alert("Quotation not found.");
+ if(!confirm("Create invoice from quotation "+q.number+"?"))return;
+ currentInvoiceItems=JSON.parse(JSON.stringify(q.items||[]));$("invoiceNo").value="INV-"+Date.now();$("invoiceDate").value=today();$("invoiceDiscount").value=String(q.discount||0);
+ showPage("invoice");$("invoiceCustomer").value=q.customerId;renderInvoiceItems();
+ alert("Items copied to invoice. Review the invoice and click Save Invoice.")
+}
+function printQuotation(id){
+ let q,customer,items,number,date,validUntil,totals;
+ if(id){
+  q=db.quotations.find(x=>x.id===id);if(!q)return alert("Quotation not found.");
+  customer=db.customers.find(c=>c.id===q.customerId);items=q.items||[];number=q.number;date=q.date;validUntil=q.validUntil||"Not specified";totals=q
+ }else{
+  if(!currentQuoteItems.length)return alert("Add at least one item first.");
+  customer=db.customers.find(c=>c.id===$("quoteCustomer").value);items=currentQuoteItems;
+  number=$("quoteNo").value.trim()||"DRAFT";date=$("quoteDate").value||today();validUntil=$("quoteValidUntil").value||"Not specified";totals=quoteCalc()
+ }
+ const rows=items.map((i,n)=>`<tr><td>${n+1}</td><td>${safe(i.name)}</td><td>${i.qty}</td><td>${money(i.price)}</td><td>${i.gst||0}%</td><td>${money(i.qty*i.price)}</td></tr>`).join("");
+ const w=window.open("","_blank");if(!w)return alert("Allow pop-ups to print the quotation.");
+ w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Quotation ${safe(number)}</title><style>
+ body{font-family:Arial,sans-serif;color:#182230;padding:24px}header{display:flex;align-items:center;gap:18px;background:#123b66;color:white;padding:18px}header img{width:75px;height:65px;object-fit:contain;background:white;padding:4px}h1{font-size:19px;margin:0 0 8px}h2{margin-top:22px}.row{display:flex;justify-content:space-between;gap:20px;margin:22px 0}table{width:100%;border-collapse:collapse;margin-top:20px}th,td{border:1px solid #dce3eb;padding:9px;text-align:left;font-size:12px}th{background:#eaf1f8}.totals{margin:20px 0 0 auto;width:280px}.totals p{display:flex;justify-content:space-between}.grand{font-size:17px;font-weight:bold;border-top:2px solid #123b66;padding-top:10px}.terms{margin-top:35px;font-size:12px}@media print{button{display:none}body{padding:8px}}</style></head><body>
+ <header><img src="${LOGO_URL}" onerror="this.style.display='none'"><div><h1>${COMPANY}</h1><div>SECURITY SYSTEMS • SALES • PURCHASE • INVENTORY</div><h2>QUOTATION / ESTIMATE</h2></div></header>
+ <div class="row"><div><b>Quotation No:</b> ${safe(number)}<br><b>Date:</b> ${safe(date)}<br><b>Valid Until:</b> ${safe(validUntil)}</div><div><b>Prepared For</b><br>${safe(customer?.name||"Customer")}<br>${safe(customer?.address||"")}<br>${customer?.phone?"Phone: "+safe(customer.phone)+"<br>":""}${customer?.gst?"GSTIN: "+safe(customer.gst):""}</div></div>
+ <table><thead><tr><th>#</th><th>Description</th><th>Qty</th><th>Rate</th><th>GST</th><th>Taxable Amount</th></tr></thead><tbody>${rows}</tbody></table>
+ <div class="totals"><p><span>Subtotal</span><b>${money(totals.subtotal)}</b></p><p><span>GST</span><b>${money(totals.tax)}</b></p><p><span>Discount</span><b>${money(totals.discount)}</b></p><p class="grand"><span>Grand Total</span><b>${money(totals.total)}</b></p></div>
+ <div class="terms"><b>Terms & Conditions</b><p>1. This document is a quotation and not a tax invoice.</p><p>2. Prices and validity are subject to the details above.</p><p>3. Please confirm this quotation before placing an order.</p></div>
+ <p style="text-align:right;margin-top:50px">For ${COMPANY}<br><br><br>Authorised Signatory</p><button onclick="window.print()">Print / Save as PDF</button></body></html>`);
+ w.document.close()
 }
 
-function exportCSV(table) {
-  const rows=db[table]||[];
-  if(!rows.length)return alert("No records to export.");
-  const headers=[...new Set(rows.flatMap(r=>Object.keys(r)))];
-  const csv=[headers,...rows.map(r=>headers.map(h=>{
-    let value=r[h];
-    if(value && typeof value==="object")value=JSON.stringify(value);
-    return '"'+String(value??"").replace(/"/g,'""')+'"';
-  }))].map(r=>r.join(",")).join("\r\n");
-  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
-  a.download=table+"_"+today()+".csv";a.click();URL.revokeObjectURL(a.href);
-}
-function downloadBackup() {
-  const blob=new Blob([JSON.stringify({company:COMPANY,version:1,exportedAt:new Date().toISOString(),data:db},null,2)],{type:"application/json"});
-  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
-  a.download="OM_SAI_INSTRUMENTS_SECURITY_SYSTEMS_backup_"+today()+".json";
-  a.click();URL.revokeObjectURL(a.href);
-}
-function restoreBackup() {
-  const file=$("backupFile").files[0];if(!file)return alert("Choose a backup JSON file first.");
-  const reader=new FileReader();
-  reader.onload=()=>{
-    try {
-      const parsed=JSON.parse(reader.result),incoming=parsed.data||parsed;
-      if(!confirm("Restore will replace the current local data. Download a backup first. Continue?"))return;
-      TABLES.forEach(k=>db[k]=Array.isArray(incoming[k])?incoming[k]:[]);
-      saveLocal();alert("Backup restored.");
-    } catch(e) { alert("Invalid backup file: "+e.message); }
-  };
-  reader.readAsText(file);
-}
-async function saveCloud() {
-  if(!supabaseClient||!cloudUser)return alert("Connect Supabase and log in first.");
-  const {error}=await supabaseClient.from("erp_backup").upsert({
-    user_id:cloudUser.id,payload:db,updated_at:new Date().toISOString()
-  },{onConflict:"user_id"});
-  showMessage("cloudStatus",error ? "Cloud save failed: "+error.message : "Cloud backup saved successfully.");
-}
-async function loadCloud() {
-  if(!supabaseClient||!cloudUser)return alert("Connect Supabase and log in first.");
-  const {data,error}=await supabaseClient.from("erp_backup").select("payload").eq("user_id",cloudUser.id).maybeSingle();
-  if(error){showMessage("cloudStatus","Cloud sync failed: "+error.message);return;}
-  if(!data){showMessage("cloudStatus","No cloud backup found.");return;}
-  if(!confirm("Merge cloud backup with local data? Existing records with matching IDs will be replaced by cloud records. Continue?"))return;
-  const cloud=data.payload||{};
-  TABLES.forEach(k=>{
-    const merged=new Map((db[k]||[]).map(x=>[x.id,x]));
-    (Array.isArray(cloud[k])?cloud[k]:[]).forEach(x=>merged.set(x.id,x));
-    db[k]=Array.from(merged.values());
-  });
-  saveLocal();
-  showMessage("cloudStatus","Cloud data merged with local data. Please review your records.");
+function renderAll(){
+ if(!$("app")||$("app").classList.contains("hidden"))return;
+ $("productTable").innerHTML=htmlTable(["Code","Product","Category","Cost","Sale Price","Stock","Actions"],db.products.map(p=>`<tr><td>${safe(p.code)}</td><td>${safe(p.name)}</td><td>${safe(p.category)}</td><td>${money(p.cost)}</td><td>${money(p.price)}</td><td>${currentStock(p.id)}</td><td><button onclick="editProduct('${p.id}')">Edit</button><button class="danger" onclick="deleteRecord('products','${p.id}')">Delete</button></td></tr>`).join(""));
+ $("customerTable").innerHTML=htmlTable(["Name","Phone","Email","GSTIN","Address","Actions"],db.customers.map(x=>`<tr><td>${safe(x.name)}</td><td>${safe(x.phone)}</td><td>${safe(x.email)}</td><td>${safe(x.gst)}</td><td>${safe(x.address)}</td><td><button onclick="editCustomer('${x.id}')">Edit</button><button class="danger" onclick="deleteRecord('customers','${x.id}')">Delete</button></td></tr>`).join(""));
+ $("supplierTable").innerHTML=htmlTable(["Name","Phone","Email","GSTIN","Address","Actions"],db.suppliers.map(x=>`<tr><td>${safe(x.name)}</td><td>${safe(x.phone)}</td><td>${safe(x.email)}</td><td>${safe(x.gst)}</td><td>${safe(x.address)}</td><td><button onclick="editSupplier('${x.id}')">Edit</button><button class="danger" onclick="deleteRecord('suppliers','${x.id}')">Delete</button></td></tr>`).join(""));
+ options("invoiceCustomer",db.customers,x=>x.name);options("quoteCustomer",db.customers,x=>x.name);options("purchaseSupplier",db.suppliers,x=>x.name);
+ ["invoiceProduct","quoteProduct","purchaseProduct","stockProduct","serialProduct"].forEach(id=>options(id,db.products,x=>x.name));
+ $("purchaseTable").innerHTML=htmlTable(["Number","Date","Supplier","Product","Qty","Unit Cost","Total"],db.purchases.map(x=>`<tr><td>${safe(x.number)}</td><td>${safe(x.date)}</td><td>${safe(db.suppliers.find(s=>s.id===x.supplierId)?.name||"")}</td><td>${safe(db.products.find(p=>p.id===x.productId)?.name||"")}</td><td>${x.qty}</td><td>${money(x.cost)}</td><td>${money(x.total)}</td></tr>`).join(""));
+ $("stockTable").innerHTML=htmlTable(["Code","Product","Opening","Current Stock","Unit"],db.products.map(p=>`<tr><td>${safe(p.code)}</td><td>${safe(p.name)}</td><td>${p.opening||0}</td><td>${currentStock(p.id)}</td><td>${safe(p.unit)}</td></tr>`).join(""));
+ $("movementTable").innerHTML=htmlTable(["Date","Product","Type","Qty","Note","Reference"],db.movements.slice().reverse().map(m=>`<tr><td>${safe(m.date)}</td><td>${safe(db.products.find(p=>p.id===m.productId)?.name||"")}</td><td>${safe(m.type)}</td><td>${m.qty}</td><td>${safe(m.note)}</td><td>${safe(m.reference)}</td></tr>`).join(""));
+ $("serialTable").innerHTML=htmlTable(["Product","Serial Number","Customer / Location","Warranty","Status","Actions"],db.serials.map(s=>`<tr><td>${safe(db.products.find(p=>p.id===s.productId)?.name||"")}</td><td>${safe(s.number)}</td><td>${safe(s.customer)}</td><td>${safe(s.warranty)}</td><td>${safe(s.status)}</td><td><button class="danger" onclick="deleteRecord('serials','${s.id}')">Delete</button></td></tr>`).join(""));
+ $("paymentTable").innerHTML=htmlTable(["Date","Type","Party","Amount","Mode","Note"],db.payments.map(p=>`<tr><td>${safe(p.date)}</td><td>${safe(p.type)}</td><td>${safe(p.party)}</td><td>${money(p.amount)}</td><td>${safe(p.mode)}</td><td>${safe(p.note)}</td></tr>`).join(""));
+ $("invoiceTable").innerHTML=htmlTable(["Number","Date","Customer","Subtotal","GST","Discount","Final Amount","Actions"],db.invoices.map(x=>`<tr><td>${safe(x.number)}</td><td>${safe(x.date)}</td><td>${safe(db.customers.find(c=>c.id===x.customerId)?.name||"")}</td><td>${money(x.subtotal)}</td><td>${money(x.tax)}</td><td>${money(x.discount)}</td><td>${money(x.total)}</td><td><button onclick="downloadInvoicePDF('${x.id}')">PDF</button><button class="danger" onclick="deleteRecord('invoices','${x.id}')">Delete</button></td></tr>`).join(""));
+ $("quotationTable").innerHTML=htmlTable(["Quotation No.","Date","Valid Until","Customer","Total","Actions"],db.quotations.map(q=>`<tr><td>${safe(q.number)}</td><td>${safe(q.date)}</td><td>${safe(q.validUntil||"")}</td><td>${safe(db.customers.find(c=>c.id===q.customerId)?.name||"")}</td><td>${money(q.total)}</td><td><button onclick="printQuotation('${q.id}')">Print / PDF</button><button class="success" onclick="convertQuotationToInvoice('${q.id}')">Create Invoice</button><button class="danger" onclick="deleteQuotation('${q.id}')">Delete</button></td></tr>`).join(""));
+ $("statProducts").textContent=db.products.length;$("statCustomers").textContent=db.customers.length;$("statQuotations").textContent=db.quotations.length;$("statInvoices").textContent=db.invoices.length;
+ $("statStock").textContent=db.products.reduce((s,p)=>s+currentStock(p.id),0);$("statSales").textContent=money(db.invoices.reduce((s,x)=>s+x.total,0));
+ const received=db.payments.filter(p=>p.type==="received").reduce((s,p)=>s+p.amount,0);$("statDue").textContent=money(Math.max(0,db.invoices.reduce((s,x)=>s+x.total,0)-received));
+ renderInvoiceItems();renderQuoteItems()
 }
 
-$("invoiceDate").value=today();
-$("purchaseDate").value=today();
-$("paymentDate").value=today();
-loadLocal();
-loadSupabaseConfig();
+function amountWords(n){
+ n=Math.round(Number(n)||0);if(n===0)return"Zero Rupees Only";
+ const ones=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"],tens=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+ function under1000(v){let s="";if(v>=100){s+=ones[Math.floor(v/100)]+" Hundred ";v%=100}if(v>=20){s+=tens[Math.floor(v/10)]+" ";v%=10}if(v>0)s+=ones[v]+" ";return s.trim()}
+ let out="";for(const [value,label] of [[10000000,"Crore"],[100000,"Lakh"],[1000,"Thousand"],[1,""]]){const part=Math.floor(n/value);if(part){out+=under1000(part)+" "+label+" ";n%=value}}return out.trim()+" Rupees Only"
+}
+async function getLogoData(){
+ try{const r=await fetch(LOGO_URL,{mode:"cors"});if(!r.ok)throw Error("Logo unavailable");const b=await r.blob();return await new Promise((resolve,reject)=>{const rd=new FileReader();rd.onload=()=>resolve(rd.result);rd.onerror=reject;rd.readAsDataURL(b)})}catch(e){return null}
+}
+async function downloadInvoicePDF(id){
+ const inv=id?db.invoices.find(x=>x.id===id):null,customer=inv?db.customers.find(c=>c.id===inv.customerId):db.customers.find(c=>c.id===$("invoiceCustomer").value),items=inv?inv.items:currentInvoiceItems;
+ if(!items.length)return alert("Invoice has no items.");
+ const totals=inv||invoiceCalc(),number=inv?inv.number:($("invoiceNo").value||"DRAFT"),date=inv?inv.date:($("invoiceDate").value||today());
+ const {jsPDF}=window.jspdf,doc=new jsPDF({unit:"mm",format:"a4"}),pw=doc.internal.pageSize.getWidth(),m=14,logo=await getLogoData();
+ doc.setFillColor(18,59,102);doc.rect(0,0,pw,38,"F");
+ if(logo){try{doc.addImage(logo,"PNG",m,7,23,23,undefined,"FAST")}catch(e){doc.setTextColor(255,255,255);doc.text("OSI",m+5,19)}}else{doc.setTextColor(255,255,255);doc.setFontSize(10);doc.text("OSI",m+5,19)}
+ doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(14);doc.text(COMPANY,42,14);doc.setFont("helvetica","normal");doc.setFontSize(8);doc.text("SECURITY SYSTEMS • SALES • PURCHASE • INVENTORY",42,21);doc.setFontSize(10);doc.text("TAX INVOICE",pw-m,31,{align:"right"});
+ doc.setTextColor(30,41,59);doc.setFontSize(10);doc.setFont("helvetica","bold");doc.text("Invoice No:",m,48);doc.setFont("helvetica","normal");doc.text(String(number),m+24,48);doc.setFont("helvetica","bold");doc.text("Date:",pw/2,48);doc.setFont("helvetica","normal");doc.text(String(date),pw/2+12,48);
+ doc.setFont("helvetica","bold");doc.text("Bill To",m,59);doc.setFont("helvetica","normal");doc.text(String(customer?.name||"Customer"),m,65);const lines=doc.splitTextToSize(String(customer?.address||""),75);doc.text(lines,m,70);let cy=70+lines.length*4;if(customer?.gst)doc.text("GSTIN: "+customer.gst,m,cy+2);
+ const rows=items.map((i,n)=>[n+1,String(i.name),String(i.qty),money(i.price),String(i.gst||0)+"%",money(i.qty*i.price),money(i.qty*i.price*(Number(i.gst)||0)/100)]);
+ doc.autoTable({startY:Math.max(87,cy+12),head:[["#","Description","Qty","Rate","GST","Taxable Value","GST Amount"]],body:rows,theme:"grid",margin:{left:m,right:m},styles:{fontSize:8,cellPadding:3,overflow:"linebreak"},headStyles:{fillColor:[18,59,102],textColor:255},columnStyles:{0:{cellWidth:8},2:{cellWidth:12},4:{cellWidth:14}}});
+ let y=doc.lastAutoTable.finalY+8;if(y>240){doc.addPage();y=20}const right=pw-m;doc.setFontSize(9);
+ for(const [label,val] of [["Subtotal",totals.subtotal],["GST",totals.tax],["Discount",-totals.discount]]){doc.text(label+":",right-48,y);doc.text(money(val),right,y,{align:"right"});y+=6}
+ doc.setDrawColor(18,59,102);doc.line(right-52,y-3,right,y-3);doc.setFont("helvetica","bold");doc.setFontSize(11);doc.text("Final Amount:",right-48,y+3);doc.text(money(totals.total),right,y+3,{align:"right"});y+=13;
+ doc.setFont("helvetica","normal");doc.setFontSize(8);const words=doc.splitTextToSize("Amount in words: "+amountWords(totals.total),pw-2*m);if(y+words.length*4>263){doc.addPage();y=20}doc.text(words,m,y);y+=words.length*4+8;
+ if(y>255){doc.addPage();y=20}doc.setFont("helvetica","bold");doc.setFontSize(9);doc.text("Terms & Conditions",m,y);doc.setFont("helvetica","normal");doc.setFontSize(8);doc.text("1. Please verify the goods and invoice details.",m,y+5);doc.text("2. Subject to applicable laws and agreed payment terms.",m,y+10);
+ const sy=Math.min(275,Math.max(y+23,250));doc.setFontSize(9);doc.text("For "+COMPANY,pw-m,sy,{align:"right"});doc.line(pw-68,sy+18,pw-m,sy+18);doc.setFontSize(8);doc.text("Authorised Signatory",pw-m,sy+23,{align:"right"});
+ const pc=doc.internal.getNumberOfPages();for(let p=1;p<=pc;p++){doc.setPage(p);doc.setDrawColor(220,227,235);doc.line(m,285,pw-m,285);doc.setTextColor(100,116,139);doc.setFontSize(8);doc.text(COMPANY+" | Business Document",m,290);doc.text("Page "+p+" of "+pc,pw-m,290,{align:"right"})}
+ doc.save(String(number).replace(/[^a-z0-9_-]/gi,"_")+".pdf")
+}
+function exportCSV(table){
+ const rows=db[table]||[];if(!rows.length)return alert("No records to export.");
+ const headers=[...new Set(rows.flatMap(r=>Object.keys(r)))],csv=[headers,...rows.map(r=>headers.map(h=>{let v=r[h];if(v&&typeof v==="object")v=JSON.stringify(v);return'"'+String(v??"").replace(/"/g,'""')+'"'}))].map(r=>r.join(",")).join("\r\n");
+ const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=table+"_"+today()+".csv";a.click();URL.revokeObjectURL(a.href)
+}
+function downloadBackup(){
+ const blob=new Blob([JSON.stringify({company:COMPANY,version:1,exportedAt:new Date().toISOString(),data:db},null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="OM_SAI_INSTRUMENTS_backup_"+today()+".json";a.click();URL.revokeObjectURL(a.href)
+}
+function restoreBackup(){
+ const file=$("backupFile").files[0];if(!file)return alert("Choose a backup JSON file first.");
+ const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result),incoming=parsed.data||parsed;if(!confirm("Restore will replace current local data. Download backup first. Continue?"))return;TABLES.forEach(k=>db[k]=Array.isArray(incoming[k])?incoming[k]:[]);saveLocal();alert("Backup restored.")}catch(e){alert("Invalid backup: "+e.message)}};reader.readAsText(file)
+}
+async function saveCloud(){
+ if(!supabaseClient||!cloudUser)return alert("Connect Supabase and log in first.");
+ const {error}=await supabaseClient.from("erp_backup").upsert({user_id:cloudUser.id,payload:db,updated_at:new Date().toISOString()},{onConflict:"user_id"});
+ showMessage("cloudStatus",error?"Cloud save failed: "+error.message:"Cloud backup saved successfully.")
+}
+async function loadCloud(){
+ if(!supabaseClient||!cloudUser)return alert("Connect Supabase and log in first.");
+ const {data,error}=await supabaseClient.from("erp_backup").select("payload").eq("user_id",cloudUser.id).maybeSingle();
+ if(error){showMessage("cloudStatus","Cloud sync failed: "+error.message);return}
+ if(!data){showMessage("cloudStatus","No cloud backup found.");return}
+ if(!confirm("Merge cloud backup with local data? Matching IDs will be replaced by cloud records. Continue?"))return;
+ const cloud=data.payload||{};TABLES.forEach(k=>{const merged=new Map((db[k]||[]).map(x=>[x.id,x]));(Array.isArray(cloud[k])?cloud[k]:[]).forEach(x=>merged.set(x.id,x));db[k]=Array.from(merged.values())});
+ saveLocal();showMessage("cloudStatus","Cloud data merged with local data. Review your records.")
+}
+$("invoiceDate").value=today();$("purchaseDate").value=today();$("paymentDate").value=today();$("quoteDate").value=today();$("quoteValidUntil").value=today();
+loadLocal();loadSupabaseConfig();
 </script>
 </body>
 </html>
