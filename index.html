@@ -12,8 +12,14 @@ body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Arial,sans-s
 header{background:var(--navy);color:white;padding:16px}
 header h1{margin:0 0 4px;font-size:22px}
 .wrap{max-width:1300px;margin:auto;padding:12px}
-.notice,.panel,.stat,.sidebar{background:white;border:1px solid var(--line);border-radius:10px}
+.notice,.panel,.stat,.sidebar,.authbar{background:white;border:1px solid var(--line);border-radius:10px}
 .notice{padding:10px;background:#fff8e6;border-color:#f3d38a;margin-bottom:12px}
+.authbar{padding:14px;margin-bottom:12px}
+.authbar h2{font-size:17px;margin:0 0 8px}
+.authgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.authgrid input{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:7px;min-width:0}
+.authactions{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.authstatus{margin:8px 0 0;color:#64748b;font-size:12px;overflow-wrap:anywhere}
 .layout{display:grid;grid-template-columns:205px minmax(0,1fr);gap:12px}
 .sidebar{padding:8px;height:max-content}
 .nav{display:block;width:100%;text-align:left;padding:9px;border:0;background:white;border-radius:7px;margin:2px 0;cursor:pointer}
@@ -43,14 +49,14 @@ th{background:#f7f9fc}
 .layout{grid-template-columns:1fr}
 .sidebar{display:grid;grid-template-columns:repeat(3,1fr)}
 .nav{font-size:11px;padding:7px}
-.formgrid,.filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+.formgrid,.filters,.authgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:480px){
-.formgrid,.filters{grid-template-columns:1fr}
+.formgrid,.filters,.authgrid{grid-template-columns:1fr}
 .sidebar{grid-template-columns:repeat(2,1fr)}
 }
 @media print{
-header,.sidebar,.noprint,.btn,.notice{display:none!important}
+header,.sidebar,.noprint,.btn,.notice,.authbar{display:none!important}
 .layout{display:block}
 .panel{border:0}
 table{min-width:0;font-size:10px}
@@ -73,6 +79,39 @@ Industrial Instruments • Sales • Purchase • Inventory
 <b>महत्त्वाचे:</b> कोड बदलण्यापूर्वी Backup घ्या.
 Cloud साठी Supabase Project URL आणि Publishable/Anon Key आवश्यक आहे.
 </div>
+
+<!-- GLOBAL LOGIN PANEL: प्रत्येक ERP पेजवर दिसेल -->
+<section class="authbar">
+<h2>Account Login / Cloud Sync</h2>
+<div class="authgrid">
+<div class="field">
+<label>Login Email</label>
+<input id="globalEmail" type="email" autocomplete="username" placeholder="your@email.com">
+</div>
+<div class="field">
+<label>Password</label>
+<input id="globalPassword" type="password" autocomplete="current-password" placeholder="Password">
+</div>
+<div class="field">
+<label>Supabase Project URL</label>
+<input id="globalUrl" type="url" placeholder="https://project.supabase.co">
+</div>
+<div class="field">
+<label>Publishable / Anon Key</label>
+<input id="globalKey" type="password" autocomplete="off" placeholder="sb_publishable_...">
+</div>
+</div>
+<div class="authactions">
+<button class="btn" onclick="saveGlobalSettings()">Save Cloud Settings</button>
+<button class="btn" onclick="globalLogin()">Login</button>
+<button class="btn secondary" onclick="globalSignup()">Create Account</button>
+<button class="btn secondary" onclick="globalLogout()">Logout</button>
+<button class="btn" onclick="sync()">Sync / Merge Cloud</button>
+<button class="btn secondary" onclick="go('backup')">Backup / Restore</button>
+</div>
+<p id="globalAuthStatus" class="authstatus">Local mode — Cloud settings भरा किंवा Login करा.</p>
+</section>
+
 <div class="layout">
 <nav class="sidebar" id="nav"></nav>
 <main id="app"></main>
@@ -208,10 +247,10 @@ function attach(type,maker){
   render();
 
   if(user){
-   try{await cloudSave();alert(old?"Updated and synced.":"Saved and synced.")}
+   try{await cloudSave();setAuthStatus("Record saved and synced to cloud.")}
    catch(err){alert("Local save done; cloud sync failed: "+err.message)}
   }else{
-   alert(old?"Record updated.":"Record saved locally.");
+   alert(old?"Record updated locally.":"Record saved locally.");
   }
  };
 }
@@ -272,7 +311,7 @@ window.del=async(type,rid)=>{
 
  persist();
  render();
- if(user)try{await cloudSave()}catch(e){alert("Cloud sync failed: "+e.message)}
+ if(user)try{await cloudSave();setAuthStatus("Record deleted and cloud saved.")}catch(e){alert("Cloud sync failed: "+e.message)}
 };
 
 /* Product Master */
@@ -320,107 +359,50 @@ function renderProductTable(){
  <button class="btn danger" onclick="del('products','${esc(p.id)}')">Delete</button></td></tr>`));
 }
 
-/* Invoice PDF Download */
+/* Invoice PDF */
 window.downloadInvoicePDF=function(invoiceId){
  try{
   const invoice=db.sales.find(x=>x.id===invoiceId);
   if(!invoice)return alert("Invoice सापडले नाही.");
+  if(!window.jspdf||!window.jspdf.jsPDF)return alert("PDF library load झाली नाही. Internet तपासा.");
+  const {jsPDF}=window.jspdf,doc=new jsPDF({unit:"mm",format:"a4"});
+  const pw=doc.internal.pageSize.getWidth(),margin=14;
+  const money=n=>"INR "+N(n).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
 
-  if(!window.jspdf||!window.jspdf.jsPDF){
-   alert("PDF library load झाली नाही. Internet तपासा आणि पेज पुन्हा उघडा.");
-   return;
-  }
-
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF({unit:"mm",format:"a4"});
-  const pw=doc.internal.pageSize.getWidth();
-  const margin=14;
-
-  const money=n=>"INR "+N(n).toLocaleString("en-IN",{
-   minimumFractionDigits:2,maximumFractionDigits:2
-  });
-
-  doc.setFont("helvetica","bold");
-  doc.setFontSize(19);
+  doc.setFont("helvetica","bold");doc.setFontSize(19);
   doc.text("OM SAI INSTRUMENTS",margin,20);
-
-  doc.setFont("helvetica","normal");
-  doc.setFontSize(11);
+  doc.setFont("helvetica","normal");doc.setFontSize(11);
   doc.text("SALES / TAX INVOICE",margin,28);
-  doc.setDrawColor(30,70,110);
   doc.line(margin,32,pw-margin,32);
-
   doc.setFontSize(10);
   doc.text("Invoice No: "+String(invoice.doc||""),margin,41);
   doc.text("Date: "+String(invoice.date||""),margin,48);
-
-  doc.setFont("helvetica","bold");
-  doc.text("Bill To:",margin,60);
+  doc.setFont("helvetica","bold");doc.text("Bill To:",margin,60);
   doc.setFont("helvetica","normal");
   doc.text(doc.splitTextToSize(String(invoice.partyName||""),85),margin,67);
 
-  if(typeof doc.autoTable!=="function"){
-   alert("PDF table library load झाली नाही. इंटरनेट तपासा.");
-   return;
-  }
-
+  if(typeof doc.autoTable!=="function")return alert("PDF table library load झाली नाही.");
   doc.autoTable({
-   startY:82,
-   margin:{left:margin,right:margin},
+   startY:82,margin:{left:margin,right:margin},
    head:[["Description","Qty","Rate (INR)","Taxable (INR)","GST %","GST (INR)"]],
-   body:[[
-    String(invoice.productName||"Product"),
-    String(invoice.qty??0),
-    money(invoice.rate),
-    money(invoice.subtotal),
-    String(invoice.gst??0)+"%",
-    money(invoice.gstAmount)
-   ]],
-   theme:"grid",
-   styles:{font:"helvetica",fontSize:8,cellPadding:3,overflow:"linebreak"},
+   body:[[String(invoice.productName||"Product"),String(invoice.qty??0),money(invoice.rate),money(invoice.subtotal),String(invoice.gst??0)+"%",money(invoice.gstAmount)]],
+   theme:"grid",styles:{font:"helvetica",fontSize:8,cellPadding:3,overflow:"linebreak"},
    headStyles:{fillColor:[18,48,74],textColor:255},
-   columnStyles:{
-    0:{cellWidth:45},
-    1:{cellWidth:16},
-    2:{cellWidth:30},
-    3:{cellWidth:31},
-    4:{cellWidth:19},
-    5:{cellWidth:31}
-   }
+   columnStyles:{0:{cellWidth:45},1:{cellWidth:16},2:{cellWidth:30},3:{cellWidth:31},4:{cellWidth:19},5:{cellWidth:31}}
   });
 
   let y=doc.lastAutoTable.finalY+12;
   if(y>240){doc.addPage();y=20}
-
-  const totals=[
-   ["Taxable Amount",money(invoice.subtotal)],
-   ["GST Amount",money(invoice.gstAmount)],
-   ["Grand Total",money(invoice.total)],
-   ["Amount Paid",money(invoice.paid)],
-   ["Balance Due",money(N(invoice.total)-N(invoice.paid))]
-  ];
-
-  totals.forEach(([label,value],i)=>{
-   const yy=y+i*8;
-   doc.setFont("helvetica",label==="Grand Total"?"bold":"normal");
-   doc.text(label+":",pw-88,yy);
-   doc.text(value,pw-margin,yy,{align:"right"});
+  [["Taxable Amount",money(invoice.subtotal)],["GST Amount",money(invoice.gstAmount)],["Grand Total",money(invoice.total)],["Amount Paid",money(invoice.paid)],["Balance Due",money(N(invoice.total)-N(invoice.paid))]].forEach(([label,value],i)=>{
+   const yy=y+i*8;doc.setFont("helvetica",label==="Grand Total"?"bold":"normal");
+   doc.text(label+":",pw-88,yy);doc.text(value,pw-margin,yy,{align:"right"});
   });
-
-  y+=totals.length*8+12;
-  if(y>275){doc.addPage();y=25}
-
-  doc.setFont("helvetica","normal");
-  doc.setFontSize(9);
+  y+=52;if(y>275){doc.addPage();y=25}
+  doc.setFont("helvetica","normal");doc.setFontSize(9);
   doc.text("Thank you for your business.",margin,y);
   doc.text("Authorized Signature",pw-margin,y+15,{align:"right"});
-
-  const safeNo=String(invoice.doc||invoice.id).replace(/[^\w-]+/g,"_");
-  doc.save("Invoice-"+safeNo+".pdf");
- }catch(error){
-  console.error("Invoice PDF error:",error);
-  alert("PDF तयार करता आली नाही. इंटरनेट तपासा आणि पुन्हा प्रयत्न करा.");
- }
+  doc.save("Invoice-"+String(invoice.doc||invoice.id).replace(/[^\w-]+/g,"_")+".pdf");
+ }catch(e){console.error(e);alert("PDF तयार करता आली नाही. Internet तपासा.")}
 };
 
 /* Rendering */
@@ -467,8 +449,7 @@ function render(){
  }
 
  if(page==="customers"||page==="suppliers"){
-  const t=page;
-  const old=editingRecord?.type===t?db[t].find(x=>x.id===editingRecord.id):null;
+  const t=page,old=editingRecord?.type===t?db[t].find(x=>x.id===editingRecord.id):null;
   h=form((old?"Edit ":"Add ")+(t==="customers"?"Customer":"Supplier"),
   field("name","Name","text",true)+field("mobile","Mobile")+field("email","Email","email")+field("gstin","GSTIN")+field("city","City")+field("address","Address"))+
   `<section class="panel"><h2>${t} List</h2>${list(t,["Name","Mobile","Email","GSTIN","City","Address"],[x=>x.name,x=>x.mobile,x=>x.email,x=>x.gstin,x=>x.city,x=>x.address])}</section>`;
@@ -478,47 +459,33 @@ function render(){
  if(page==="sales"||page==="purchases"){
   const sale=page==="sales",t=sale?"sales":"purchases",parties=sale?db.customers:db.suppliers;
   h=form(sale?"Sales Tax Invoice":"Purchase Entry",
-  field("doc","Invoice / Bill No.","text",true)+
-  sel("party",sale?"Customer":"Supplier",parties)+
-  field("date","Date","date",true)+
-  sel("product","Product",db.products)+
-  field("qty","Quantity","number",true,'min=".001" step="any"')+
-  field("rate","Rate ₹","number",true,'min="0" step="any"')+
-  field("gst","GST %","number",false,'min="0" max="100" step="any"')+
+  field("doc","Invoice / Bill No.","text",true)+sel("party",sale?"Customer":"Supplier",parties)+field("date","Date","date",true)+
+  sel("product","Product",db.products)+field("qty","Quantity","number",true,'min=".001" step="any"')+
+  field("rate","Rate ₹","number",true,'min="0" step="any"')+field("gst","GST %","number",false,'min="0" max="100" step="any"')+
   field("paid","Paid ₹","number",false,'min="0" step="any"'))+
   `<section class="panel"><h2>${sale?"Sales Invoices":"Purchase Bills"}</h2>${list(t,["No.","Party","Date","Product","Qty","Taxable","GST","Total","Paid","Balance"],[x=>x.doc,x=>x.partyName,x=>x.date,x=>x.productName,x=>x.qty,x=>M(x.subtotal),x=>M(x.gstAmount),x=>M(x.total),x=>M(x.paid),x=>M(x.total-x.paid)])}<button class="btn secondary" onclick="csv('${t}')">Export CSV</button></section>`;
 
   a=[t,(v,old)=>{
-   const p=db.products.find(x=>x.id===v.product);
-   const party=parties.find(x=>x.id===v.party);
+   const p=db.products.find(x=>x.id===v.product),party=parties.find(x=>x.id===v.party);
    if(!p||!party)throw Error("Select product and party.");
    if(db[t].some(x=>x.id!==old?.id&&keyText(x.doc)===keyText(v.doc)))throw Error("Document number already exists.");
-
-   const qty=N(v.qty),rate=N(v.rate),gst=N(v.gst);
-   const subtotal=qty*rate,gstAmount=subtotal*gst/100,total=subtotal+gstAmount,paid=N(v.paid);
-
+   const qty=N(v.qty),rate=N(v.rate),gst=N(v.gst),subtotal=qty*rate,gstAmount=subtotal*gst/100,total=subtotal+gstAmount,paid=N(v.paid);
    if(qty<=0||rate<0||gst<0||gst>100||paid<0||paid>total)throw Error("Check quantity, GST and payment.");
-
    let available=balance(p.id);
    if(sale&&old?.product===p.id)available+=N(old.qty);
    if(sale&&qty>available)throw Error("Insufficient stock. Available: "+available);
-
    return {doc:clean(v.doc),partyId:party.id,partyName:party.name,date:v.date,product:p.id,productName:p.name,qty,rate,gst,subtotal,gstAmount,total,paid};
   }];
  }
 
  if(page==="stockio"){
-  h=form("Stock In / Out",
-  sel("product","Product",db.products,true,p=>p.name+" (Available "+balance(p.id)+")")+
+  h=form("Stock In / Out",sel("product","Product",db.products,true,p=>p.name+" (Available "+balance(p.id)+")")+
   '<div class="field"><label>Direction</label><select name="direction"><option>In</option><option>Out</option></select></div>'+
-  field("qty","Quantity","number",true,'min=".001" step="any"')+
-  field("date","Date","date",true)+field("reference","Reference")+field("notes","Notes"))+
+  field("qty","Quantity","number",true,'min=".001" step="any"')+field("date","Date","date",true)+field("reference","Reference")+field("notes","Notes"))+
   `<section class="panel"><h2>Stock History</h2>${list("stock",["Date","Product","Direction","Qty","Reference","Notes"],[x=>x.date,x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.direction,x=>x.qty,x=>x.reference,x=>x.notes])}</section>`;
-
   a=["stock",(v,old)=>{
    if(!db.products.some(p=>p.id===v.product)||N(v.qty)<=0)throw Error("Select product and valid quantity.");
-   let avail=balance(v.product);
-   if(old?.product===v.product&&old.direction==="Out")avail+=N(old.qty);
+   let avail=balance(v.product);if(old?.product===v.product&&old.direction==="Out")avail+=N(old.qty);
    if(v.direction==="Out"&&N(v.qty)>avail)throw Error("Insufficient stock.");
    return {product:v.product,direction:v.direction,qty:N(v.qty),date:v.date,reference:v.reference,notes:v.notes};
   }];
@@ -533,12 +500,10 @@ function render(){
  }
 
  if(page==="serials"){
-  h=form("Serial Number Register",
-  sel("product","Product",db.products)+field("serial","Serial Number","text",true)+
+  h=form("Serial Number Register",sel("product","Product",db.products)+field("serial","Serial Number","text",true)+
   '<div class="field"><label>Status</label><select name="status"><option>In Stock</option><option>Sold</option><option>Under Calibration</option><option>Sent for Repair</option></select></div>'+
   field("customer","Customer / Location")+field("calibration","Last Calibration","date")+field("nextcal","Next Calibration Due","date")+field("certificate","Certificate No.")+field("warranty","Warranty Until","date"))+
   `<section class="panel"><h2>Serial Register</h2>${list("serials",["Product","Serial","Status","Customer","Last Cal.","Next Due","Certificate","Warranty"],[x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.serial,x=>x.status,x=>x.customer,x=>x.calibration,x=>x.nextcal,x=>x.certificate,x=>x.warranty])}</section>`;
-
   a=["serials",(v,old)=>{
    if(db.serials.some(x=>x.id!==old?.id&&keyText(x.serial)===keyText(v.serial)))throw Error("Serial number already exists.");
    return {...v,serial:clean(v.serial)};
@@ -546,16 +511,12 @@ function render(){
  }
 
  if(page==="payments"){
-  h=form("Payment Entry",
-  '<div class="field"><label>Type</label><select name="type"><option>Receipt from Customer</option><option>Payment to Supplier</option></select></div>'+
-  field("party","Party","text",true)+field("date","Date","date",true)+field("amount","Amount ₹","number",true,'min=".01" step="any"')+field("reference","Invoice / Reference")+field("notes","Notes"))+
+  h=form("Payment Entry",'<div class="field"><label>Type</label><select name="type"><option>Receipt from Customer</option><option>Payment to Supplier</option></select></div>'+
+  field("party","Party","text",true)+field("date","Date","date",true)+field("amount","Amount ₹","number",true,'min=".01" step="any"')+
+  field("reference","Invoice / Reference")+field("notes","Notes"))+
   `<section class="panel"><h2>Payments</h2>${list("payments",["Type","Party","Date","Amount","Reference","Notes"],[x=>x.type,x=>x.party,x=>x.date,x=>M(x.amount),x=>x.reference,x=>x.notes])}</section>
   <section class="panel"><h2>Invoice Outstanding</h2>${tbl(["Type","Party","Doc","Total","Paid","Balance"],[...db.sales.map(x=>`<tr><td>Sale</td><td>${esc(x.partyName)}</td><td>${esc(x.doc)}</td><td>${M(x.total)}</td><td>${M(x.paid)}</td><td>${M(x.total-x.paid)}</td></tr>`),...db.purchases.map(x=>`<tr><td>Purchase</td><td>${esc(x.partyName)}</td><td>${esc(x.doc)}</td><td>${M(x.total)}</td><td>${M(x.paid)}</td><td>${M(x.total-x.paid)}</td></tr>`)])}</section>`;
-
-  a=["payments",v=>{
-   if(N(v.amount)<=0)throw Error("Enter valid amount.");
-   return {...v,amount:N(v.amount)};
-  }];
+  a=["payments",v=>{if(N(v.amount)<=0)throw Error("Enter valid amount.");return {...v,amount:N(v.amount)}}];
  }
 
  if(page==="reports"){
@@ -573,22 +534,8 @@ function render(){
   h=`<section class="panel"><h2>Backup / Restore</h2>
   <button class="btn" onclick="backup()">Download JSON Backup</button>
   <div class="field"><label>Restore JSON</label><input type="file" accept=".json,application/json" onchange="restore(event)"></div>
-  <hr><h2>Cloud Database Setup</h2>
-  <p class="small">Supabase Project URL आणि Publishable/Anon Key भरा.</p>
-  <div class="formgrid">
-  <div class="field"><label>Project URL</label><input id="url" placeholder="https://project.supabase.co"></div>
-  <div class="field"><label>Publishable Key</label><input id="key" placeholder="sb_publishable_..."></div>
-  </div>
-  <button class="btn" onclick="setup()">Save Cloud Settings</button>
-  <div class="formgrid">
-  <div class="field"><label>Login Email</label><input id="email" type="email"></div>
-  <div class="field"><label>Password</label><input id="password" type="password"></div>
-  </div>
-  <button class="btn" onclick="signup()">Create Login</button>
-  <button class="btn secondary" onclick="login()">Login</button>
-  <button class="btn secondary" onclick="logout()">Logout</button>
-  <button class="btn" onclick="sync()">Sync / Merge Cloud</button>
-  <p id="cloudStatus" class="small">${user?"Logged in: "+esc(user.email):"Not connected"}</p>
+  <hr><h2>Cloud Database Setup / SQL</h2>
+  <p class="small">वरच्या Login panel मध्ये Supabase URL आणि Publishable Key भरू शकता.</p>
   <pre id="sql" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#f7f9fc;padding:10px">create table if not exists public.erp_data (
  user_id uuid primary key references auth.users(id) on delete cascade,
  payload jsonb not null default '{}'::jsonb,
@@ -602,7 +549,7 @@ create policy "read own ERP" on public.erp_data for select to authenticated usin
 create policy "insert own ERP" on public.erp_data for insert to authenticated with check (auth.uid() = user_id);
 create policy "update own ERP" on public.erp_data for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);</pre>
   <button class="btn secondary" onclick="navigator.clipboard.writeText($('sql').textContent).then(()=>alert('SQL copied')).catch(()=>alert('Select and copy SQL manually'))">Copy SQL</button>
-  <p class="small">Secret/service_role key HTML मध्ये कधीही ठेवू नका. Multi-device simultaneous edits साठी हा basic merge पूर्ण conflict-safe नाही.</p></section>`;
+  <p class="small">Secret/service_role key HTML मध्ये कधीही ठेवू नका. Basic merge simultaneous multi-device edits साठी पूर्ण conflict-safe नाही.</p></section>`;
  }
 
  $("app").innerHTML=h;
@@ -612,17 +559,12 @@ create policy "update own ERP" on public.erp_data for update to authenticated us
   if(editingProductId){
    setFormValues($("f"),p);
    $("f").onsubmit=async e=>{
-    e.preventDefault();
-    const f=$("f");
-    if(!f.reportValidity())return;
+    e.preventDefault();const f=$("f");if(!f.reportValidity())return;
     const v=Object.fromEntries(new FormData(f).entries());
     try{
      duplicateProduct(v,p.id);
      const updated={...p,code:clean(v.code),name:clean(v.name),make:clean(v.make),model:clean(v.model),unit:clean(v.unit)||"pcs",opening:Math.max(0,N(v.opening)),reorder:Math.max(0,N(v.reorder)),cost:Math.max(0,N(v.cost)),price:Math.max(0,N(v.price))};
-     db.products=db.products.map(x=>x.id===p.id?updated:x);
-     persist();
-     editingProductId=null;
-     render();
+     db.products=db.products.map(x=>x.id===p.id?updated:x);persist();editingProductId=null;render();
      if(user)await cloudSave();
      alert("Product updated.");
     }catch(err){alert(err.message)}
@@ -636,22 +578,19 @@ create policy "update own ERP" on public.erp_data for update to authenticated us
   renderProductTable();
  }else if(a){
   const old=editingRecord?.type===a[0]?db[a[0]].find(x=>x.id===editingRecord.id):null;
-  if(old&&a[0]==="sales")setFormValues($("f"),{...old,party:old.partyId});
-  else if(old&&a[0]==="purchases")setFormValues($("f"),{...old,party:old.partyId});
+  if(old&&(a[0]==="sales"||a[0]==="purchases"))setFormValues($("f"),{...old,party:old.partyId});
   else setFormValues($("f"),old);
-  const btn=$("saveBtn");
-  if(btn&&old)btn.textContent="Update";
+  const btn=$("saveBtn");if(btn&&old)btn.textContent="Update";
   attach(a[0],a[1]);
  }
 
  if(page==="backup"){
   const c=cfg();
-  $("url").value=c.url||"";
-  $("key").value=c.key||"";
+  // URL आणि Key मुख्य Login panel मध्येही भरलेले राहतील.
  }
 }
 
-/* Backup and CSV */
+/* Backup / CSV */
 window.backup=()=>{
  const b=new Blob([JSON.stringify({version:3,exportedAt:new Date().toISOString(),data:db},null,2)],{type:"application/json"});
  const u=URL.createObjectURL(b),a=document.createElement("a");
@@ -660,16 +599,13 @@ window.backup=()=>{
 };
 
 window.restore=e=>{
- const f=e.target.files[0];
- if(!f)return;
+ const f=e.target.files[0];if(!f)return;
  const r=new FileReader();
  r.onload=()=>{
   try{
    const x=JSON.parse(r.result);
    if(!confirm("Restore replaces local data. Continue?"))return;
-   db=norm(x.data||x);
-   persist();
-   render();
+   db=norm(x.data||x);persist();render();
    alert("Backup restored. Cloud sync करण्यापूर्वी डेटा तपासा.");
   }catch(err){alert("Invalid JSON backup")}
  };
@@ -678,11 +614,9 @@ window.restore=e=>{
 
 window.csv=t=>{
  let rows;
- if(t==="stockreg"){
-  rows=[["Code","Product","Opening","Balance"],...db.products.map(p=>[p.code,p.name,p.opening,balance(p.id)])];
- }else{
-  const arr=db[t]||[];
-  const keys=arr.length?Object.keys(arr[0]):[];
+ if(t==="stockreg")rows=[["Code","Product","Opening","Balance"],...db.products.map(p=>[p.code,p.name,p.opening,balance(p.id)])];
+ else{
+  const arr=db[t]||[],keys=arr.length?Object.keys(arr[0]):[];
   rows=[keys,...arr.map(x=>keys.map(k=>x[k]))];
  }
  const s="\ufeff"+rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");
@@ -692,74 +626,114 @@ window.csv=t=>{
  setTimeout(()=>URL.revokeObjectURL(u),1000);
 };
 
-/* Supabase */
+/* Supabase connection */
 function init(){
  const c=cfg();
  if(!c.url||!c.key||!window.supabase)return null;
+ if(client)return client;
  client=window.supabase.createClient(c.url,c.key);
  return client;
 }
 
-window.setup=()=>{
- const url=$("url").value.trim().replace(/\/+$/,""),key=$("key").value.trim();
- if(!/^https:\/\/.+\.supabase\.co$/.test(url)||!key)return alert("Valid Supabase URL आणि Publishable Key भरा.");
- localStorage.setItem(CFG,JSON.stringify({url,key}));
- init();
- alert("Settings saved. Login करा.");
+function setAuthStatus(msg){
+ const el=$("globalAuthStatus");
+ if(el)el.textContent=msg;
+ const old=$("cloudStatus");
+ if(old)old.textContent=msg;
+}
+
+window.saveGlobalSettings=()=>{
+ const url=$("globalUrl").value.trim().replace(/\/+$/,"");
+ const key=$("globalKey").value.trim();
+ if(!/^https:\/\/.+\.supabase\.co$/.test(url)||!key){
+  alert("Valid Supabase URL आणि Publishable/Anon Key भरा.");
+  return;
+ }
+ try{
+  localStorage.setItem(CFG,JSON.stringify({url,key}));
+  client=null;init();
+  setAuthStatus("Cloud settings saved. आता Login करा.");
+  alert("Cloud settings saved.");
+ }catch(e){alert("Settings save failed: "+e.message)}
 };
 
-window.signup=async()=>{
+window.globalLogin=async()=>{
  try{
+  if(!$("globalUrl").value.trim()||!$("globalKey").value.trim()){
+   const c=cfg();
+   if(!c.url||!c.key)throw Error("आधी Supabase URL आणि Publishable Key भरा.");
+  }else{
+   const c=cfg();
+   if($("globalUrl").value.trim().replace(/\/+$/,"")!==c.url||$("globalKey").value.trim()!==c.key){
+    window.saveGlobalSettings();
+   }
+  }
   const c=init();
-  if(!c)throw Error("Save cloud settings first");
-  const email=$("email").value.trim(),password=$("password").value;
-  if(password.length<8)throw Error("Password किमान 8 अक्षरे असावा.");
-  const {error}=await c.auth.signUp({email,password});
-  if(error)throw error;
-  alert("Signup request पाठवली. Email confirmation आवश्यक असल्यास पूर्ण करा.");
- }catch(e){alert(e.message)}
-};
-
-window.login=async()=>{
- try{
-  const c=init();
-  if(!c)throw Error("Save cloud settings first");
-  const {data,error}=await c.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
+  if(!c)throw Error("आधी Cloud Settings सेव्ह करा.");
+  const email=$("globalEmail").value.trim(),password=$("globalPassword").value;
+  if(!email||!password)throw Error("Email आणि Password भरा.");
+  const {data,error}=await c.auth.signInWithPassword({email,password});
   if(error)throw error;
   user=data.user;
   render();
-  alert("Login successful. Sync करा.");
- }catch(e){alert("Login failed: "+e.message)}
+  setAuthStatus("Login successful: "+user.email+" — आता Sync / Merge Cloud करा.");
+  alert("Login successful.");
+ }catch(e){setAuthStatus("Login failed: "+e.message);alert("Login failed: "+e.message)}
 };
 
-window.logout=async()=>{
+window.globalSignup=async()=>{
  try{
-  if(client)await client.auth.signOut();
-  user=null;
-  render();
-  alert("Logged out. Local data remains.");
- }catch(e){alert(e.message)}
+  const url=$("globalUrl").value.trim(),key=$("globalKey").value.trim();
+  if(url&&key){
+   const current=cfg();
+   if(url.replace(/\/+$/,"")!==current.url||key!==current.key)window.saveGlobalSettings();
+  }
+  const c=init();if(!c)throw Error("आधी Supabase URL आणि Key सेव्ह करा.");
+  const email=$("globalEmail").value.trim(),password=$("globalPassword").value;
+  if(!email||!password)throw Error("Email आणि Password भरा.");
+  if(password.length<8)throw Error("Password किमान 8 अक्षरांचा असावा.");
+  const {data,error}=await c.auth.signUp({email,password});
+  if(error)throw error;
+  setAuthStatus(data.session?"Account created. Login करू शकता.":"Signup request पाठवली. Email confirmation आवश्यक असल्यास ईमेल तपासा.");
+  alert("Signup request पूर्ण झाली. Email confirmation लागू असल्यास ईमेल तपासा.");
+ }catch(e){setAuthStatus("Signup failed: "+e.message);alert("Signup failed: "+e.message)}
 };
+
+window.globalLogout=async()=>{
+ try{
+  const c=init();
+  if(c)await c.auth.signOut();
+  user=null;render();
+  setAuthStatus("Logged out. Local data तुमच्या ब्राउजरमध्ये कायम आहे.");
+  alert("Logged out. Local data remains.");
+ }catch(e){setAuthStatus("Logout failed: "+e.message);alert(e.message)}
+};
+
+/* Existing button compatibility */
+window.setup=window.saveGlobalSettings;
+window.signup=window.globalSignup;
+window.login=window.globalLogin;
+window.logout=window.globalLogout;
 
 async function cloudSave(){
- const c=init();
- if(!c)throw Error("Cloud config missing");
+ const c=init();if(!c)throw Error("Cloud config missing");
  const {data:{user:u},error:ue}=await c.auth.getUser();
- if(ue)throw ue;
- if(!u)throw Error("Login first");
- const {error}=await c.from("erp_data").upsert({user_id:u.id,payload:db,updated_at:new Date().toISOString()},{onConflict:"user_id"});
+ if(ue)throw ue;if(!u)throw Error("Login first");
+ const {error}=await c.from("erp_data").upsert(
+  {user_id:u.id,payload:db,updated_at:new Date().toISOString()},
+  {onConflict:"user_id"}
+ );
  if(error)throw error;
  user=u;
 }
 
 window.sync=async()=>{
  try{
-  const c=init();
-  if(!c)throw Error("Save cloud settings first");
+  const c=init();if(!c)throw Error("आधी Supabase Cloud Settings सेव्ह करा.");
   const {data:{user:u},error:ue}=await c.auth.getUser();
-  if(ue)throw ue;
-  if(!u)throw Error("Login first");
+  if(ue)throw ue;if(!u)throw Error("आधी Login करा.");
   user=u;
+  setAuthStatus("Cloud data sync होत आहे...");
 
   const {data,error}=await c.from("erp_data").select("payload").eq("user_id",u.id).maybeSingle();
   if(error)throw error;
@@ -778,20 +752,39 @@ window.sync=async()=>{
   persist();
   await cloudSave();
   render();
+  setAuthStatus("Sync complete — "+u.email);
   alert("Sync complete. Records merged by ID.");
  }catch(e){
+  setAuthStatus("Sync failed: "+e.message);
   alert("Sync failed: "+e.message+"\nLocal data remains. Backup घ्या आणि setup तपासा.");
  }
 };
 
+/* Startup */
+function fillCloudFields(){
+ const c=cfg();
+ if($("globalUrl"))$("globalUrl").value=c.url||"";
+ if($("globalKey"))$("globalKey").value=c.key||"";
+}
+
 render();
+fillCloudFields();
 
 try{
  const c=init();
- if(c)c.auth.getSession().then(({data})=>{
-  if(data.session){user=data.session.user;render()}
- });
-}catch(e){}
+ if(c){
+  c.auth.getSession().then(({data,error})=>{
+   if(error){setAuthStatus("Session check failed: "+error.message);return}
+   if(data.session){
+    user=data.session.user;
+    render();
+    setAuthStatus("Logged in: "+user.email);
+   }else{
+    setAuthStatus("Cloud settings loaded. Login करा किंवा local mode वापरा.");
+   }
+  }).catch(e=>setAuthStatus("Session error: "+e.message));
+ }
+}catch(e){setAuthStatus("Cloud initialization failed: "+e.message)}
 
 })();
 </script>
