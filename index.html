@@ -5,39 +5,81 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>OM SAI INSTRUMENTS SECURITY SYSTEMS ERP</title>
+
 <style>
-:root{--navy:#12304a;--blue:#1769aa;--bg:#f3f6fa;--line:#dbe3ec;--text:#172534}
+:root{
+ --navy:#12304a;
+ --blue:#1769aa;
+ --bg:#f3f6fa;
+ --line:#dbe3ec;
+ --text:#172534;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Arial,sans-serif}
-header{background:var(--navy);color:white;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+body{
+ margin:0;background:var(--bg);color:var(--text);
+ font:14px/1.45 Arial,sans-serif
+}
+header{
+ background:var(--navy);color:white;padding:14px;
+ display:flex;align-items:center;justify-content:space-between;
+ gap:12px;flex-wrap:wrap
+}
 header h1{margin:0;font-size:21px}
 .brand{display:flex;align-items:center;gap:12px}
-.brandlogo{width:55px;height:55px;flex-shrink:0}
+.brandlogo{
+ width:70px;height:70px;flex-shrink:0;object-fit:contain;
+ background:white;border-radius:8px;padding:3px
+}
 .wrap{max-width:1400px;margin:auto;padding:12px}
-.notice,.panel,.stat,.sidebar{background:white;border:1px solid var(--line);border-radius:10px}
+.notice,.panel,.stat,.sidebar{
+ background:white;border:1px solid var(--line);border-radius:10px
+}
 .notice{padding:10px;background:#fff8e6;margin-bottom:12px}
-.layout{display:grid;grid-template-columns:210px minmax(0,1fr);gap:12px}
+.layout{
+ display:grid;grid-template-columns:210px minmax(0,1fr);gap:12px
+}
 .sidebar{padding:8px;height:max-content}
-.nav{display:block;width:100%;text-align:left;padding:9px;border:0;background:white;border-radius:7px;margin:2px 0;cursor:pointer}
+.nav{
+ display:block;width:100%;text-align:left;padding:9px;border:0;
+ background:white;border-radius:7px;margin:2px 0;cursor:pointer
+}
 .nav.active{background:#e8f2fc;color:var(--blue);font-weight:bold}
 .panel{padding:14px;margin-bottom:12px;min-width:0}
 .panel h2{margin:0 0 12px;font-size:18px}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
-.stat{padding:12px}.stat strong{display:block;font-size:22px;overflow-wrap:anywhere}
+.stats{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:10px;margin-bottom:12px
+}
+.stat{padding:12px}
+.stat strong{display:block;font-size:22px;overflow-wrap:anywhere}
 .small{color:#64748b;font-size:12px}
-.formgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.formgrid{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px
+}
 .field label{display:block;font-size:12px;font-weight:bold;margin-bottom:4px}
-.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:7px;background:white}
+.field input,.field select,.field textarea{
+ width:100%;padding:10px;border:1px solid #cbd5e1;
+ border-radius:7px;background:white
+}
 .field textarea{min-height:65px}
-.btn{border:0;border-radius:7px;background:var(--blue);color:white;padding:8px 11px;cursor:pointer;margin:3px}
-.secondary{background:#e8eef5;color:#172534}.danger{background:#b42318}
+.btn{
+ border:0;border-radius:7px;background:var(--blue);color:white;
+ padding:8px 11px;cursor:pointer;margin:3px
+}
+.secondary{background:#e8eef5;color:#172534}
+.danger{background:#b42318}
 .tablewrap{overflow:auto;margin-top:10px}
 table{width:100%;border-collapse:collapse;min-width:650px;font-size:12px}
 th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left}
 th{background:#f7f9fc}
 .pill{padding:3px 8px;border-radius:20px;background:#fee4e2;color:#b42318}
-.loginwrap{min-height:70vh;display:flex;align-items:center;justify-content:center;padding:20px}
-.login-card{width:min(460px,100%);background:white;border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:0 15px 40px #12304a18}
+.loginwrap{
+ min-height:70vh;display:flex;align-items:center;justify-content:center;padding:20px
+}
+.login-card{
+ width:min(460px,100%);background:white;border:1px solid var(--line);
+ border-radius:16px;padding:26px;box-shadow:0 15px 40px #12304a18
+}
 .login-card h2{text-align:center;color:var(--navy)}
 .login-card .field{margin:12px 0}
 .login-card .field input{font-size:16px}
@@ -45,59 +87,97 @@ th{background:#f7f9fc}
 #loginError{color:#b42318;font-size:12px}
 .accountbar{display:none;align-items:center;gap:8px;flex-wrap:wrap}
 .accountbar.show{display:flex}
-@media(max-width:800px){.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:repeat(3,1fr)}.nav{font-size:11px;padding:7px}.formgrid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:480px){.formgrid{grid-template-columns:1fr}.sidebar{grid-template-columns:repeat(2,1fr)}header h1{font-size:17px}}
-@media print{header,.sidebar,.noprint,.btn,.notice{display:none!important}.layout{display:block}.panel{border:0}table{min-width:0;font-size:10px}}
+@media(max-width:800px){
+ .layout{grid-template-columns:1fr}
+ .sidebar{display:grid;grid-template-columns:repeat(3,1fr)}
+ .nav{font-size:11px;padding:7px}
+ .formgrid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+ .formgrid{grid-template-columns:1fr}
+ .sidebar{grid-template-columns:repeat(2,1fr)}
+ header h1{font-size:17px}
+ .brandlogo{width:55px;height:55px}
+}
+@media print{
+ header,.sidebar,.noprint,.btn,.notice{display:none!important}
+ .layout{display:block}
+ .panel{border:0}
+ table{min-width:0;font-size:10px}
+}
 </style>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
 <header>
-<div class="brand">
-<svg class="brandlogo" viewBox="0 0 100 100" role="img" aria-label="OSI logo">
-<path d="M18 53C22 15 70 7 85 24" fill="none" stroke="#ff9418" stroke-width="7" stroke-linecap="round"/>
-<path d="M83 24L89 10L93 29" fill="#ff9418"/>
-<text x="50" y="67" text-anchor="middle" font-family="Arial" font-size="40" font-weight="900" fill="white">OSI</text>
-<path d="M17 75C36 95 77 83 84 62" fill="none" stroke="#ff9418" stroke-width="4"/>
-</svg>
-<div>
-<h1>OM SAI INSTRUMENTS SECURITY SYSTEMS</h1>
-<div>ERP Management System</div>
-<div id="companyContact" class="small" style="color:#e2eaf2">Company details can be configured below</div>
-</div>
-</div>
-<div class="accountbar" id="accountbar">
-<span id="accountemail"></span>
-<button class="btn secondary" onclick="go('backup')">Account / Cloud</button>
-<button class="btn" onclick="logout()">Logout</button>
-</div>
+ <div class="brand">
+  <img
+   class="brandlogo"
+   src="https://omsaiinstuments.netlify.app/assets/om-sai-logo.png"
+   alt="OM SAI INSTRUMENTS Logo"
+   onerror="this.style.display='none'"
+  >
+  <div>
+   <h1>OM SAI INSTRUMENTS SECURITY SYSTEMS</h1>
+   <div>ERP Management System</div>
+   <div id="companyContact" class="small" style="color:#e2eaf2">
+    Company details can be configured below
+   </div>
+  </div>
+ </div>
+
+ <div class="accountbar" id="accountbar">
+  <span id="accountemail"></span>
+  <button class="btn secondary" onclick="go('backup')">Account / Cloud</button>
+  <button class="btn" onclick="logout()">Logout</button>
+ </div>
 </header>
 
 <div class="wrap">
-<div class="notice" id="notice">
-<strong>सूचना:</strong> महत्त्वाचा डेटा नियमित Backup करा. Cloud वापरण्यासाठी Supabase URL, Publishable Key आणि SQL setup आवश्यक आहे.
-</div>
+ <div class="notice" id="notice">
+  <strong>सूचना:</strong>
+  महत्त्वाचा डेटा नियमित Backup करा. Cloud वापरण्यासाठी Supabase URL,
+  Publishable Key आणि SQL setup आवश्यक आहे.
+ </div>
 
-<section id="loginScreen" class="loginwrap" style="display:none">
-<div class="login-card">
-<h2>OM SAI INSTRUMENTS</h2>
-<p class="small" style="text-align:center">ERP Management System</p>
-<h3>Login to Your Account</h3>
-<form id="loginForm">
-<div class="field"><label>Email Address</label><input id="loginEmail" type="email" autocomplete="username" required></div>
-<div class="field"><label>Password</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
-<button class="btn login-btn" type="submit">LOGIN →</button>
-<div id="loginError"></div>
-</form>
-<p class="small">First-time setup: configure Supabase from the Cloud Setup page after signing in, or use the setup instructions in the code configuration.</p>
-</div>
-</section>
+ <section id="loginScreen" class="loginwrap" style="display:none">
+  <div class="login-card">
+   <div style="text-align:center;margin-bottom:12px">
+    <img
+     src="https://omsaiinstuments.netlify.app/assets/om-sai-logo.png"
+     alt="OM SAI INSTRUMENTS Logo"
+     style="width:120px;height:100px;object-fit:contain"
+     onerror="this.style.display='none'"
+    >
+   </div>
+   <h2>OM SAI INSTRUMENTS</h2>
+   <p class="small" style="text-align:center">ERP Management System</p>
+   <h3>Login to Your Account</h3>
+   <form id="loginForm">
+    <div class="field">
+     <label>Email Address</label>
+     <input id="loginEmail" type="email" autocomplete="username" required>
+    </div>
+    <div class="field">
+     <label>Password</label>
+     <input id="loginPassword" type="password" autocomplete="current-password" required>
+    </div>
+    <button class="btn login-btn" type="submit">LOGIN →</button>
+    <div id="loginError"></div>
+   </form>
+   <p class="small">
+    First-time setup: configure Supabase URL and Publishable Key.
+    Cloud Setup can be opened after login when the configuration is available.
+   </p>
+  </div>
+ </section>
 
-<div class="layout" id="erpLayout">
-<nav class="sidebar" id="nav"></nav>
-<main id="app"></main>
-</div>
+ <div class="layout" id="erpLayout">
+  <nav class="sidebar" id="nav"></nav>
+  <main id="app"></main>
+ </div>
 </div>
 
 <script>
@@ -106,31 +186,46 @@ th{background:#f7f9fc}
 
 const KEY="omSaiInstrumentsERP_v3";
 const CFG="omSaiERP_cloud_config_v1";
-const T=["products","customers","suppliers","sales","quotations","purchases","stock","serials","payments"];
+const COMPANYKEY="omSaiERP_company_v1";
+const LOGO="https://omsaiinstuments.netlify.app/assets/om-sai-logo.png";
+
+const T=[
+ "products","customers","suppliers","sales","quotations",
+ "purchases","stock","serials","payments"
+];
+
 const COMPANY={
  name:"OM SAI INSTRUMENTS SECURITY SYSTEMS",
  address:"",
  phone:"",
  email:"",
  gstin:"",
- website:"https://omsaiinstuments.netlify.app"
+ website:"https://omsaiinstuments.netlify.app",
+ logo:LOGO
 };
+
 const empty=()=>Object.fromEntries(T.map(k=>[k,[]]));
+
 function norm(x){
  let d=empty();
- if(x&&typeof x==="object")T.forEach(k=>{if(Array.isArray(x[k]))d[k]=x[k]});
+ if(x&&typeof x==="object"){
+  T.forEach(k=>{if(Array.isArray(x[k]))d[k]=x[k]});
+ }
  return d;
 }
+
 function load(){
  try{
   const x=JSON.parse(localStorage.getItem(KEY)||"null");
   if(x)return norm(x.data||x);
  }catch(e){}
- for(const k of ["omSaiInstrumentsERP_v2"]){
-  try{const x=JSON.parse(localStorage.getItem(k)||"null");if(x)return norm(x.data||x)}catch(e){}
- }
+ try{
+  const x=JSON.parse(localStorage.getItem("omSaiInstrumentsERP_v2")||"null");
+  if(x)return norm(x.data||x);
+ }catch(e){}
  return empty();
 }
+
 let db=load(),page="dashboard",lang="en",client=null,user=null;
 let editingId=null,editingType=null;
 
@@ -152,21 +247,32 @@ const menus=[
 
 const $=x=>document.getElementById(x);
 const N=x=>Number(x)||0;
-const M=x=>"₹"+N(x).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+const M=x=>"₹"+N(x).toLocaleString("en-IN",{
+ minimumFractionDigits:2,maximumFractionDigits:2
+});
 const sum=(a,f)=>a.reduce((s,x)=>s+N(f(x)),0);
 const id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const today=()=>new Date().toISOString().slice(0,10);
-const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+
 function persist(){localStorage.setItem(KEY,JSON.stringify(db))}
-function cfg(){try{return JSON.parse(localStorage.getItem(CFG)||"{}")}catch(e){return {}}}
+function cfg(){
+ try{return JSON.parse(localStorage.getItem(CFG)||"{}")}
+ catch(e){return {}}
+}
+
 function init(){
  const c=cfg();
  if(!c.url||!c.key||!window.supabase)return null;
  client=window.supabase.createClient(c.url,c.key);
  return client;
 }
+
 function balance(pid){
- let p=db.products.find(x=>x.id===pid);
+ const p=db.products.find(x=>x.id===pid);
  if(!p)return 0;
  return N(p.opening)
  +sum(db.stock.filter(x=>x.product===pid&&x.direction==="In"),x=>x.qty)
@@ -174,37 +280,59 @@ function balance(pid){
  -sum(db.stock.filter(x=>x.product===pid&&x.direction==="Out"),x=>x.qty)
  -sum(db.sales.filter(x=>x.product===pid),x=>x.qty);
 }
+
 function tbl(head,rows){
- return `<div class="tablewrap"><table><thead><tr>${head.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${rows.length?rows.join(""):`<tr><td colspan="${head.length}">No records yet</td></tr>`}</tbody></table></div>`;
-}
-function field(n,t,type="text",req=false,extra=""){
- return `<div class="field"><label>${t}${req?" *":""}</label><input name="${n}" type="${type}" ${req?"required":""} ${extra}></div>`;
-}
-function sel(n,t,arr,req=true,label=x=>x.name||x.code||x.serial){
- return `<div class="field"><label>${t}</label><select name="${n}" ${req?"required":""}><option value="">Select ${t}</option>${arr.map(x=>`<option value="${esc(x.id)}">${esc(label(x))}</option>`).join("")}</select></div>`;
-}
-function form(title,fields){
- return `<section class="panel"><h2>${title}</h2><form id="f" class="formgrid">${fields}</form><button class="btn" form="f" id="formSave">Save</button><button class="btn secondary" type="button" onclick="cancelEdit()">Clear / Cancel Edit</button></section>`;
+ return `<div class="tablewrap"><table>
+ <thead><tr>${head.map(x=>`<th>${x}</th>`).join("")}</tr></thead>
+ <tbody>${rows.length?rows.join(""):
+ `<tr><td colspan="${head.length}">No records yet</td></tr>`}</tbody>
+ </table></div>`;
 }
 
-/* Universal Edit + Delete buttons for list-based modules */
+function field(n,t,type="text",req=false,extra=""){
+ return `<div class="field"><label>${t}${req?" *":""}</label>
+ <input name="${n}" type="${type}" ${req?"required":""} ${extra}></div>`;
+}
+
+function sel(n,t,arr,req=true,label=x=>x.name||x.code||x.serial){
+ return `<div class="field"><label>${t}</label>
+ <select name="${n}" ${req?"required":""}>
+ <option value="">Select ${t}</option>
+ ${arr.map(x=>`<option value="${esc(x.id)}">${esc(label(x))}</option>`).join("")}
+ </select></div>`;
+}
+
+function form(title,fields){
+ return `<section class="panel"><h2>${title}</h2>
+ <form id="f" class="formgrid">${fields}</form>
+ <button class="btn" form="f" id="formSave">Save</button>
+ <button class="btn secondary" type="button" onclick="cancelEdit()">Clear / Cancel Edit</button>
+ </section>`;
+}
+
+/* Edit / Delete */
 function list(type,heads,cols){
  return tbl([...heads,"Action"],db[type].map(x=>`<tr>
  ${cols.map(fn=>`<td>${esc(fn(x))}</td>`).join("")}
- <td><button class="btn" onclick="editRecord('${type}','${esc(x.id)}')">Edit</button>
- <button class="btn danger" onclick="del('${type}','${esc(x.id)}')">Delete</button></td>
- </tr>`));
+ <td>
+ <button class="btn" onclick="editRecord('${type}','${esc(x.id)}')">Edit</button>
+ <button class="btn danger" onclick="del('${type}','${esc(x.id)}')">Delete</button>
+ </td></tr>`));
 }
+
 function attach(type,maker){
  const f=$("f");
  if(!f)return;
+
  f.onsubmit=async e=>{
   e.preventDefault();
   if(!f.reportValidity())return;
+
   const v=Object.fromEntries(new FormData(f).entries());
   let r;
   try{r=maker(v)}catch(err){alert(err.message);return}
   if(!r)return;
+
   try{
    if(editingId&&editingType===type){
     const i=db[type].findIndex(x=>x.id===editingId);
@@ -214,43 +342,79 @@ function attach(type,maker){
     r.id=id();
     db[type].push(r);
    }
-   editingId=null;editingType=null;
+   editingId=null;
+   editingType=null;
    persist();
-  }catch(err){alert("Save failed: "+err.message);return}
+  }catch(err){
+   alert("Save failed: "+err.message);
+   return;
+  }
+
   render();
+
   if(user){
-   try{await cloudSave();alert("Saved and synced to cloud.")}
-   catch(err){alert("Saved locally, but cloud sync failed: "+err.message)}
-  }else alert("Saved on this device.");
+   try{
+    await cloudSave();
+    alert("Saved and synced to cloud.");
+   }catch(err){
+    alert("Saved locally, but cloud sync failed: "+err.message);
+   }
+  }else{
+   alert("Saved on this device.");
+  }
  };
 }
+
 window.editRecord=function(type,rid){
  const record=db[type]?.find(x=>x.id===rid);
  if(!record)return alert("Record not found.");
  const f=$("f");
  if(!f)return alert("Open the appropriate module form first.");
- editingId=rid;editingType=type;
+
+ editingId=rid;
+ editingType=type;
+
  for(const el of f.elements){
   if(!el.name||!(el.name in record))continue;
   el.value=record[el.name]??"";
  }
+
  const h=f.closest(".panel")?.querySelector("h2");
  if(h)h.textContent="Edit Record";
+
  const b=$("formSave");
  if(b)b.textContent="Update Record";
+
  f.scrollIntoView({behavior:"smooth",block:"start"});
 };
+
 window.cancelEdit=function(){
- editingId=null;editingType=null;render();
+ editingId=null;
+ editingType=null;
+ render();
 };
-window.del=async(t,rid)=>{
+
+window.del=async function(t,rid){
  if(!confirm("Delete this record permanently?"))return;
  db[t]=db[t].filter(x=>x.id!==rid);
- persist();render();
- if(user)try{await cloudSave()}catch(e){alert("Deleted locally; cloud sync failed: "+e.message)}
+ persist();
+ render();
+ if(user){
+  try{await cloudSave()}
+  catch(e){alert("Deleted locally; cloud sync failed: "+e.message)}
+ }
 };
-window.go=p=>{if(!user){showLogin();return}page=p;render()};
-window.toggleLang=()=>{lang=lang==="mr"?"en":"mr";render()};
+
+window.go=p=>{
+ if(!user){showLogin();return}
+ page=p;
+ render();
+};
+
+window.toggleLang=()=>{
+ lang=lang==="mr"?"en":"mr";
+ render();
+};
 
 function showLogin(message=""){
  $("loginScreen").style.display="flex";
@@ -259,110 +423,279 @@ function showLogin(message=""){
  $("accountbar").classList.remove("show");
  $("loginError").textContent=message;
 }
+
 function updateAccount(){
  $("accountbar").classList.toggle("show",!!user);
  $("accountemail").textContent=user?"Account: "+user.email:"";
 }
+
 function partyFields(){
- return field("name","Name","text",true)+field("mobile","Mobile")+field("email","Email","email")+field("gstin","GSTIN")+field("city","City")+field("address","Address");
+ return field("name","Name","text",true)
+ +field("mobile","Mobile")
+ +field("email","Email","email")
+ +field("gstin","GSTIN")
+ +field("city","City")
+ +field("address","Address");
 }
+
 function render(){
  if(!user){showLogin();return}
+
  $("loginScreen").style.display="none";
  $("erpLayout").style.display="grid";
  $("notice").style.display="block";
  updateAccount();
 
- $("nav").innerHTML=menus.map(m=>`<button class="nav ${page===m[0]?"active":""}" onclick="go('${m[0]}')">${m[lang==="mr"?2:1]}</button>`).join("")+
+ $("nav").innerHTML=menus.map(m=>
+ `<button class="nav ${page===m[0]?"active":""}" onclick="go('${m[0]}')">
+ ${m[lang==="mr"?2:1]}</button>`
+ ).join("")+
  `<button class="nav" onclick="toggleLang()">${lang==="en"?"मराठी":"English"}</button>`;
 
  let h="",a=null;
 
  if(page==="dashboard"){
-  h=`<section class="panel"><h2>Dashboard</h2><p class="small">Company: ${esc(COMPANY.name)}</p>
+  h=`<section class="panel"><h2>Dashboard</h2>
+  <p class="small">Company: ${esc(COMPANY.name)}</p>
   <div class="stats">${[
-   ["Products",db.products.length],["Customers",db.customers.length],["Sales Invoices",db.sales.length],
-   ["Suppliers",db.suppliers.length],["Total Sales",M(sum(db.sales,x=>x.total))],["Purchases",M(sum(db.purchases,x=>x.total))]
-  ].map(x=>`<div class="stat"><strong>${x[1]}</strong><span>${x[0]}</span></div>`).join("")}</div></section>
-  <section class="panel"><h2>Low Stock Alert</h2>${tbl(["Product","Available","Reorder"],db.products.filter(p=>balance(p.id)<=N(p.reorder)).map(p=>`<tr><td>${esc(p.name)}</td><td>${balance(p.id)}</td><td>${N(p.reorder)} <span class="pill">Low Stock</span></td></tr>`))}</section>`;
+   ["Products",db.products.length],
+   ["Customers",db.customers.length],
+   ["Sales Invoices",db.sales.length],
+   ["Suppliers",db.suppliers.length],
+   ["Total Sales",M(sum(db.sales,x=>x.total))],
+   ["Purchases",M(sum(db.purchases,x=>x.total))]
+  ].map(x=>`<div class="stat"><strong>${x[1]}</strong><span>${x[0]}</span></div>`).join("")}</div>
+  </section>
+  <section class="panel"><h2>Low Stock Alert</h2>
+  ${tbl(["Product","Available","Reorder"],
+   db.products.filter(p=>balance(p.id)<=N(p.reorder)).map(p=>
+   `<tr><td>${esc(p.name)}</td><td>${balance(p.id)}</td>
+   <td>${N(p.reorder)} <span class="pill">Low Stock</span></td></tr>`))}
+  </section>`;
  }
 
  if(page==="products"){
-  h=form("Add / Edit Product",field("code","Product Code","text",true)+field("name","Product Name","text",true)+field("make","Make / Brand")+field("model","Model")+field("unit","Unit")+field("opening","Opening Stock","number")+field("reorder","Reorder Level","number")+field("cost","Purchase Cost ₹","number")+field("price","Selling Price ₹","number"))+
-  `<section class="panel"><h2>Product List</h2>${list("products",["Code","Name","Make","Model","Unit","Opening","Reorder","Cost","Price"],[x=>x.code,x=>x.name,x=>x.make,x=>x.model,x=>x.unit,x=>x.opening,x=>x.reorder,x=>M(x.cost),x=>M(x.price)])}</section>`;
+  h=form("Add / Edit Product",
+   field("code","Product Code","text",true)
+  +field("name","Product Name","text",true)
+  +field("make","Make / Brand")
+  +field("model","Model")
+  +field("unit","Unit")
+  +field("opening","Opening Stock","number")
+  +field("reorder","Reorder Level","number")
+  +field("cost","Purchase Cost ₹","number")
+  +field("price","Selling Price ₹","number"))
+  +`<section class="panel"><h2>Product List</h2>
+  ${list("products",
+  ["Code","Name","Make","Model","Unit","Opening","Reorder","Cost","Price"],
+  [x=>x.code,x=>x.name,x=>x.make,x=>x.model,x=>x.unit,x=>x.opening,
+   x=>x.reorder,x=>M(x.cost),x=>M(x.price)])}</section>`;
+
   a=["products",f=>{
-   if(db.products.some(x=>x.code.toLowerCase()===f.code.trim().toLowerCase()&&x.id!==editingId))throw Error("Product code already exists.");
-   return {code:f.code.trim(),name:f.name.trim(),make:f.make,model:f.model,unit:f.unit||"pcs",opening:Math.max(0,N(f.opening)),reorder:Math.max(0,N(f.reorder)),cost:Math.max(0,N(f.cost)),price:Math.max(0,N(f.price))};
+   if(db.products.some(x=>x.code.toLowerCase()===f.code.trim().toLowerCase()&&x.id!==editingId))
+    throw Error("Product code already exists.");
+   return {
+    code:f.code.trim(),name:f.name.trim(),make:f.make,model:f.model,
+    unit:f.unit||"pcs",opening:Math.max(0,N(f.opening)),
+    reorder:Math.max(0,N(f.reorder)),cost:Math.max(0,N(f.cost)),
+    price:Math.max(0,N(f.price))
+   };
   }];
  }
 
  if(page==="customers"||page==="suppliers"){
   const t=page;
-  h=form("Add / Edit "+(t==="customers"?"Customer":"Supplier"),partyFields())+
-  `<section class="panel"><h2>${t} List</h2>${list(t,["Name","Mobile","Email","GSTIN","City","Address"],[x=>x.name,x=>x.mobile,x=>x.email,x=>x.gstin,x=>x.city,x=>x.address])}</section>`;
-  a=[t,f=>({name:f.name.trim(),mobile:f.mobile,email:f.email,gstin:f.gstin,city:f.city,address:f.address})];
+  h=form("Add / Edit "+(t==="customers"?"Customer":"Supplier"),partyFields())
+  +`<section class="panel"><h2>${t} List</h2>
+  ${list(t,["Name","Mobile","Email","GSTIN","City","Address"],
+   [x=>x.name,x=>x.mobile,x=>x.email,x=>x.gstin,x=>x.city,x=>x.address])}
+  </section>`;
+  a=[t,f=>({
+   name:f.name.trim(),mobile:f.mobile,email:f.email,gstin:f.gstin,
+   city:f.city,address:f.address
+  })];
  }
 
  if(page==="quotations"){
-  h=form("Create / Edit Quotation",field("doc","Quotation No.","text",true)+sel("party","Customer",db.customers)+field("date","Date","date",true)+field("validUntil","Valid Until","date")+sel("product","Product",db.products)+field("qty","Quantity","number",true,'min=".001" step="any"')+field("rate","Rate ₹","number",true,'min="0" step="any"')+field("gst","GST %","number",false,'min="0" max="100" step="any"')+field("terms","Terms / Notes"))+
-  `<section class="panel"><h2>Quotation Register</h2>${tbl(["Quotation No.","Customer","Date","Product","Qty","Total","Actions"],db.quotations.map(x=>`<tr><td>${esc(x.doc)}</td><td>${esc(x.partyName)}</td><td>${esc(x.date)}</td><td>${esc(x.productName)}</td><td>${x.qty}</td><td>${M(x.total)}</td><td><button class="btn" onclick="editRecord('quotations','${esc(x.id)}')">Edit</button><button class="btn" onclick="printDoc('quotations','${esc(x.id)}')">Print</button><button class="btn secondary" onclick="convertQuotation('${esc(x.id)}')">Convert to Invoice</button><button class="btn danger" onclick="del('quotations','${esc(x.id)}')">Delete</button></td></tr>`))}</section>`;
+  h=form("Create / Edit Quotation",
+   field("doc","Quotation No.","text",true)
+  +sel("party","Customer",db.customers)
+  +field("date","Date","date",true)
+  +field("validUntil","Valid Until","date")
+  +sel("product","Product",db.products)
+  +field("qty","Quantity","number",true,'min=".001" step="any"')
+  +field("rate","Rate ₹","number",true,'min="0" step="any"')
+  +field("gst","GST %","number",false,'min="0" max="100" step="any"')
+  +field("terms","Terms / Notes"))
+  +`<section class="panel"><h2>Quotation Register</h2>
+  ${tbl(["Quotation No.","Customer","Date","Product","Qty","Total","Actions"],
+   db.quotations.map(x=>`<tr>
+   <td>${esc(x.doc)}</td><td>${esc(x.partyName)}</td><td>${esc(x.date)}</td>
+   <td>${esc(x.productName)}</td><td>${x.qty}</td><td>${M(x.total)}</td>
+   <td>
+   <button class="btn" onclick="editRecord('quotations','${esc(x.id)}')">Edit</button>
+   <button class="btn" onclick="printDoc('quotations','${esc(x.id)}')">Print</button>
+   <button class="btn secondary" onclick="convertQuotation('${esc(x.id)}')">Convert to Invoice</button>
+   <button class="btn danger" onclick="del('quotations','${esc(x.id)}')">Delete</button>
+   </td></tr>`))}
+  </section>`;
+
   a=["quotations",f=>{
-   const p=db.products.find(x=>x.id===f.product),party=db.customers.find(x=>x.id===f.party);
+   const p=db.products.find(x=>x.id===f.product);
+   const party=db.customers.find(x=>x.id===f.party);
    if(!p||!party)throw Error("Select customer and product.");
-   if(db.quotations.some(x=>x.doc.toLowerCase()===f.doc.trim().toLowerCase()&&x.id!==editingId))throw Error("Quotation number already exists.");
-   const qty=N(f.qty),rate=N(f.rate),gst=N(f.gst),subtotal=qty*rate,gstAmount=subtotal*gst/100;
-   if(qty<=0||rate<0||gst<0||gst>100)throw Error("Check quantity, rate and GST.");
-   return {doc:f.doc.trim(),party:f.party,partyId:party.id,partyName:party.name,partyAddress:party.address||"",partyGstin:party.gstin||"",date:f.date,validUntil:f.validUntil,product:p.id,productName:p.name,qty,rate,gst,subtotal,gstAmount,total:subtotal+gstAmount,terms:f.terms||""};
+   if(db.quotations.some(x=>x.doc.toLowerCase()===f.doc.trim().toLowerCase()&&x.id!==editingId))
+    throw Error("Quotation number already exists.");
+
+   const qty=N(f.qty),rate=N(f.rate),gst=N(f.gst);
+   const subtotal=qty*rate,gstAmount=subtotal*gst/100;
+   if(qty<=0||rate<0||gst<0||gst>100)
+    throw Error("Check quantity, rate and GST.");
+
+   return {
+    doc:f.doc.trim(),party:f.party,partyId:party.id,partyName:party.name,
+    partyAddress:party.address||"",partyGstin:party.gstin||"",
+    date:f.date,validUntil:f.validUntil,product:p.id,productName:p.name,
+    qty,rate,gst,subtotal,gstAmount,total:subtotal+gstAmount,terms:f.terms||""
+   };
   }];
  }
 
  if(page==="sales"||page==="purchases"){
-  const sale=page==="sales",t=sale?"sales":"purchases",parties=sale?db.customers:db.suppliers;
-  h=form(sale?"Sales Tax Invoice":"Purchase Entry",field("doc","Invoice / Bill No.","text",true)+sel("party",sale?"Customer":"Supplier",parties)+field("date","Date","date",true)+sel("product","Product",db.products)+field("qty","Quantity","number",true,'min=".001" step="any"')+field("rate","Rate ₹","number",true,'min="0" step="any"')+field("gst","GST %","number",false,'min="0" max="100" step="any"')+field("paid","Paid ₹","number",false,'min="0" step="any"'))+
-  `<section class="panel"><h2>${sale?"Sales Invoices":"Purchase Bills"}</h2>${tbl(["No.","Party","Date","Product","Qty","Total","Paid","Balance","Actions"],db[t].map(x=>`<tr><td>${esc(x.doc)}</td><td>${esc(x.partyName)}</td><td>${esc(x.date)}</td><td>${esc(x.productName)}</td><td>${x.qty}</td><td>${M(x.total)}</td><td>${M(x.paid)}</td><td>${M(x.total-x.paid)}</td><td><button class="btn" onclick="editRecord('${t}','${esc(x.id)}')">Edit</button><button class="btn" onclick="printDoc('${t}','${esc(x.id)}')">Print</button><button class="btn danger" onclick="del('${t}','${esc(x.id)}')">Delete</button></td></tr>`))}<button class="btn secondary" onclick="csv('${t}')">Export CSV</button></section>`;
+  const sale=page==="sales",t=sale?"sales":"purchases";
+  const parties=sale?db.customers:db.suppliers;
+
+  h=form(sale?"Sales Tax Invoice":"Purchase Entry",
+   field("doc","Invoice / Bill No.","text",true)
+  +sel("party",sale?"Customer":"Supplier",parties)
+  +field("date","Date","date",true)
+  +sel("product","Product",db.products)
+  +field("qty","Quantity","number",true,'min=".001" step="any"')
+  +field("rate","Rate ₹","number",true,'min="0" step="any"')
+  +field("gst","GST %","number",false,'min="0" max="100" step="any"')
+  +field("paid","Paid ₹","number",false,'min="0" step="any"'))
+  +`<section class="panel"><h2>${sale?"Sales Invoices":"Purchase Bills"}</h2>
+  ${tbl(["No.","Party","Date","Product","Qty","Total","Paid","Balance","Actions"],
+   db[t].map(x=>`<tr><td>${esc(x.doc)}</td><td>${esc(x.partyName)}</td>
+   <td>${esc(x.date)}</td><td>${esc(x.productName)}</td><td>${x.qty}</td>
+   <td>${M(x.total)}</td><td>${M(x.paid)}</td><td>${M(x.total-x.paid)}</td>
+   <td><button class="btn" onclick="editRecord('${t}','${esc(x.id)}')">Edit</button>
+   <button class="btn" onclick="printDoc('${t}','${esc(x.id)}')">Print</button>
+   <button class="btn danger" onclick="del('${t}','${esc(x.id)}')">Delete</button></td>
+   </tr>`))}
+  <button class="btn secondary" onclick="csv('${t}')">Export CSV</button>
+  </section>`;
+
   a=[t,f=>{
-   const p=db.products.find(x=>x.id===f.product),party=parties.find(x=>x.id===f.party);
+   const p=db.products.find(x=>x.id===f.product);
+   const party=parties.find(x=>x.id===f.party);
    if(!p||!party)throw Error("Select product and party.");
-   if(db[t].some(x=>x.doc.toLowerCase()===f.doc.trim().toLowerCase()&&x.id!==editingId))throw Error("Document number already exists.");
-   const qty=N(f.qty),rate=N(f.rate),gst=N(f.gst),subtotal=qty*rate,gstAmount=subtotal*gst/100,total=subtotal+gstAmount,paid=N(f.paid);
-   if(qty<=0||rate<0||gst<0||gst>100||paid<0||paid>total)throw Error("Check quantity, GST and payment.");
-   if(sale&&qty>balance(p.id)+(editingId?(db.sales.find(x=>x.id===editingId)?.qty||0):0))throw Error("Insufficient stock. Available: "+balance(p.id));
-   return {doc:f.doc.trim(),party:f.party,partyId:party.id,partyName:party.name,partyAddress:party.address||"",partyGstin:party.gstin||"",date:f.date,product:p.id,productName:p.name,qty,rate,gst,subtotal,gstAmount,total,paid};
+   if(db[t].some(x=>x.doc.toLowerCase()===f.doc.trim().toLowerCase()&&x.id!==editingId))
+    throw Error("Document number already exists.");
+
+   const qty=N(f.qty),rate=N(f.rate),gst=N(f.gst);
+   const subtotal=qty*rate,gstAmount=subtotal*gst/100;
+   const total=subtotal+gstAmount,paid=N(f.paid);
+
+   if(qty<=0||rate<0||gst<0||gst>100||paid<0||paid>total)
+    throw Error("Check quantity, GST and payment.");
+
+   if(sale&&qty>balance(p.id)+(editingId?(db.sales.find(x=>x.id===editingId)?.qty||0):0))
+    throw Error("Insufficient stock. Available: "+balance(p.id));
+
+   return {
+    doc:f.doc.trim(),party:f.party,partyId:party.id,partyName:party.name,
+    partyAddress:party.address||"",partyGstin:party.gstin||"",
+    date:f.date,product:p.id,productName:p.name,qty,rate,gst,
+    subtotal,gstAmount,total,paid
+   };
   }];
  }
 
  if(page==="stockio"){
-  h=form("Stock In / Out",sel("product","Product",db.products,true,p=>p.name+" (Available "+balance(p.id)+")")+'<div class="field"><label>Direction</label><select name="direction"><option>In</option><option>Out</option></select></div>'+field("qty","Quantity","number",true,'min=".001" step="any"')+field("date","Date","date",true)+field("reference","Reference")+field("notes","Notes"))+
-  `<section class="panel"><h2>Stock History</h2>${list("stock",["Date","Product","Direction","Qty","Reference","Notes"],[x=>x.date,x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.direction,x=>x.qty,x=>x.reference,x=>x.notes])}</section>`;
+  h=form("Stock In / Out",
+   sel("product","Product",db.products,true,p=>p.name+" (Available "+balance(p.id)+")")
+  +'<div class="field"><label>Direction</label><select name="direction"><option>In</option><option>Out</option></select></div>'
+  +field("qty","Quantity","number",true,'min=".001" step="any"')
+  +field("date","Date","date",true)
+  +field("reference","Reference")
+  +field("notes","Notes"))
+  +`<section class="panel"><h2>Stock History</h2>
+  ${list("stock",["Date","Product","Direction","Qty","Reference","Notes"],
+   [x=>x.date,x=>db.products.find(p=>p.id===x.product)?.name||"",
+   x=>x.direction,x=>x.qty,x=>x.reference,x=>x.notes])}
+  </section>`;
+
   a=["stock",f=>{
-   if(!db.products.some(p=>p.id===f.product)||N(f.qty)<=0)throw Error("Select product and valid quantity.");
-   if(f.direction==="Out"&&N(f.qty)>balance(f.product))throw Error("Insufficient stock.");
-   return {product:f.product,direction:f.direction,qty:N(f.qty),date:f.date,reference:f.reference,notes:f.notes};
+   if(!db.products.some(p=>p.id===f.product)||N(f.qty)<=0)
+    throw Error("Select product and valid quantity.");
+   if(f.direction==="Out"&&N(f.qty)>balance(f.product))
+    throw Error("Insufficient stock.");
+   return {
+    product:f.product,direction:f.direction,qty:N(f.qty),
+    date:f.date,reference:f.reference,notes:f.notes
+   };
   }];
  }
 
  if(page==="stockreg"){
-  h=`<section class="panel"><h2>Stock Register</h2><button class="btn secondary" onclick="csv('stockreg')">Export CSV</button>${tbl(["Code","Product","Opening","In","Out","Balance","Status"],db.products.map(p=>{
-   const i=sum(db.stock.filter(x=>x.product===p.id&&x.direction==="In"),x=>x.qty)+sum(db.purchases.filter(x=>x.product===p.id),x=>x.qty);
-   const o=sum(db.stock.filter(x=>x.product===p.id&&x.direction==="Out"),x=>x.qty)+sum(db.sales.filter(x=>x.product===p.id),x=>x.qty);
-   const b=balance(p.id);
-   return `<tr><td>${esc(p.code)}</td><td>${esc(p.name)}</td><td>${N(p.opening)}</td><td>${i}</td><td>${o}</td><td>${b}</td><td>${b<=N(p.reorder)?"LOW":"OK"}</td></tr>`;
-  }))}</section>`;
+  h=`<section class="panel"><h2>Stock Register</h2>
+  <button class="btn secondary" onclick="csv('stockreg')">Export CSV</button>
+  ${tbl(["Code","Product","Opening","In","Out","Balance","Status"],
+   db.products.map(p=>{
+    const i=sum(db.stock.filter(x=>x.product===p.id&&x.direction==="In"),x=>x.qty)
+      +sum(db.purchases.filter(x=>x.product===p.id),x=>x.qty);
+    const o=sum(db.stock.filter(x=>x.product===p.id&&x.direction==="Out"),x=>x.qty)
+      +sum(db.sales.filter(x=>x.product===p.id),x=>x.qty);
+    const b=balance(p.id);
+    return `<tr><td>${esc(p.code)}</td><td>${esc(p.name)}</td>
+    <td>${N(p.opening)}</td><td>${i}</td><td>${o}</td><td>${b}</td>
+    <td>${b<=N(p.reorder)?"LOW":"OK"}</td></tr>`;
+   }))}
+  </section>`;
  }
 
  if(page==="serials"){
-  h=form("Serial Number Register",sel("product","Product",db.products)+field("serial","Serial Number","text",true)+'<div class="field"><label>Status</label><select name="status"><option>In Stock</option><option>Sold</option><option>Under Calibration</option><option>Sent for Repair</option></select></div>'+field("customer","Customer / Location")+field("calibration","Last Calibration","date")+field("nextcal","Next Calibration Due","date")+field("certificate","Certificate No.")+field("warranty","Warranty Until","date"))+
-  `<section class="panel"><h2>Serial Register</h2>${list("serials",["Product","Serial","Status","Customer","Last Cal.","Next Due","Certificate","Warranty"],[x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.serial,x=>x.status,x=>x.customer,x=>x.calibration,x=>x.nextcal,x=>x.certificate,x=>x.warranty])}</section>`;
+  h=form("Serial Number Register",
+   sel("product","Product",db.products)
+  +field("serial","Serial Number","text",true)
+  +'<div class="field"><label>Status</label><select name="status"><option>In Stock</option><option>Sold</option><option>Under Calibration</option><option>Sent for Repair</option></select></div>'
+  +field("customer","Customer / Location")
+  +field("calibration","Last Calibration","date")
+  +field("nextcal","Next Calibration Due","date")
+  +field("certificate","Certificate No.")
+  +field("warranty","Warranty Until","date"))
+  +`<section class="panel"><h2>Serial Register</h2>
+  ${list("serials",["Product","Serial","Status","Customer","Last Cal.","Next Due","Certificate","Warranty"],
+   [x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.serial,x=>x.status,
+    x=>x.customer,x=>x.calibration,x=>x.nextcal,x=>x.certificate,x=>x.warranty])}
+  </section>`;
+
   a=["serials",f=>{
-   if(db.serials.some(x=>x.serial.toLowerCase()===f.serial.trim().toLowerCase()&&x.id!==editingId))throw Error("Serial number already exists.");
+   if(db.serials.some(x=>x.serial.toLowerCase()===f.serial.trim().toLowerCase()&&x.id!==editingId))
+    throw Error("Serial number already exists.");
    return {...f,serial:f.serial.trim()};
   }];
  }
 
  if(page==="payments"){
-  h=form("Payment Entry",'<div class="field"><label>Type</label><select name="type"><option>Receipt from Customer</option><option>Payment to Supplier</option></select></div>'+field("party","Party","text",true)+field("date","Date","date",true)+field("amount","Amount ₹","number",true,'min=".01" step="any"')+field("reference","Invoice / Reference")+field("notes","Notes"))+
-  `<section class="panel"><h2>Payments</h2>${list("payments",["Type","Party","Date","Amount","Reference","Notes"],[x=>x.type,x=>x.party,x=>x.date,x=>M(x.amount),x=>x.reference,x=>x.notes])}</section>
-  <section class="panel"><h2>Invoice Outstanding</h2>${tbl(["Type","Party","Doc","Total","Paid","Balance"],[...db.sales.map(x=>`<tr><td>Sale</td><td>${esc(x.partyName)}</td><td>${esc(x.doc)}</td><td>${M(x.total)}</td><td>${M(x.paid)}</td><td>${M(x.total-x.paid)}</td></tr>`),...db.purchases.map(x=>`<tr><td>Purchase</td><td>${esc(x.partyName)}</td><td>${esc(x.doc)}</td><td>${M(x.total)}</td><td>${M(x.paid)}</td><td>${M(x.total-x.paid)}</td></tr>`)])}</section>`;
+  h=form("Payment Entry",
+   '<div class="field"><label>Type</label><select name="type"><option>Receipt from Customer</option><option>Payment to Supplier</option></select></div>'
+  +field("party","Party","text",true)
+  +field("date","Date","date",true)
+  +field("amount","Amount ₹","number",true,'min=".01" step="any"')
+  +field("reference","Invoice / Reference")
+  +field("notes","Notes"))
+  +`<section class="panel"><h2>Payments</h2>
+  ${list("payments",["Type","Party","Date","Amount","Reference","Notes"],
+   [x=>x.type,x=>x.party,x=>x.date,x=>M(x.amount),x=>x.reference,x=>x.notes])}
+  </section>
+  <section class="panel"><h2>Invoice Outstanding</h2>
+  ${tbl(["Type","Party","Doc","Total","Paid","Balance"],
+   [...db.sales.map(x=>`<tr><td>Sale</td><td>${esc(x.partyName)}</td><td>${esc(x.doc)}</td><td>${M(x.total)}</td><td>${M(x.paid)}</td><td>${M(x.total-x.paid)}</td></tr>`),
+   ...db.purchases.map(x=>`<tr><td>Purchase</td><td>${esc(x.partyName)}</td><td>${esc(x.doc)}</td><td>${M(x.total)}</td><td>${M(x.paid)}</td><td>${M(x.total-x.paid)}</td></tr>`)])}
+  </section>`;
+
   a=["payments",f=>{
    if(N(f.amount)<=0)throw Error("Enter valid amount.");
    return {...f,amount:N(f.amount)};
@@ -377,12 +710,13 @@ function render(){
   <p>Purchase outstanding: <b>${M(sum(db.purchases,x=>x.total-x.paid))}</b></p>
   <button class="btn" onclick="window.print()">Print / Save PDF</button>
   ${T.map(t=>`<button class="btn secondary" onclick="csv('${t}')">${t} CSV</button>`).join("")}
-  <button class="btn secondary" onclick="csv('stockreg')">Stock CSV</button></section>`;
+  <button class="btn secondary" onclick="csv('stockreg')">Stock CSV</button>
+  </section>`;
  }
 
  if(page==="backup"){
   h=`<section class="panel"><h2>Company Details</h2>
-  <p class="small">कंपनीचे अधिकृत तपशील येथे भरून Save करा. अचूक GSTIN किंवा पत्ता वेबसाइटवरून पडताळल्याशिवाय भरू नका.</p>
+  <p class="small">कंपनीचे अधिकृत तपशील येथे भरून Save करा. GSTIN व पत्ता अचूक तपासून भरा.</p>
   <form id="companyForm" class="formgrid">
   ${field("name","Company Name","text",true)}
   ${field("phone","Phone")}
@@ -390,21 +724,27 @@ function render(){
   ${field("gstin","GSTIN")}
   ${field("address","Company Address")}
   ${field("website","Website")}
-  </form><button class="btn" onclick="saveCompany()">Save Company Details</button></section>
+  ${field("logo","Logo Image URL")}
+  </form>
+  <button class="btn" onclick="saveCompany()">Save Company Details</button>
+  </section>
+
   <section class="panel"><h2>Backup / Restore</h2>
   <button class="btn" onclick="backup()">Download JSON Backup</button>
-  <div class="field"><label>Restore JSON</label><input type="file" accept=".json,application/json" onchange="restore(event)"></div>
+  <div class="field"><label>Restore JSON</label>
+  <input type="file" accept=".json,application/json" onchange="restore(event)"></div>
   </section>
+
   <section class="panel"><h2>Supabase Cloud Setup</h2>
-  <p class="small">Supabase Project URL आणि Publishable Key भरा. ही माहिती या ब्राउझरमध्ये सेव्ह केली जाईल.</p>
+  <p class="small">Supabase Project URL आणि Publishable Key भरा.</p>
   <div class="formgrid">
-  <div class="field"><label>Project URL</label><input id="url" placeholder="https://project.supabase.co"></div>
-  <div class="field"><label>Publishable Key</label><input id="key" placeholder="sb_publishable_..."></div>
+   <div class="field"><label>Project URL</label><input id="url" placeholder="https://project.supabase.co"></div>
+   <div class="field"><label>Publishable Key</label><input id="key" placeholder="sb_publishable_..."></div>
   </div>
   <button class="btn" onclick="setup()">Save Cloud Settings</button>
   <div class="formgrid">
-  <div class="field"><label>Login Email</label><input id="email" type="email"></div>
-  <div class="field"><label>Password</label><input id="password" type="password"></div>
+   <div class="field"><label>Login Email</label><input id="email" type="email"></div>
+   <div class="field"><label>Password</label><input id="password" type="password"></div>
   </div>
   <button class="btn" onclick="signup()">Create Login</button>
   <button class="btn secondary" onclick="loginFromSettings()">Login</button>
@@ -422,7 +762,8 @@ create policy "read own ERP" on public.erp_data for select to authenticated usin
 create policy "insert own ERP" on public.erp_data for insert to authenticated with check (auth.uid() = user_id);
 create policy "update own ERP" on public.erp_data for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);</pre>
   <button class="btn secondary" onclick="copySQL()">Copy SQL</button>
-  <p class="small">HTML मध्ये Supabase Secret/service_role key कधीही टाकू नका. Publishable/anon key वापरा.</p></section>`;
+  <p class="small">HTML मध्ये Supabase Secret/service_role key कधीही टाकू नका. Publishable key वापरा.</p>
+  </section>`;
  }
 
  $("app").innerHTML=h;
@@ -433,7 +774,11 @@ create policy "update own ERP" on public.erp_data for update to authenticated us
   $("url").value=c.url||"";
   $("key").value=c.key||"";
   const cf=$("companyForm");
-  if(cf)Object.keys(COMPANY).forEach(k=>{if(cf.elements[k])cf.elements[k].value=COMPANY[k]||""});
+  if(cf){
+   Object.keys(COMPANY).forEach(k=>{
+    if(cf.elements[k])cf.elements[k].value=COMPANY[k]||"";
+   });
+  }
  }
 }
 
@@ -443,24 +788,36 @@ window.saveCompany=function(){
  if(!f)return;
  const v=Object.fromEntries(new FormData(f).entries());
  Object.assign(COMPANY,v);
- localStorage.setItem("omSaiERP_company_v1",JSON.stringify(COMPANY));
- $("companyContact").textContent=[COMPANY.phone,COMPANY.email,COMPANY.gstin].filter(Boolean).join(" | ");
+ localStorage.setItem(COMPANYKEY,JSON.stringify(COMPANY));
+ updateCompanyContact();
  alert("Company details saved.");
 };
+
+function updateCompanyContact(){
+ $("companyContact").textContent=[
+  COMPANY.phone,COMPANY.email,COMPANY.gstin
+ ].filter(Boolean).join(" | ")||COMPANY.website;
+}
+
 try{
- const c=JSON.parse(localStorage.getItem("omSaiERP_company_v1")||"null");
+ const c=JSON.parse(localStorage.getItem(COMPANYKEY)||"null");
  if(c)Object.assign(COMPANY,c);
 }catch(e){}
-$("companyContact").textContent=[COMPANY.phone,COMPANY.email,COMPANY.gstin].filter(Boolean).join(" | ")||COMPANY.website;
+
+updateCompanyContact();
 
 window.backup=function(){
- const b=new Blob([JSON.stringify({version:3,exportedAt:new Date().toISOString(),data:db,company:COMPANY},null,2)],{type:"application/json"});
+ const b=new Blob([JSON.stringify({
+  version:3,exportedAt:new Date().toISOString(),data:db,company:COMPANY
+ },null,2)],{type:"application/json"});
  const u=URL.createObjectURL(b),a=document.createElement("a");
  a.href=u;a.download="om-sai-erp-backup-"+today()+".json";a.click();
  setTimeout(()=>URL.revokeObjectURL(u),1000);
 };
+
 window.restore=function(e){
- const f=e.target.files[0];if(!f)return;
+ const f=e.target.files[0];
+ if(!f)return;
  const r=new FileReader();
  r.onload=()=>{
   try{
@@ -469,150 +826,285 @@ window.restore=function(e){
    db=norm(x.data||x);
    if(x.company)Object.assign(COMPANY,x.company);
    persist();
-   localStorage.setItem("omSaiERP_company_v1",JSON.stringify(COMPANY));
+   localStorage.setItem(COMPANYKEY,JSON.stringify(COMPANY));
+   updateCompanyContact();
    render();
    alert("Backup restored.");
-  }catch(err){alert("Invalid JSON backup")}
+  }catch(err){
+   alert("Invalid JSON backup");
+  }
  };
  r.readAsText(f);
 };
+
 window.csv=function(t){
  let rows;
- if(t==="stockreg")rows=[["Code","Product","Opening","Balance"],...db.products.map(p=>[p.code,p.name,p.opening,balance(p.id)])];
- else{
+ if(t==="stockreg"){
+  rows=[["Code","Product","Opening","Balance"],
+   ...db.products.map(p=>[p.code,p.name,p.opening,balance(p.id)])];
+ }else{
   const arr=db[t]||[],keys=arr.length?Object.keys(arr[0]):[];
   rows=[keys,...arr.map(x=>keys.map(k=>x[k]))];
  }
- const s="\ufeff"+rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");
- const b=new Blob([s],{type:"text/csv;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");
- a.href=u;a.download=t+"-"+today()+".csv";a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);
-};
-window.copySQL=function(){
- const text=$("sql").textContent;
- if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>alert("SQL copied")).catch(()=>alert("Select and copy SQL manually"));
- else alert("Select and copy SQL manually");
+ const s="\ufeff"+rows.map(r=>r.map(v=>
+  '"'+String(v??"").replace(/"/g,'""')+'"'
+ ).join(",")).join("\r\n");
+ const b=new Blob([s],{type:"text/csv;charset=utf-8"});
+ const u=URL.createObjectURL(b),a=document.createElement("a");
+ a.href=u;a.download=t+"-"+today()+".csv";a.click();
+ setTimeout(()=>URL.revokeObjectURL(u),1000);
 };
 
+window.copySQL=function(){
+ const text=$("sql").textContent;
+ if(navigator.clipboard){
+  navigator.clipboard.writeText(text)
+   .then(()=>alert("SQL copied"))
+   .catch(()=>alert("Select and copy SQL manually"));
+ }else alert("Select and copy SQL manually");
+};
+
+/* Logo included in printed Quotation / Tax Invoice */
 function docHtml(x,type){
- const isQ=type==="quotations",title=isQ?"QUOTATION":"TAX INVOICE";
- return `<!doctype html><html><head><meta charset="utf-8"><title>${title}</title>
- <style>body{font:14px Arial;margin:30px;color:#172534}header{border-bottom:3px solid #12304a;padding-bottom:12px}h1{color:#12304a;font-size:22px}table{width:100%;border-collapse:collapse;margin-top:20px}td,th{border:1px solid #ccd5df;padding:9px;text-align:left}th{background:#f1f5f9}.total{text-align:right;font-size:18px;font-weight:bold;margin-top:20px}@media print{button{display:none}}</style></head><body>
- <header><h1>${esc(COMPANY.name)}</h1>
- <div>${esc(COMPANY.address)}</div><div>${esc(COMPANY.phone)} ${esc(COMPANY.email)}</div>
- <div>GSTIN: ${esc(COMPANY.gstin)} | ${esc(COMPANY.website)}</div></header>
+ const isQ=type==="quotations";
+ const title=isQ?"QUOTATION":"TAX INVOICE";
+ const logo=esc(COMPANY.logo||LOGO);
+
+ return `<!doctype html><html><head><meta charset="utf-8">
+ <title>${title}</title>
+ <style>
+ body{font:14px Arial;margin:30px;color:#172534}
+ header{border-bottom:3px solid #12304a;padding-bottom:12px}
+ h1{color:#12304a;font-size:22px}
+ table{width:100%;border-collapse:collapse;margin-top:20px}
+ td,th{border:1px solid #ccd5df;padding:9px;text-align:left}
+ th{background:#f1f5f9}
+ .total{text-align:right;font-size:18px;font-weight:bold;margin-top:20px}
+ @media print{button{display:none}}
+ </style></head><body>
+
+ <header>
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
+   <img src="${logo}" alt="Company Logo"
+    style="width:90px;height:80px;object-fit:contain"
+    onerror="this.style.display='none'">
+   <h1>${esc(COMPANY.name)}</h1>
+  </div>
+  <div>${esc(COMPANY.address)}</div>
+  <div>${esc(COMPANY.phone)} ${esc(COMPANY.email)}</div>
+  <div>GSTIN: ${esc(COMPANY.gstin)} | ${esc(COMPANY.website)}</div>
+ </header>
+
  <h2 style="text-align:center">${title}</h2>
- <p><b>Document No.:</b> ${esc(x.doc)} &nbsp; <b>Date:</b> ${esc(x.date)}</p>
+ <p><b>Document No.:</b> ${esc(x.doc)} &nbsp;
+ <b>Date:</b> ${esc(x.date)}</p>
  ${isQ?`<p><b>Valid Until:</b> ${esc(x.validUntil||"-")}</p>`:""}
- <p><b>Customer / Supplier:</b> ${esc(x.partyName)}<br>${esc(x.partyAddress||"")}<br><b>GSTIN:</b> ${esc(x.partyGstin||"-")}</p>
- <table><thead><tr><th>Product</th><th>Qty</th><th>Rate</th><th>Taxable</th><th>GST %</th><th>GST Amount</th><th>Total</th></tr></thead>
- <tbody><tr><td>${esc(x.productName||"")}</td><td>${N(x.qty)}</td><td>${M(x.rate)}</td><td>${M(x.subtotal)}</td><td>${N(x.gst)}%</td><td>${M(x.gstAmount)}</td><td>${M(x.total)}</td></tr></tbody></table>
+ <p><b>Customer / Supplier:</b> ${esc(x.partyName)}<br>
+ ${esc(x.partyAddress||"")}<br>
+ <b>GSTIN:</b> ${esc(x.partyGstin||"-")}</p>
+
+ <table><thead><tr>
+ <th>Product</th><th>Qty</th><th>Rate</th><th>Taxable</th>
+ <th>GST %</th><th>GST Amount</th><th>Total</th>
+ </tr></thead>
+ <tbody><tr>
+ <td>${esc(x.productName||"")}</td>
+ <td>${N(x.qty)}</td>
+ <td>${M(x.rate)}</td>
+ <td>${M(x.subtotal)}</td>
+ <td>${N(x.gst)}%</td>
+ <td>${M(x.gstAmount)}</td>
+ <td>${M(x.total)}</td>
+ </tr></tbody></table>
+
  <div class="total">Grand Total: ${M(x.total)}</div>
  ${isQ?`<p><b>Terms / Notes:</b> ${esc(x.terms||"-")}</p>`:""}
- <p style="margin-top:50px">For ${esc(COMPANY.name)}<br><br><br>Authorised Signatory</p>
- <button onclick="window.print()">Print / Save PDF</button></body></html>`;
+ <p style="margin-top:50px">For ${esc(COMPANY.name)}<br><br><br>
+ Authorised Signatory</p>
+ <button onclick="window.print()">Print / Save PDF</button>
+ </body></html>`;
 }
+
 window.printDoc=function(type,rid){
  const x=(db[type]||[]).find(v=>v.id===rid);
  if(!x)return alert("Document not found.");
  const w=window.open("","_blank");
  if(!w)return alert("Please allow pop-ups to print.");
- w.document.write(docHtml(x,type));w.document.close();
+ w.document.write(docHtml(x,type));
+ w.document.close();
 };
+
 window.convertQuotation=async function(rid){
  const q=db.quotations.find(x=>x.id===rid);
  if(!q)return alert("Quotation not found.");
  if(q.qty>balance(q.product))return alert("Insufficient stock.");
  if(!confirm("Convert quotation to invoice?"))return;
- const inv={...q,id:id(),doc:"INV-"+Date.now(),date:today(),paid:0,quotationNo:q.doc};
- db.sales.push(inv);persist();page="sales";render();
- if(user)try{await cloudSave()}catch(e){alert("Invoice created locally; cloud sync failed: "+e.message)}
+
+ const inv={
+  ...q,id:id(),doc:"INV-"+Date.now(),date:today(),paid:0,quotationNo:q.doc
+ };
+ db.sales.push(inv);
+ persist();
+ page="sales";
+ render();
+
+ if(user){
+  try{await cloudSave()}
+  catch(e){alert("Invoice created locally; cloud sync failed: "+e.message)}
+ }
  alert("Invoice created: "+inv.doc);
 };
 
 window.setup=function(){
- const url=$("url").value.trim().replace(/\/+$/,""),key=$("key").value.trim();
- if(!/^https:\/\/.+\.supabase\.co$/.test(url)||!key)return alert("Enter valid Supabase URL and Publishable Key.");
+ const url=$("url").value.trim().replace(/\/+$/,"");
+ const key=$("key").value.trim();
+
+ if(!/^https:\/\/.+\.supabase\.co$/.test(url)||!key)
+  return alert("Enter valid Supabase URL and Publishable Key.");
+
  localStorage.setItem(CFG,JSON.stringify({url,key}));
  init();
  alert("Cloud settings saved on this device.");
 };
+
 window.signup=async function(){
  try{
-  const c=init();if(!c)throw Error("Save cloud settings first.");
+  const c=init();
+  if(!c)throw Error("Save cloud settings first.");
   const email=$("email").value.trim(),password=$("password").value;
-  if(!email||password.length<8)throw Error("Enter email and a password of at least 8 characters.");
+  if(!email||password.length<8)
+   throw Error("Enter email and a password of at least 8 characters.");
+
   const {error}=await c.auth.signUp({email,password});
   if(error)throw error;
   alert("Signup request sent. Check your email if confirmation is enabled.");
  }catch(e){alert(e.message)}
 };
+
 window.loginFromSettings=async function(){
  $("loginEmail").value=$("email").value.trim();
  $("loginPassword").value=$("password").value;
  await window.login();
 };
+
 window.login=async function(){
- const email=$("loginEmail").value.trim(),password=$("loginPassword").value;
+ const email=$("loginEmail").value.trim();
+ const password=$("loginPassword").value;
+
  try{
-  const c=init();if(!c)throw Error("Cloud settings missing. Sign in after setting up Supabase.");
+  const c=init();
+  if(!c)throw Error("Cloud settings missing. Configure Supabase first.");
   if(!email||!password)throw Error("Enter email and password.");
+
   const {data,error}=await c.auth.signInWithPassword({email,password});
   if(error)throw error;
+
   user=data.user;
   $("loginError").textContent="";
   render();
-  try{await window.sync(true)}catch(e){console.warn("Cloud sync on login:",e.message)}
- }catch(e){showLogin("Login failed: "+e.message)}
+
+  try{await window.sync(true)}
+  catch(e){console.warn("Cloud sync on login:",e.message)}
+ }catch(e){
+  showLogin("Login failed: "+e.message);
+ }
 };
-$("loginForm").addEventListener("submit",e=>{e.preventDefault();window.login()});
+
+$("loginForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ window.login();
+});
 
 window.logout=async function(){
  try{if(client)await client.auth.signOut()}catch(e){}
- user=null;page="dashboard";showLogin("You have been logged out.");
+ user=null;
+ page="dashboard";
+ showLogin("You have been logged out.");
 };
+
 async function cloudSave(){
- const c=init();if(!c)throw Error("Cloud config missing.");
+ const c=init();
+ if(!c)throw Error("Cloud config missing.");
+
  const {data:{user:u},error:ue}=await c.auth.getUser();
- if(ue)throw ue;if(!u)throw Error("Login first.");
- const {error}=await c.from("erp_data").upsert({user_id:u.id,payload:db,updated_at:new Date().toISOString()},{onConflict:"user_id"});
- if(error)throw error;user=u;
+ if(ue)throw ue;
+ if(!u)throw Error("Login first.");
+
+ const {error}=await c.from("erp_data").upsert({
+  user_id:u.id,payload:db,updated_at:new Date().toISOString()
+ },{onConflict:"user_id"});
+
+ if(error)throw error;
+ user=u;
 }
+
 window.saveCloudNow=async function(){
- try{persist();await cloudSave();if($("cloudStatus"))$("cloudStatus").textContent="Cloud Save Successful";alert("ERP data saved to cloud.")}
- catch(e){alert("Cloud save failed: "+e.message)}
+ try{
+  persist();
+  await cloudSave();
+  if($("cloudStatus"))$("cloudStatus").textContent="Cloud Save Successful";
+  alert("ERP data saved to cloud.");
+ }catch(e){
+  alert("Cloud save failed: "+e.message);
+ }
 };
+
 window.sync=async function(silent=false){
  try{
-  const c=init();if(!c)throw Error("Save cloud settings first.");
+  const c=init();
+  if(!c)throw Error("Save cloud settings first.");
+
   const {data:{user:u},error:ue}=await c.auth.getUser();
-  if(ue)throw ue;if(!u)throw Error("Login first.");
+  if(ue)throw ue;
+  if(!u)throw Error("Login first.");
   user=u;
-  const {data,error}=await c.from("erp_data").select("payload").eq("user_id",u.id).maybeSingle();
+
+  const {data,error}=await c.from("erp_data")
+   .select("payload").eq("user_id",u.id).maybeSingle();
+
   if(error)throw error;
+
   if(data&&data.payload){
    const remote=norm(data.payload),merged=empty();
+
    T.forEach(t=>{
     const m=new Map();
     remote[t].forEach(x=>{if(x&&x.id)m.set(x.id,x)});
     db[t].forEach(x=>{if(x&&x.id)m.set(x.id,x)});
     merged[t]=[...m.values()];
    });
+
    db=merged;
   }
-  persist();await cloudSave();render();
+
+  persist();
+  await cloudSave();
+  render();
+
   if(!silent)alert("Sync complete. Records merged by ID.");
- }catch(e){if(!silent)alert("Sync failed: "+e.message);throw e}
+ }catch(e){
+  if(!silent)alert("Sync failed: "+e.message);
+  throw e;
+ }
 };
 
 try{persist()}catch(e){}
 showLogin();
+
 try{
  const c=init();
- if(c)c.auth.getSession().then(({data})=>{
-  if(data.session){user=data.session.user;render()}
-  else showLogin();
- }).catch(()=>showLogin());
+ if(c){
+  c.auth.getSession().then(({data})=>{
+   if(data.session){
+    user=data.session.user;
+    render();
+   }else{
+    showLogin();
+   }
+  }).catch(()=>showLogin());
+ }
 }catch(e){showLogin()}
+
 })();
 </script>
 </body>
