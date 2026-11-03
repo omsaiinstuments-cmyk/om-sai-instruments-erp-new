@@ -1,785 +1,729 @@
-
-<!DOCTYPE html>
-<html lang="mr">
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Om Sai Instruments ERP</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#f3f5f9;--card:#fff;--ink:#172033;--blue:#174ea6;--line:#dce2ec;--red:#b42318;--green:#067647}
+:root{--navy:#12304a;--blue:#1769aa;--bg:#f3f6fa;--line:#dbe3ec;--text:#172534}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px Arial,sans-serif}
-header{background:#14294c;color:white;padding:16px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-h1{font-size:21px;margin:0}h2{font-size:20px}h3{font-size:16px}
-main{max-width:1250px;margin:auto;padding:14px}
-.card{background:var(--card);padding:16px;border:1px solid var(--line);border-radius:12px;margin-bottom:14px}
-nav{display:flex;gap:7px;overflow-x:auto;padding:10px 0}
-button,.btn{border:0;border-radius:7px;background:var(--blue);color:white;padding:10px 13px;cursor:pointer;font-size:14px}
-button.secondary{background:#e8edf5;color:#172033}
-button.danger{background:var(--red)}
-button:disabled{opacity:.5}
-input,select,textarea{width:100%;padding:10px;border:1px solid #cbd3df;border-radius:7px;background:white;font:inherit}
-label{display:block;font-size:13px;font-weight:600;margin:9px 0 5px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.muted{color:#687386;font-size:13px}
-.status{padding:10px;background:#edf4ff;border-radius:8px;margin:10px 0;overflow-wrap:anywhere}
-.good{color:var(--green)}.bad{color:var(--red)}
-table{width:100%;border-collapse:collapse;background:white;min-width:600px}
-th,td{padding:9px;border-bottom:1px solid var(--line);text-align:left;font-size:13px;vertical-align:top}
-th{background:#edf1f8}.tablewrap{overflow:auto}
-.hidden{display:none!important}.metric{font-size:24px;font-weight:bold;margin-top:7px}
-.small{font-size:12px}.right{text-align:right}
-footer{padding:20px;text-align:center;color:#6b7280}
-@media print{header,nav,.noprint,button,footer{display:none!important}body{background:white}.card{border:0}main{max-width:none}}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Arial,sans-serif}
+header{background:var(--navy);color:white;padding:16px}
+header h1{margin:0 0 4px;font-size:22px}
+.wrap{max-width:1300px;margin:auto;padding:12px}
+.notice,.panel,.stat,.sidebar{background:white;border:1px solid var(--line);border-radius:10px}
+.notice{padding:10px;background:#fff8e6;border-color:#f3d38a;margin-bottom:12px}
+.layout{display:grid;grid-template-columns:205px minmax(0,1fr);gap:12px}
+.sidebar{padding:8px;height:max-content}
+.nav{display:block;width:100%;text-align:left;padding:9px;border:0;background:white;border-radius:7px;margin:2px 0;cursor:pointer}
+.nav.active{background:#e8f2fc;color:var(--blue);font-weight:bold}
+.panel{padding:14px;margin-bottom:12px;min-width:0}
+.panel h2{margin:0 0 12px;font-size:18px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.stat{padding:12px}
+.stat strong{display:block;font-size:22px;overflow-wrap:anywhere}
+.stat span,.small{color:#64748b;font-size:12px}
+.formgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.field label{display:block;font-size:12px;font-weight:bold;margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:7px;background:white}
+.field textarea{min-height:65px}
+.btn{border:0;border-radius:7px;background:var(--blue);color:white;padding:9px 12px;cursor:pointer;margin:4px 2px}
+.secondary{background:#e8eef5;color:#172534}
+.danger{background:#b42318}
+.tablewrap{overflow:auto;margin-top:10px}
+table{width:100%;border-collapse:collapse;min-width:620px;font-size:12px}
+th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left}
+th{background:#f7f9fc}
+.pill{padding:3px 8px;border-radius:20px;background:#fee4e2;color:#b42318}
+.pill.ok{background:#dcfce7;color:#166534}
+.filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:10px 0}
+.filters input,.filters select{width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:7px;background:white}
+.actions{white-space:nowrap}
+@media(max-width:800px){
+.layout{grid-template-columns:1fr}
+.sidebar{display:grid;grid-template-columns:repeat(3,1fr)}
+.nav{font-size:11px;padding:7px}
+.formgrid{grid-template-columns:repeat(2,1fr)}
+.filters{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:480px){
+.formgrid,.filters{grid-template-columns:1fr}
+.sidebar{grid-template-columns:repeat(2,1fr)}
+}
+@media print{
+header,.sidebar,.noprint,.btn,.notice{display:none!important}
+.layout{display:block}.panel{border:0}table{min-width:0;font-size:10px}
+}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <header>
-  <div>
-    <h1>Om Sai Instruments ERP</h1>
-    <div class="small">Inventory • Sales • Purchase • Accounts</div>
-  </div>
-  <div class="row">
-    <span id="auth-label">Login आवश्यक</span>
-    <button id="logout" class="secondary hidden">Logout</button>
-  </div>
+<h1>Om Sai Instruments ERP</h1>
+Industrial Instruments • Sales • Purchase • Inventory
 </header>
 
-<main>
-<section id="login-screen" class="card">
-  <h2>ERP Login / Signup</h2>
-  <p class="muted">तुमच्या स्वतःच्या खात्याने लॉगिन करा. नवीन खाते तयार करण्यासाठी Signup निवडा.</p>
-  <label>Email</label>
-  <input id="email" type="email" autocomplete="username" placeholder="you@example.com">
-  <label>Password</label>
-  <input id="password" type="password" autocomplete="current-password" placeholder="किमान 6 अक्षरे">
-  <div class="row" style="margin-top:12px">
-    <button id="login-btn">Login</button>
-    <button id="signup-btn" class="secondary">Signup</button>
-  </div>
-  <div id="login-status" class="status">Supabase तयार झाल्यावर Login करा.</div>
-  <p class="muted">Email confirmation सुरू असल्यास, नोंदणी केल्यानंतर email मधील लिंक उघडावी लागू शकते.</p>
-</section>
-
-<section id="app" class="hidden">
-  <div class="status" id="status">ERP तयार आहे.</div>
-  <nav id="nav" class="noprint"></nav>
-  <section id="view"></section>
-</section>
-</main>
-
-<footer>Om Sai Instruments ERP • नियमित Backup घ्या • Cloud Sync आधी डेटा तपासा</footer>
+<div class="wrap">
+<div class="notice">
+<b>महत्त्वाचे:</b> कोड बदलण्यापूर्वी Backup घ्या. Cloud वापरण्यासाठी Supabase Project URL आणि Publishable/Anon Key आवश्यक आहे.
+</div>
+<div class="layout">
+<nav class="sidebar" id="nav"></nav>
+<main id="app"></main>
+</div>
+</div>
 
 <script>
-/* SUPABASE CONFIGURATION */
-const SUPABASE_URL = "https://ngemyvxgmwxsaisjwoek.supabase.co";
+(()=>{"use strict";
 
-/* येथे तुमची Supabase anon/public किंवा publishable key टाका.
-   service_role / secret key वापरू नका. */
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5nZW15dnhnbXd4c2Fpc2p3b2VrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM0OTk3MjYsImV4cCI6MjEwOTA3NTcyNn0.lLzHfBZ2n0Y3dICmZV5QemqVm6uu59brA-tesZsfJgE";
+const KEY="omSaiInstrumentsERP_v3";
+const OLD=["omSaiInstrumentsERP_v2","omSaiInstrumentsERP_v3"];
+const CFG="omSaiERP_cloud_config_v1";
+const T=["products","customers","suppliers","sales","purchases","stock","serials","payments"];
 
-const DB_TABLE = "erp_data";
-
-let sb = null, user = null;
-let current = "dashboard";
-let editingId = null;
-
-const modules = {
-  products:{title:"Product Master",fields:[
-    ["name","Product Name","text",true],
-    ["sku","SKU / Code","text",true],
-    ["hsn","HSN Code","text"],
-    ["unit","Unit","text"],
-    ["price","Selling Price","number"],
-    ["cost","Purchase Cost","number"],
-    ["gst","GST %","number"],
-    ["stock","Opening Stock","number"]
-  ]},
-  customers:{title:"Customer Master",fields:[
-    ["name","Customer Name","text",true],
-    ["gstin","GSTIN","text"],
-    ["phone","Phone","text"],
-    ["email","Email","email"],
-    ["address","Address","textarea"],
-    ["state","State","text"]
-  ]},
-  suppliers:{title:"Supplier Master",fields:[
-    ["name","Supplier Name","text",true],
-    ["gstin","GSTIN","text"],
-    ["phone","Phone","text"],
-    ["email","Email","email"],
-    ["address","Address","textarea"],
-    ["state","State","text"]
-  ]},
-  sales:{title:"Sales / Tax Invoice",fields:[
-    ["number","Invoice No.","text",true],
-    ["date","Invoice Date","date",true],
-    ["customer","Customer","text",true],
-    ["items","Items (SKU:Qty, one per line)","textarea",true],
-    ["subtotal","Taxable Amount","number",true],
-    ["gst","GST Amount","number"],
-    ["total","Invoice Total","number",true],
-    ["paid","Amount Paid","number"]
-  ]},
-  purchases:{title:"Purchase Entry",fields:[
-    ["number","Purchase / Bill No.","text",true],
-    ["date","Date","date",true],
-    ["supplier","Supplier","text",true],
-    ["items","Items (SKU:Qty, one per line)","textarea",true],
-    ["subtotal","Taxable Amount","number",true],
-    ["gst","GST Amount","number"],
-    ["total","Total","number",true],
-    ["paid","Amount Paid","number"]
-  ]},
-  stockmoves:{title:"Stock In / Out",fields:[
-    ["date","Date","date",true],
-    ["sku","Product SKU","text",true],
-    ["direction","Movement","select",true,["IN","OUT"]],
-    ["qty","Quantity","number",true],
-    ["reference","Reference / Reason","text"]
-  ]},
-  serials:{title:"Serial Number Register",fields:[
-    ["serial","Serial Number","text",true],
-    ["sku","Product SKU","text",true],
-    ["status","Status","select",true,["In Stock","Sold","Returned","Repair"]],
-    ["customer","Customer / Location","text"],
-    ["date","Date","date"]
-  ]},
-  payments:{title:"Payments / Outstanding",fields:[
-    ["date","Date","date",true],
-    ["type","Payment Type","select",true,["Received","Paid"]],
-    ["party","Customer / Supplier","text",true],
-    ["reference","Invoice / Reference","text"],
-    ["amount","Amount (₹)","number",true],
-    ["method","Method","select",false,["Cash","Bank","UPI","Cheque","Other"]],
-    ["notes","Notes","textarea"]
-  ]}
-};
-
-const emptyData = () => ({
-  products:[],customers:[],suppliers:[],sales:[],purchases:[],
-  stockmoves:[],serials:[],payments:[],meta:{version:1}
-});
-
-let data = emptyData();
-let dirty = false;
-
-function say(message,bad=false){
-  const el=document.getElementById("status");
-  if(el){
-    el.textContent=message;
-    el.className="status "+(bad?"bad":"good");
+const empty=()=>Object.fromEntries(T.map(k=>[k,[]]));
+function norm(x){
+  let d=empty();
+  if(x&&typeof x==="object"){
+    T.forEach(k=>{if(Array.isArray(x[k]))d[k]=x[k]});
   }
+  return d;
 }
-function loginSay(message,bad=false){
-  const el=document.getElementById("login-status");
-  el.textContent=message;
-  el.className="status "+(bad?"bad":"good");
-}
-function safeNumber(v){
-  const n=Number(v);
-  return Number.isFinite(n)?n:0;
-}
-function esc(v){
-  return String(v??"").replace(/[&<>"']/g,c=>({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[c]));
-}
-function money(v){
-  return "₹"+safeNumber(v).toLocaleString("en-IN",{
-    minimumFractionDigits:2,maximumFractionDigits:2
-  });
-}
-function id(){
-  return crypto.randomUUID?crypto.randomUUID():
-    Date.now()+"-"+Math.random().toString(16).slice(2);
-}
-function stamp(){return new Date().toISOString();}
-
-function saveLocal(){
-  if(!user)return;
-  try{
-    localStorage.setItem("osi_erp_"+user.id,JSON.stringify(data));
-    localStorage.setItem("osi_erp_time_"+user.id,stamp());
-    dirty=true;
-  }catch(e){say("Local save failed: "+e.message,true);}
-}
-function loadLocal(){
-  try{
-    const raw=localStorage.getItem("osi_erp_"+user.id);
-    if(raw){
-      const parsed=JSON.parse(raw);
-      if(parsed&&typeof parsed==="object")data={...emptyData(),...parsed};
-      if(!validData(data))data=emptyData();
-    }else data=emptyData();
-  }catch(e){
-    data=emptyData();
-    say("Local data वाचता आले नाही. Backup तपासा.",true);
+function load(){
+  for(let k of OLD){
+    try{
+      let x=JSON.parse(localStorage.getItem(k)||"null");
+      if(x){
+        let d=norm(x.data||x);
+        if(T.some(t=>d[t].length))return d;
+      }
+    }catch(e){}
   }
+  return empty();
 }
-function validData(d){
-  if(!d||typeof d!=="object")return false;
-  return ["products","customers","suppliers","sales","purchases",
-    "stockmoves","serials","payments"].every(k=>Array.isArray(d[k]));
+
+let db=load(),page="dashboard",lang="en",client=null,user=null;
+let editingProductId=null;
+
+const menus=[
+["dashboard","Dashboard","डॅशबोर्ड"],
+["products","Product Master","प्रॉडक्ट"],
+["customers","Customer Master","ग्राहक"],
+["sales","Sales / Tax Invoice","सेल्स / बिल"],
+["purchases","Purchase Entry","खरेदी"],
+["stockio","Stock In / Out","स्टॉक आवक-जावक"],
+["stockreg","Stock Register","स्टॉक रजिस्टर"],
+["serials","Serial Number Register","सिरियल नंबर"],
+["suppliers","Supplier Master","सप्लायर"],
+["payments","Payment / Outstanding","पेमेंट / बाकी"],
+["reports","Reports / Export","रिपोर्ट्स"],
+["backup","Backup / Cloud Setup","बॅकअप / क्लाउड"]
+];
+
+const $=x=>document.getElementById(x);
+const N=x=>Number(x)||0;
+const M=x=>"₹"+N(x).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+const sum=(a,f)=>a.reduce((s,x)=>s+N(f(x)),0);
+const id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const today=()=>new Date().toISOString().slice(0,10);
+const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function persist(){localStorage.setItem(KEY,JSON.stringify(db))}
+
+function balance(pid){
+  let p=db.products.find(x=>x.id===pid);
+  if(!p)return 0;
+  return N(p.opening)
+    +sum(db.stock.filter(x=>x.product===pid&&x.direction==="In"),x=>x.qty)
+    +sum(db.purchases.filter(x=>x.product===pid),x=>x.qty)
+    -sum(db.stock.filter(x=>x.product===pid&&x.direction==="Out"),x=>x.qty)
+    -sum(db.sales.filter(x=>x.product===pid),x=>x.qty);
 }
-function csvCell(v){
-  return '"'+String(v??"").replace(/"/g,'""')+'"';
+
+function tbl(head,rows){
+  return `<div class="tablewrap"><table><thead><tr>${head.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${rows.length?rows.join(""):`<tr><td colspan="${head.length}">No records found</td></tr>`}</tbody></table></div>`;
 }
-function download(name,content,type){
-  const blob=new Blob([content],{type});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;a.download=name;a.click();
-  setTimeout(()=>URL.revokeObjectURL(url),1500);
+
+function field(n,t,type="text",req=false,extra=""){
+  return `<div class="field"><label>${t}${req?" *":""}</label><input name="${n}" type="${type}" ${req?"required":""} ${extra}></div>`;
 }
-function exportJSON(){
-  download(
-    "om-sai-erp-backup-"+new Date().toISOString().slice(0,10)+".json",
-    JSON.stringify({app:"Om Sai Instruments ERP",version:1,exportedAt:stamp(),data},null,2),
-    "application/json"
+
+function sel(n,t,arr,req=true,label=x=>x.name||x.code||x.serial){
+  return `<div class="field"><label>${t}</label><select name="${n}" ${req?"required":""}><option value="">Select ${t}</option>${arr.map(x=>`<option value="${esc(x.id)}">${esc(label(x))}</option>`).join("")}</select></div>`;
+}
+
+function form(title,fields){
+  return `<section class="panel"><h2>${title}</h2><form id="f" class="formgrid">${fields}</form><button class="btn" form="f">Save</button><button class="btn secondary" type="button" onclick="$('f').reset()">Clear</button></section>`;
+}
+
+function list(type,heads,cols){
+  return tbl([...heads,"Action"],db[type].map(x=>
+    `<tr>${cols.map(fn=>`<td>${esc(fn(x))}</td>`).join("")}
+    <td><button class="btn danger" onclick="del('${type}','${esc(x.id)}')">Delete</button></td></tr>`
+  ));
+}
+
+function attach(type,maker){
+  let f=$("f");
+  if(!f)return;
+  f.onsubmit=async e=>{
+    e.preventDefault();
+    if(!f.reportValidity())return;
+    let v=Object.fromEntries(new FormData(f).entries()),r;
+    try{r=maker(v)}catch(err){alert(err.message);return}
+    if(!r)return;
+    r.id=id();
+    db[type].push(r);
+    try{persist()}catch(err){
+      db[type].pop();
+      alert("Save failed. Download backup / check storage.");
+      return;
+    }
+    render();
+    if(user){
+      try{await cloudSave();alert("Saved and synced to cloud.")}
+      catch(err){alert("Local save done; cloud sync failed: "+err.message)}
+    }else alert("Saved on this device. Cloud login is required for multi-device access.");
+  };
+}
+
+/* ---------- PRODUCT MASTER: SEARCH, FILTER, DUPLICATE CHECK, EDIT ---------- */
+
+function cleanText(v){
+  return String(v??"").trim().replace(/\s+/g," ");
+}
+function keyText(v){
+  return cleanText(v).toLocaleLowerCase();
+}
+function sameProductCode(code,excludeId=null){
+  const k=keyText(code);
+  return db.products.some(p=>p.id!==excludeId&&keyText(p.code)===k);
+}
+function sameProductDetails(v,excludeId=null){
+  const name=keyText(v.name),make=keyText(v.make),model=keyText(v.model);
+  if(!name)return false;
+  return db.products.some(p=>
+    p.id!==excludeId&&
+    keyText(p.name)===name&&
+    keyText(p.make)===make&&
+    keyText(p.model)===model
   );
 }
-function exportCSV(key){
-  const rows=data[key]||[];
-  if(!rows.length){say("Export करण्यासाठी डेटा नाही.");return;}
-  const keys=[...new Set(rows.flatMap(r=>Object.keys(r)))];
-  const csv=[
-    keys.map(csvCell).join(","),
-    ...rows.map(r=>keys.map(k=>csvCell(r[k])).join(","))
-  ].join("\r\n");
-  download(key+".csv","\uFEFF"+csv,"text/csv;charset=utf-8");
-}
-function mergeData(local,cloud){
-  const out=emptyData();
-  for(const k of Object.keys(out)){
-    if(k==="meta")continue;
-    const map=new Map();
-    for(const r of (cloud[k]||[]))if(r&&r.id)map.set(r.id,r);
-    for(const r of (local[k]||[]))if(r&&r.id)map.set(r.id,r);
-    out[k]=[...map.values()];
+function productDuplicateError(v,excludeId=null){
+  if(!cleanText(v.code))throw Error("Product Code आवश्यक आहे.");
+  if(!cleanText(v.name))throw Error("Product Name आवश्यक आहे.");
+  if(sameProductCode(v.code,excludeId))
+    throw Error("हा Product Code आधीपासून उपलब्ध आहे. कृपया वेगळा Code वापरा.");
+  if(sameProductDetails(v,excludeId)){
+    if(!confirm("याच Product Name, Make आणि Model ची नोंद आधीपासून आहे. तरीही हा Product सेव्ह करायचा आहे का?")) {
+      throw Error("Duplicate Product Details मुळे सेव्ह रद्द केले.");
+    }
   }
-  out.meta={version:1,mergedAt:stamp()};
-  return out;
 }
-function total(key,field){
-  return (data[key]||[]).reduce((s,r)=>s+safeNumber(r[field]),0);
+function resetProductForm(){
+  editingProductId=null;
+  render();
 }
-function stockFor(sku){
-  const p=data.products.find(x=>x.sku===sku);
-  let n=safeNumber(p?.stock);
-  for(const m of data.stockmoves){
-    if(m.sku===sku)n+=m.direction==="IN"?safeNumber(m.qty):-safeNumber(m.qty);
-  }
-  for(const inv of data.purchases){
-    for(const item of parseItems(inv.items))if(item.sku===sku)n+=item.qty;
-  }
-  for(const inv of data.sales){
-    for(const item of parseItems(inv.items))if(item.sku===sku)n-=item.qty;
-  }
-  return n;
-}
-function parseItems(s){
-  return String(s||"").split(/\n/).map(line=>{
-    const parts=line.split(":");
-    return {sku:(parts[0]||"").trim(),qty:safeNumber(parts[1])};
-  }).filter(x=>x.sku&&x.qty>0);
-}
-function outstandingSales(){
-  return data.sales.reduce((s,r)=>s+Math.max(0,safeNumber(r.total)-safeNumber(r.paid)),0);
-}
-function outstandingPurchases(){
-  return data.purchases.reduce((s,r)=>s+Math.max(0,safeNumber(r.total)-safeNumber(r.paid)),0);
-}
+window.cancelProductEdit=resetProductForm;
 
-function navBuild(){
-  const links=[["dashboard","Dashboard"],
-    ...Object.keys(modules).map(k=>[k,modules[k].title]),
-    ["reports","Reports / Export"],["backup","Backup / Restore"],
-    ["cloud","Cloud Save / Sync"]];
-  document.getElementById("nav").innerHTML=links.map(([k,t])=>
-    `<button class="${k===current?'':'secondary'}" data-page="${k}">${esc(t)}</button>`
-  ).join("");
-  document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>{
-    if(editingId&&!confirm("Edit सुरू आहे. दुसऱ्या पेजवर जायचे का? बदल सेव्ह होणार नाहीत."))return;
-    editingId=null;
-    current=b.dataset.page;
+window.editProduct=pid=>{
+  const p=db.products.find(x=>x.id===pid);
+  if(!p){alert("Product सापडला नाही.");return}
+  editingProductId=p.id;
+  render();
+  const f=$("f");
+  if(!f)return;
+  for(const k of ["code","name","make","model","unit","opening","reorder","cost","price"]){
+    if(f.elements[k])f.elements[k].value=p[k]??"";
+  }
+  $("productFormTitle").textContent="Edit Product";
+  $("productSaveBtn").textContent="Update Product";
+  $("productCancelBtn").style.display="inline-block";
+  window.scrollTo({top:0,behavior:"smooth"});
+};
+
+window.updateProduct=async e=>{
+  e.preventDefault();
+  const f=$("f");
+  if(!f||!f.reportValidity())return;
+  const v=Object.fromEntries(new FormData(f).entries());
+  const old=db.products.find(x=>x.id===editingProductId);
+  if(!old){alert("Edit Product सापडला नाही. पुन्हा निवडा.");resetProductForm();return}
+  try{
+    productDuplicateError(v,old.id);
+    const updated={
+      ...old,
+      code:cleanText(v.code),
+      name:cleanText(v.name),
+      make:cleanText(v.make),
+      model:cleanText(v.model),
+      unit:cleanText(v.unit)||"pcs",
+      opening:Math.max(0,N(v.opening)),
+      reorder:Math.max(0,N(v.reorder)),
+      cost:Math.max(0,N(v.cost)),
+      price:Math.max(0,N(v.price))
+    };
+    const idx=db.products.findIndex(x=>x.id===old.id);
+    db.products[idx]=updated;
+    try{persist()}catch(err){db.products[idx]=old;throw Error("Save failed. Backup घ्या आणि storage तपासा.")}
+    editingProductId=null;
     render();
+    if(user){
+      try{await cloudSave();alert("Product updated and synced to cloud.")}
+      catch(err){alert("Product स्थानिक पातळीवर अपडेट झाला; Cloud Sync अयशस्वी: "+err.message)}
+    }else alert("Product अपडेट झाला.");
+  }catch(err){alert(err.message)}
+};
+
+window.productSearch=()=>renderProductTable();
+window.productFilter=()=>renderProductTable();
+window.clearProductFilters=()=>{
+  if($("productSearch"))$("productSearch").value="";
+  if($("makeFilter"))$("makeFilter").value="";
+  if($("stockFilter"))$("stockFilter").value="all";
+  renderProductTable();
+};
+
+function productRows(){
+  const q=keyText($("productSearch")?.value||"");
+  const mk=keyText($("makeFilter")?.value||"");
+  const sf=$("stockFilter")?.value||"all";
+  return db.products.filter(p=>{
+    const searchText=[p.code,p.name,p.make,p.model,p.unit].map(keyText).join(" ");
+    const matchesSearch=!q||searchText.includes(q);
+    const matchesMake=!mk||keyText(p.make)===mk;
+    const b=balance(p.id),reorder=N(p.reorder);
+    const matchesStock=sf==="all"||(sf==="low"&&b<=reorder)||(sf==="available"&&b>reorder);
+    return matchesSearch&&matchesMake&&matchesStock;
   });
 }
 
-function fieldHTML(f){
-  const [key,label,type,required,options]=f;
-  const req=required?"required":"";
-  if(type==="textarea"){
-    return `<div><label>${esc(label)}</label><textarea name="${key}" ${req}></textarea></div>`;
-  }
-  if(type==="select"){
-    return `<div><label>${esc(label)}</label><select name="${key}" ${req}>${
-      (options||[]).map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join("")
-    }</select></div>`;
-  }
-  return `<div><label>${esc(label)}</label><input name="${key}" type="${type}" ${req} ${
-    type==="number"?'step="any" min="0"':''
-  }></div>`;
+function renderProductTable(){
+  if(page!=="products")return;
+  const rows=productRows();
+  const area=$("productTableArea");
+  if(!area)return;
+  area.innerHTML=`
+    <p class="small">दिसणारे Products: <b>${rows.length}</b> / ${db.products.length}</p>
+    ${tbl(["Code","Name","Make / Brand","Model","Unit","Opening","Available Stock","Reorder","Cost","Price","Action"],
+      rows.map(p=>{
+        const b=balance(p.id),low=b<=N(p.reorder);
+        return `<tr>
+          <td>${esc(p.code)}</td><td>${esc(p.name)}</td><td>${esc(p.make)}</td>
+          <td>${esc(p.model)}</td><td>${esc(p.unit)}</td>
+          <td>${N(p.opening)}</td><td>${b}</td><td>${N(p.reorder)}</td>
+          <td>${M(p.cost)}</td><td>${M(p.price)}</td>
+          <td class="actions">
+            <button class="btn" onclick="editProduct('${esc(p.id)}')">Edit</button>
+            <button class="btn danger" onclick="del('products','${esc(p.id)}')">Delete</button>
+          </td>
+        </tr>`;
+      })
+    )}
+  `;
 }
 
-/* MODULE PAGE: EDIT + DELETE */
-function modulePage(key){
-  const m=modules[key],rows=data[key];
-  const headers=m.fields.map(f=>`<th>${esc(f[1])}</th>`).join("");
-  const tableRows=rows.map(r=>`
-    <tr>
-      ${m.fields.map(f=>`<td>${esc(r[f[0]])}</td>`).join("")}
-      <td>
-        <div class="row">
-          <button type="button" data-edit="${esc(r.id)}">Edit</button>
-          <button type="button" class="danger" data-delete="${esc(r.id)}">Delete</button>
-        </div>
-      </td>
-    </tr>`).join("");
+/* ---------- NAVIGATION / GENERAL RENDER ---------- */
 
-  return `
-  <div class="card">
-    <h2>${esc(m.title)}</h2>
-    ${editingId?'<div class="status">Edit Mode: बदल करून Update Record दाबा.</div>':''}
-    <form id="record-form">
-      <div class="grid">${m.fields.map(fieldHTML).join("")}</div>
-      <p class="muted">${
-        key==="sales"||key==="purchases"
-        ? "Items प्रत्येक ओळीवर लिहा: SKU:Quantity. उदा. INST-01:2"
-        : ""
-      }</p>
-      <div class="row" style="margin-top:12px">
-        <button type="submit">${editingId?"Update Record":"Save Record"}</button>
-        <button type="button" class="secondary" id="clear-form">${editingId?"Cancel Edit":"Clear"}</button>
-      </div>
-    </form>
-  </div>
-  <div class="card">
-    <div class="row">
-      <h3 style="flex:1">Records (${rows.length})</h3>
-      <button class="secondary" id="export-module">Export CSV</button>
-    </div>
-    <div class="tablewrap">
-      <table>
-        <thead><tr>${headers}<th>Actions</th></tr></thead>
-        <tbody>${tableRows||`<tr><td colspan="${m.fields.length+1}">अद्याप रेकॉर्ड नाही.</td></tr>`}</tbody>
-      </table>
-    </div>
-  </div>`;
-}
+window.del=async(t,rid)=>{
+  if(t==="products"){
+    const used=["sales","purchases","stock","serials"].some(k=>db[k].some(x=>x.product===rid));
+    if(used){
+      if(!confirm("हा Product Sales/Purchase/Stock/Serial नोंदींमध्ये वापरला आहे. हटवल्यास जुन्या नोंदींचे संदर्भ राहू शकतात. तरीही हटवायचा आहे का?"))return;
+    }else if(!confirm("हा Product हटवायचा आहे का?"))return;
+  }else if(!confirm("Delete this record?"))return;
+  db[t]=db[t].filter(x=>x.id!==rid);
+  try{persist()}catch(e){alert("Save failed: "+e.message);return}
+  if(t==="products"&&editingProductId===rid)editingProductId=null;
+  render();
+  if(user)try{await cloudSave()}catch(e){alert("Deleted locally but cloud sync failed: "+e.message)}
+};
 
-function dashboard(){
- return `<div class="grid">
- ${metric("Products",data.products.length)}
- ${metric("Customers",data.customers.length)}
- ${metric("Suppliers",data.suppliers.length)}
- ${metric("Sales Total",money(total("sales","total")))}
- ${metric("Purchase Total",money(total("purchases","total")))}
- ${metric("Sales Outstanding",money(outstandingSales()))}
- ${metric("Purchase Outstanding",money(outstandingPurchases()))}
- </div>
- <div class="card"><h2>Stock Register</h2>
- <div class="tablewrap"><table><thead><tr>
- <th>SKU</th><th>Product</th><th>Opening Stock</th><th>Current Stock</th>
- </tr></thead><tbody>
- ${data.products.map(p=>`<tr><td>${esc(p.sku)}</td><td>${esc(p.name)}</td><td>${esc(p.stock)}</td><td>${stockFor(p.sku)}</td></tr>`).join("")||"<tr><td colspan=4>Product Master मध्ये उत्पादने जोडा.</td></tr>"}
- </tbody></table></div></div>
- <div class="card"><h2>Quick Notes</h2>
- <p class="muted">रेकॉर्ड स्थानिक ब्राउझरमध्ये सेव्ह होतात. दुसऱ्या डिव्हाइसवर डेटा मिळवण्यासाठी Login नंतर Cloud Save/Sync वापरा. Sync आधी Backup घ्या.</p>
- <button data-goto="products">Add Product</button>
- <button data-goto="sales">New Sales Invoice</button></div>`;
-}
-function metric(label,value){
- return `<div class="card"><div class="muted">${esc(label)}</div><div class="metric">${esc(value)}</div></div>`;
-}
-function reportsPage(){
- return `<div class="card"><h2>Reports / Export</h2>
- <p>प्रत्येक मॉड्यूलचा CSV Export वापरा. खाली सर्व डेटाचे स्वतंत्र CSV डाउनलोड करा.</p>
- <div class="grid">${Object.keys(modules).map(k=>`<button data-export="${k}">${esc(modules[k].title)} CSV</button>`).join("")}</div>
- <hr><button id="report-print" class="secondary">Print / Save PDF</button></div>
- <div class="card"><h3>Outstanding Summary</h3>
- <p>Sales Outstanding: <b>${money(outstandingSales())}</b></p>
- <p>Purchase Outstanding: <b>${money(outstandingPurchases())}</b></p></div>`;
-}
-function backupPage(){
- return `<div class="card"><h2>Backup / Restore</h2>
- <p>Backup फाइल तुमच्या डिव्हाइसवर डाउनलोड होईल. ती सुरक्षित ठेवा.</p>
- <div class="row">
- <button id="backup-now">Download JSON Backup</button>
- <button class="secondary" id="restore-btn">Restore JSON Backup</button>
- <input id="restore-file" class="hidden" type="file" accept=".json,application/json">
- </div>
- <p class="muted">Restore करताना सध्याचा डेटा बदलू शकतो. आधी वर्तमान Backup डाउनलोड करा.</p>
- <button id="local-export" class="secondary">Download Current Data Again</button></div>`;
-}
-function cloudPage(){
- return `<div class="card"><h2>Cloud Save / Sync</h2>
- <p>Cloud मध्ये सध्या कोणता डेटा आहे हे आधी तपासा. खालील क्रिया तुमच्या Login खात्यापुरत्याच आहेत.</p>
- <div class="row">
- <button id="cloud-check">Check Cloud Data</button>
- <button id="cloud-load" class="secondary">Load Cloud (Replace Local)</button>
- </div>
- <div id="cloud-info" class="status">Cloud status अजून तपासलेला नाही.</div>
- <hr><h3>Save Local Data to Cloud</h3>
- <p class="muted">Cloud मध्ये आधीच डेटा असल्यास तो बदलण्यासाठी पुष्टी मागितली जाईल. आधी Backup घ्या.</p>
- <button id="cloud-save">Save Local to Cloud</button>
- <hr><h3>Merge Local + Cloud</h3>
- <p class="muted">रेकॉर्ड ID नुसार merge. एकाच ID ची दोन्ही आवृत्ती असल्यास स्थानिक आवृत्ती ठेवली जाईल.</p>
- <button id="cloud-merge" class="secondary">Merge Cloud + Local</button>
- <p class="muted">Sync केल्यानंतर आकडेवारी आणि रेकॉर्ड स्वतः तपासा. ही साधी ERP आवृत्ती multi-user transaction locking किंवा पूर्ण audit log देत नाही.</p></div>`;
-}
+window.go=p=>{page=p;editingProductId=null;render()};
+window.toggleLang=()=>{lang=lang==="en"?"mr":"en";render()};
 
 function render(){
- navBuild();
- const view=document.getElementById("view");
- if(current==="dashboard")view.innerHTML=dashboard();
- else if(modules[current])view.innerHTML=modulePage(current);
- else if(current==="reports")view.innerHTML=reportsPage();
- else if(current==="backup")view.innerHTML=backupPage();
- else if(current==="cloud")view.innerHTML=cloudPage();
- wirePage();
+  $("nav").innerHTML=menus.map(m=>
+    `<button class="nav ${page===m[0]?"active":""}" onclick="go('${m[0]}')">${m[lang==="mr"?2:1]}</button>`
+  ).join("")+`<button class="nav" onclick="toggleLang()">${lang==="en"?"मराठी":"English"}</button>`;
+
+  let h="",a=null;
+
+  if(page==="dashboard"){
+    h=`<section class="panel"><h2>Dashboard</h2>
+    <p class="small">${user?"Cloud: "+esc(user.email):"Local mode — cloud not connected"}</p>
+    <div class="stats">${[
+      ["Products",db.products.length],["Customers",db.customers.length],
+      ["Sales Invoices",db.sales.length],["Suppliers",db.suppliers.length],
+      ["Total Sales",M(sum(db.sales,x=>x.total))],["Purchases",M(sum(db.purchases,x=>x.total))]
+    ].map(x=>`<div class="stat"><strong>${x[1]}</strong><span>${x[0]}</span></div>`).join("")}</div></section>
+    <section class="panel"><h2>Low Stock Alert</h2>
+    ${tbl(["Product","Available","Reorder"],db.products.filter(p=>balance(p.id)<=N(p.reorder)).map(p=>
+      `<tr><td>${esc(p.name)}</td><td>${balance(p.id)}</td><td>${N(p.reorder)} <span class="pill">Low Stock</span></td></tr>`
+    ))}</section>`;
+  }
+
+  if(page==="products"){
+    const p=editingProductId?db.products.find(x=>x.id===editingProductId):null;
+    h=`<section class="panel">
+      <h2 id="productFormTitle">${p?"Edit Product":"Add Product"}</h2>
+      <form id="f" class="formgrid">
+        ${field("code","Product Code","text",true)}
+        ${field("name","Product Name","text",true)}
+        ${field("make","Make / Brand")}
+        ${field("model","Model")}
+        ${field("unit","Unit")}
+        ${field("opening","Opening Stock","number",false,'min="0" step="any"')}
+        ${field("reorder","Reorder Level","number",false,'min="0" step="any"')}
+        ${field("cost","Purchase Cost ₹","number",false,'min="0" step="any"')}
+        ${field("price","Selling Price ₹","number",false,'min="0" step="any"')}
+      </form>
+      <button class="btn" id="productSaveBtn" form="f">${p?"Update Product":"Save Product"}</button>
+      <button class="btn secondary" id="productCancelBtn" type="button" onclick="cancelProductEdit()" style="${p?"":"display:none"}">Cancel Edit</button>
+      <p class="small">Product Code duplicate असल्यास सेव्ह होणार नाही. Product Name + Make + Model जुळल्यास duplicate warning मिळेल.</p>
+    </section>
+    <section class="panel">
+      <h2>Product Search & Filters</h2>
+      <div class="filters">
+        <input id="productSearch" placeholder="Search code, name, make, model..." oninput="productSearch()">
+        <select id="makeFilter" onchange="productFilter()">
+          <option value="">All Makes / Brands</option>
+          ${[...new Set(db.products.map(p=>cleanText(p.make)).filter(Boolean))].sort((a,b)=>a.localeCompare(b)).map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join("")}
+        </select>
+        <select id="stockFilter" onchange="productFilter()">
+          <option value="all">All Stock Status</option>
+          <option value="low">Low Stock</option>
+          <option value="available">Above Reorder Level</option>
+        </select>
+        <button type="button" class="btn secondary" onclick="clearProductFilters()">Clear Filters</button>
+      </div>
+      <div id="productTableArea"></div>
+    </section>`;
+    a=["products",v=>{
+      productDuplicateError(v,null);
+      return {
+        code:cleanText(v.code),name:cleanText(v.name),make:cleanText(v.make),
+        model:cleanText(v.model),unit:cleanText(v.unit)||"pcs",
+        opening:Math.max(0,N(v.opening)),reorder:Math.max(0,N(v.reorder)),
+        cost:Math.max(0,N(v.cost)),price:Math.max(0,N(v.price))
+      };
+    }];
+  }
+
+  if(page==="customers"||page==="suppliers"){
+    let t=page;
+    h=form("Add "+(t==="customers"?"Customer":"Supplier"),
+      field("name","Name","text",true)+field("mobile","Mobile")+
+      field("email","Email","email")+field("gstin","GSTIN")+
+      field("city","City")+field("address","Address")
+    )+`<section class="panel"><h2>${t} List</h2>
+      ${list(t,["Name","Mobile","Email","GSTIN","City","Address"],[x=>x.name,x=>x.mobile,x=>x.email,x=>x.gstin,x=>x.city,x=>x.address])}
+    </section>`;
+    a=[t,v=>({name:v.name.trim(),mobile:v.mobile,email:v.email,gstin:v.gstin,city:v.city,address:v.address})];
+  }
+
+  if(page==="sales"||page==="purchases"){
+    let sale=page==="sales",t=sale?"sales":"purchases",parties=sale?db.customers:db.suppliers;
+    h=form(sale?"Sales Tax Invoice":"Purchase Entry",
+      field("doc","Invoice / Bill No.","text",true)+sel("party",sale?"Customer":"Supplier",parties)+
+      field("date","Date","date",true)+sel("product","Product",db.products)+
+      field("qty","Quantity","number",true,'min=".001" step="any"')+
+      field("rate","Rate ₹","number",true,'min="0" step="any"')+
+      field("gst","GST %","number",false,'min="0" max="100" step="any"')+
+      field("paid","Paid ₹","number",false,'min="0" step="any"')
+    )+`<section class="panel"><h2>${sale?"Sales Invoices":"Purchase Bills"}</h2>
+    ${list(t,["No.","Party","Date","Product","Qty","Taxable","GST","Total","Paid","Balance"],
+      [x=>x.doc,x=>x.partyName,x=>x.date,x=>x.productName,x=>x.qty,x=>M(x.subtotal??x.total),x=>M(x.gstAmount),x=>M(x.total),x=>M(x.paid),x=>M(x.total-x.paid)])}
+    <button class="btn secondary" onclick="csv('${t}')">Export CSV</button></section>`;
+    a=[t,v=>{
+      let p=db.products.find(x=>x.id===v.product),party=parties.find(x=>x.id===v.party);
+      if(!p||!party)throw Error("Select product and party.");
+      if(db[t].some(x=>keyText(x.doc)===keyText(v.doc)))throw Error("Document number already exists.");
+      let qty=N(v.qty),rate=N(v.rate),gst=N(v.gst),subtotal=qty*rate,gstAmount=subtotal*gst/100,total=subtotal+gstAmount,paid=N(v.paid);
+      if(qty<=0||rate<0||gst<0||gst>100||paid<0||paid>total)throw Error("Check quantity, GST and payment.");
+      if(sale&&qty>balance(p.id))throw Error("Insufficient stock. Available: "+balance(p.id));
+      return {doc:v.doc.trim(),partyId:party.id,partyName:party.name,date:v.date,product:p.id,productName:p.name,qty,rate,gst,subtotal,gstAmount,total,paid};
+    }];
+  }
+
+  if(page==="stockio"){
+    h=form("Stock In / Out",
+      sel("product","Product",db.products,true,p=>p.name+" (Available "+balance(p.id)+")")+
+      '<div class="field"><label>Direction</label><select name="direction"><option>In</option><option>Out</option></select></div>'+
+      field("qty","Quantity","number",true,'min=".001" step="any"')+
+      field("date","Date","date",true)+field("reference","Reference")+field("notes","Notes")
+    )+`<section class="panel"><h2>Stock History</h2>
+    ${list("stock",["Date","Product","Direction","Qty","Reference","Notes"],[x=>x.date,x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.direction,x=>x.qty,x=>x.reference,x=>x.notes])}
+    </section>`;
+    a=["stock",v=>{
+      if(!db.products.some(p=>p.id===v.product)||N(v.qty)<=0)throw Error("Select product and valid quantity.");
+      if(v.direction==="Out"&&N(v.qty)>balance(v.product))throw Error("Insufficient stock.");
+      return {product:v.product,direction:v.direction,qty:N(v.qty),date:v.date,reference:v.reference,notes:v.notes};
+    }];
+  }
+
+  if(page==="stockreg"){
+    h=`<section class="panel"><h2>Stock Register</h2>
+    <button class="btn secondary" onclick="csv('stockreg')">Export CSV</button>
+    ${tbl(["Code","Product","Opening","In","Out","Balance","Status"],db.products.map(p=>{
+      let i=sum(db.stock.filter(x=>x.product===p.id&&x.direction==="In"),x=>x.qty)+sum(db.purchases.filter(x=>x.product===p.id),x=>x.qty);
+      let o=sum(db.stock.filter(x=>x.product===p.id&&x.direction==="Out"),x=>x.qty)+sum(db.sales.filter(x=>x.product===p.id),x=>x.qty);
+      let b=balance(p.id);
+      return `<tr><td>${esc(p.code)}</td><td>${esc(p.name)}</td><td>${N(p.opening)}</td><td>${i}</td><td>${o}</td><td>${b}</td><td>${b<=N(p.reorder)?'<span class="pill">LOW</span>':'<span class="pill ok">OK</span>'}</td></tr>`;
+    }))}</section>`;
+  }
+
+  if(page==="serials"){
+    h=form("Serial Number Register",
+      sel("product","Product",db.products)+field("serial","Serial Number","text",true)+
+      '<div class="field"><label>Status</label><select name="status"><option>In Stock</option><option>Sold</option><option>Under Calibration</option><option>Sent for Repair</option></select></div>'+
+      field("customer","Customer / Location")+field("calibration","Last Calibration","date")+
+      field("nextcal","Next Calibration Due","date")+field("certificate","Certificate No.")+
+      field("warranty","Warranty Until","date")
+    )+`<section class="panel"><h2>Serial Register</h2>
+    ${list("serials",["Product","Serial","Status","Customer","Last Cal.","Next Due","Certificate","Warranty"],
+      [x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.serial,x=>x.status,x=>x.customer,x=>x.calibration,x=>x.nextcal,x=>x.certificate,x=>x.warranty])}
+    </section>`;
+    a=["serials",v=>{
+      if(db.serials.some(x=>keyText(x.serial)===keyText(v.serial)))throw Error("Serial number already exists.");
+      return {...v,serial:cleanText(v.serial)};
+    }];
+  }
+
+  if(page==="payments"){
+    h=form("Payment Entry",
+      '<div class="field"><label>Type</label><select name="type"><option>Receipt from Customer</option><option>Payment to Supplier</option></select></div>'+
+      field("party","Party","text",true)+field("date","Date","date",true)+
+      field("amount","Amount ₹","number",true,'min=".01" step="any"')+
+      field("reference","Invoice / Reference")+field("notes","Notes")
+    )+`<section class="panel"><h2>Payments</h2>
+    ${list("payments",["Type","Party","Date","Amount","Reference","Notes"],[x=>x.type,x=>x.party,x=>x.date,x=>M(x.amount),x=>x.reference,x=>x.notes])}
+    </section>
+    <section class="panel"><h2>Invoice Outstanding</h2>
+    ${tbl(["Type","Party","Doc","Total","Paid","Balance"],[
+      ...db.sales.map(x=>`<tr><td>Sale</td><td>${esc(x.partyName)}</td><td>${esc(x.doc)}</td><td>${M(x.total)}</td><td>${M(x.paid)}</td><td>${M(x.total-x.paid)}</td></tr>`),
+      ...db.purchases.map(x=>`<tr><td>Purchase</td><td>${esc(x.partyName)}</td><td>${esc(x.doc)}</td><td>${M(x.total)}</td><td>${M(x.paid)}</td><td>${M(x.total-x.paid)}</td></tr>`)
+    ])}</section>`;
+    a=["payments",v=>{
+      if(N(v.amount)<=0)throw Error("Enter valid amount.");
+      return {...v,amount:N(v.amount)};
+    }];
+  }
+
+  if(page==="reports"){
+    h=`<section class="panel"><h2>Reports</h2>
+    <p>Sales: <b>${M(sum(db.sales,x=>x.total))}</b></p>
+    <p>Purchases: <b>${M(sum(db.purchases,x=>x.total))}</b></p>
+    <p>Sales outstanding: <b>${M(sum(db.sales,x=>x.total-x.paid))}</b></p>
+    <p>Purchase outstanding: <b>${M(sum(db.purchases,x=>x.total-x.paid))}</b></p>
+    <button class="btn" onclick="printInvoice()">Print / Save PDF</button>
+    ${T.map(t=>`<button class="btn secondary" onclick="csv('${t}')">${t} CSV</button>`).join("")}
+    <button class="btn secondary" onclick="csv('stockreg')">Stock CSV</button></section>`;
+  }
+
+  if(page==="backup"){
+    h=`<section class="panel"><h2>Backup / Restore</h2>
+    <button class="btn" onclick="backup()">Download JSON Backup</button>
+    <div class="field"><label>Restore JSON</label><input type="file" accept=".json,application/json" onchange="restore(event)"></div>
+    <hr><h2>Cloud Database Setup</h2>
+    <p class="small">Supabase Project URL आणि Publishable/Anon Key भरा. SQL Editor मध्ये खालील SQL एकदाच चालवा.</p>
+    <div class="formgrid">
+      <div class="field"><label>Project URL</label><input id="url" placeholder="https://project.supabase.co"></div>
+      <div class="field"><label>Publishable Key</label><input id="key" placeholder="sb_publishable_..."></div>
+    </div>
+    <button class="btn" onclick="setup()">Save Cloud Settings</button>
+    <div class="formgrid">
+      <div class="field"><label>Login Email</label><input id="email" type="email"></div>
+      <div class="field"><label>Password (8+ characters)</label><input id="password" type="password"></div>
+    </div>
+    <button class="btn" onclick="signup()">Create Login</button>
+    <button class="btn secondary" onclick="login()">Login</button>
+    <button class="btn secondary" onclick="logout()">Logout</button>
+    <button class="btn" onclick="sync()">Sync / Merge Cloud</button>
+    <p id="cloudStatus" class="small">${user?"Logged in: "+esc(user.email):"Not connected"}</p>
+    <p class="small">Supabase → SQL Editor मध्ये चालवा:</p>
+    <pre id="sql" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#f7f9fc;padding:10px">create table if not exists public.erp_data (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  payload jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+alter table public.erp_data enable row level security;
+create policy "read own ERP" on public.erp_data for select to authenticated using (auth.uid() = user_id);
+create policy "insert own ERP" on public.erp_data for insert to authenticated with check (auth.uid() = user_id);
+create policy "update own ERP" on public.erp_data for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);</pre>
+    <button class="btn secondary" onclick="navigator.clipboard.writeText($('sql').textContent).then(()=>alert('SQL copied')).catch(()=>alert('Select and copy SQL manually'))">Copy SQL</button>
+    <p class="small">Cloud sync is a basic single-user setup. Back up regularly. Avoid simultaneous edits on multiple devices until conflict-safe sync is implemented. Never place a Supabase Secret/service_role key in this file.</p>
+    </section>`;
+  }
+
+  $("app").innerHTML=h;
+
+  if(page==="products"){
+    if(editingProductId){
+      const p=db.products.find(x=>x.id===editingProductId);
+      if(p){
+        const f=$("f");
+        ["code","name","make","model","unit","opening","reorder","cost","price"].forEach(k=>{
+          if(f.elements[k])f.elements[k].value=p[k]??"";
+        });
+        $("productFormTitle").textContent="Edit Product";
+        $("productSaveBtn").textContent="Update Product";
+        $("productCancelBtn").style.display="inline-block";
+        f.onsubmit=window.updateProduct;
+      }
+    }else attach("products",a[1]);
+    renderProductTable();
+  }else if(a)attach(a[0],a[1]);
+
+  if(page==="backup"){
+    let c=cfg();
+    $("url").value=c.url||"";
+    $("key").value=c.key||"";
+  }
 }
 
-/* FORM HANDLERS: NEW RECORD + UPDATE EXISTING RECORD */
-function wirePage(){
- document.querySelectorAll("[data-goto]").forEach(b=>b.onclick=()=>{
-   if(editingId&&!confirm("Edit सुरू आहे. बदल सेव्ह होणार नाहीत. पुढे जायचे का?"))return;
-   editingId=null;
-   current=b.dataset.goto;
-   render();
- });
+/* ---------- BACKUP / CSV ---------- */
 
- document.querySelectorAll("[data-export]").forEach(b=>
-   b.onclick=()=>exportCSV(b.dataset.export)
- );
+window.backup=()=>{
+  let b=new Blob([JSON.stringify({version:3,exportedAt:new Date().toISOString(),data:db},null,2)],{type:"application/json"});
+  let u=URL.createObjectURL(b),a=document.createElement("a");
+  a.href=u;a.download="om-sai-erp-backup-"+today()+".json";a.click();
+  setTimeout(()=>URL.revokeObjectURL(u),1000);
+};
 
- const form=document.getElementById("record-form");
+window.restore=e=>{
+  let f=e.target.files[0];if(!f)return;
+  let r=new FileReader();
+  r.onload=()=>{
+    try{
+      let x=JSON.parse(r.result);
+      if(!confirm("Restore replaces local data. Continue?"))return;
+      db=norm(x.data||x);persist();render();
+      alert("Local backup restored. Check data before cloud sync.");
+    }catch(err){alert("Invalid JSON backup")}
+  };
+  r.readAsText(f);
+};
 
- if(form){
-   form.onsubmit=e=>{
-     e.preventDefault();
-     const obj={};
+window.csv=t=>{
+  let rows;
+  if(t==="stockreg"){
+    rows=[["Code","Product","Opening","Balance"],...db.products.map(p=>[p.code,p.name,p.opening,balance(p.id)])];
+  }else{
+    let arr=db[t]||[],keys=arr.length?Object.keys(arr[0]):[];
+    rows=[keys,...arr.map(x=>keys.map(k=>x[k]))];
+  }
+  let s="\ufeff"+rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");
+  let b=new Blob([s],{type:"text/csv;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");
+  a.href=u;a.download=t+"-"+today()+".csv";a.click();
+  setTimeout(()=>URL.revokeObjectURL(u),1000);
+};
+window.printInvoice=()=>window.print();
 
-     for(const f of modules[current].fields){
-       obj[f[0]]=form.elements[f[0]].value.trim();
-     }
+/* ---------- SUPABASE AUTH / CLOUD SYNC ---------- */
 
-     if(["sales","purchases"].includes(current)){
-       for(const k of ["subtotal","gst","total","paid"])obj[k]=safeNumber(obj[k]);
-     }
-     if(current==="stockmoves")obj.qty=safeNumber(obj.qty);
-     if(current==="payments")obj.amount=safeNumber(obj.amount);
-     if(current==="products"){
-       for(const k of ["price","cost","gst","stock"])obj[k]=safeNumber(obj[k]);
-     }
-
-     if(editingId){
-       const index=data[current].findIndex(r=>r.id===editingId);
-
-       if(index===-1){
-         editingId=null;
-         render();
-         say("रेकॉर्ड सापडला नाही. पुन्हा तपासा.",true);
-         return;
-       }
-
-       const old=data[current][index];
-       obj.id=old.id;
-       obj.created_at=old.created_at||stamp();
-       obj.updated_at=stamp();
-
-       data[current][index]={...old,...obj};
-       editingId=null;
-       saveLocal();
-       render();
-       say("रेकॉर्ड अपडेट झाला. Cloud बदलण्यासाठी Cloud Save करा.");
-     }else{
-       obj.id=id();
-       obj.created_at=stamp();
-       data[current].unshift(obj);
-       saveLocal();
-       render();
-       say("रेकॉर्ड Local मध्ये सेव्ह झाला. Cloud साठी Cloud Save करा.");
-     }
-   };
- }
-
- /* EDIT BUTTON */
- document.querySelectorAll("[data-edit]").forEach(b=>{
-   b.onclick=()=>{
-     const record=data[current].find(r=>r.id===b.dataset.edit);
-     if(!record){
-       say("रेकॉर्ड सापडला नाही.",true);
-       return;
-     }
-
-     editingId=record.id;
-     render();
-
-     const editForm=document.getElementById("record-form");
-     if(!editForm)return;
-
-     for(const f of modules[current].fields){
-       const input=editForm.elements[f[0]];
-       if(input)input.value=record[f[0]]??"";
-     }
-
-     editForm.scrollIntoView({behavior:"smooth",block:"start"});
-     say("Edit मोड सुरू आहे. बदल करून Update Record दाबा.");
-   };
- });
-
- /* CLEAR / CANCEL EDIT */
- const clear=document.getElementById("clear-form");
- if(clear)clear.onclick=()=>{
-   editingId=null;
-   render();
-   say("फॉर्म साफ केला.");
- };
-
- /* DELETE BUTTON */
- document.querySelectorAll("[data-delete]").forEach(b=>{
-   b.onclick=()=>{
-     if(!confirm("हा रेकॉर्ड delete करायचा?"))return;
-
-     if(editingId===b.dataset.delete)editingId=null;
-
-     data[current]=data[current].filter(r=>r.id!==b.dataset.delete);
-     saveLocal();
-     render();
-     say("रेकॉर्ड delete केला. Cloud बदलण्यासाठी स्वतंत्र Save करा.");
-   };
- });
-
- const exp=document.getElementById("export-module");
- if(exp)exp.onclick=()=>exportCSV(current);
-
- const bp=document.getElementById("backup-now");
- if(bp)bp.onclick=exportJSON;
-
- const lb=document.getElementById("local-export");
- if(lb)lb.onclick=exportJSON;
-
- const rb=document.getElementById("restore-btn");
- const rf=document.getElementById("restore-file");
-
- if(rb&&rf)rb.onclick=()=>rf.click();
-
- if(rf)rf.onchange=async()=>{
-   const file=rf.files[0];
-   if(!file)return;
-
-   try{
-     const parsed=JSON.parse(await file.text());
-     const incoming=parsed.data||parsed;
-
-     if(!validData(incoming))throw new Error("Backup format चुकीचा आहे.");
-
-     if(!confirm("Restore केल्यावर सध्याचा स्थानिक डेटा बदलला जाईल. आधी Backup घेतला आहे का?"))return;
-
-     exportJSON();
-     data={...emptyData(),...incoming};
-     editingId=null;
-     saveLocal();
-     render();
-     say("Backup Restore झाला. Cloud आपोआप बदललेला नाही.");
-   }catch(e){
-     say("Restore failed: "+e.message,true);
-   }finally{
-     rf.value="";
-   }
- };
-
- const pr=document.getElementById("report-print");
- if(pr)pr.onclick=()=>window.print();
-
- const cc=document.getElementById("cloud-check");
- if(cc)cc.onclick=cloudCheck;
-
- const cl=document.getElementById("cloud-load");
- if(cl)cl.onclick=cloudLoad;
-
- const cs=document.getElementById("cloud-save");
- if(cs)cs.onclick=cloudSave;
-
- const cm=document.getElementById("cloud-merge");
- if(cm)cm.onclick=cloudMerge;
+function cfg(){
+  try{return JSON.parse(localStorage.getItem(CFG)||"{}")}catch(e){return {}}
+}
+function init(){
+  let c=cfg();
+  if(!c.url||!c.key||!window.supabase)return null;
+  client=window.supabase.createClient(c.url,c.key);
+  return client;
 }
 
-async function cloudGet(){
- if(!user)throw new Error("पहिले Login करा.");
- const {data:row,error}=await sb.from(DB_TABLE)
-   .select("user_id,payload,updated_at")
-   .eq("user_id",user.id).maybeSingle();
- if(error)throw error;
- return row;
-}
-async function cloudCheck(){
- const info=document.getElementById("cloud-info");
- if(!info)return;
- info.textContent="Cloud तपासत आहे...";
- try{
-   const row=await cloudGet();
-   info.textContent=row
-     ?"Cloud record सापडला. Updated: "+row.updated_at+" | "+JSON.stringify(counts(row.payload))
-     :"या Login खात्यासाठी Cloud record नाही. अजून Cloud Save केलेला नसू शकतो.";
- }catch(e){info.textContent="Cloud check error: "+e.message;}
-}
-function counts(d){
- const o={};
- for(const k of Object.keys(emptyData()))if(Array.isArray(d?.[k]))o[k]=d[k].length;
- return o;
-}
-async function cloudLoad(){
- if(!confirm("Cloud डेटा स्थानिक डेटावर पूर्णपणे ठेवला जाईल. आधी JSON Backup डाउनलोड करायचा का?"))return;
- exportJSON();
- try{
-   const row=await cloudGet();
-   if(!row){say("Cloud record नाही. Local data बदललेला नाही.",true);return;}
-   if(!validData(row.payload)){say("Cloud payload format चुकीचा आहे; local data सुरक्षित ठेवला.",true);return;}
-   data={...emptyData(),...row.payload};
-   editingId=null;
-   saveLocal();
-   dirty=false;
-   render();
-   say("Cloud data local मध्ये load झाला. रेकॉर्ड तपासा.");
- }catch(e){say("Cloud Load failed: "+e.message,true);}
-}
+window.setup=()=>{
+  let url=$("url").value.trim().replace(/\/+$/,""),key=$("key").value.trim();
+  if(!/^https:\/\/.+\.supabase\.co$/.test(url)||!key){
+    alert("Enter valid project URL and Publishable Key");return;
+  }
+  localStorage.setItem(CFG,JSON.stringify({url,key}));
+  init();alert("Settings saved. Create account or login.");
+};
+
+window.signup=async()=>{
+  try{
+    let c=init(),email=$("email").value.trim(),password=$("password").value;
+    if(!c)throw Error("Save cloud settings first");
+    if(password.length<8)throw Error("Password must be at least 8 characters");
+    let {error}=await c.auth.signUp({email,password});
+    if(error)throw error;
+    alert("Signup sent. Check email confirmation if enabled, then login.");
+  }catch(e){alert(e.message)}
+};
+
+window.login=async()=>{
+  try{
+    let c=init();
+    if(!c)throw Error("Save cloud settings first");
+    let {data,error}=await c.auth.signInWithPassword({
+      email:$("email").value.trim(),password:$("password").value
+    });
+    if(error)throw error;
+    user=data.user;render();alert("Login successful. Press Sync / Merge Cloud.");
+  }catch(e){alert("Login failed: "+e.message)}
+};
+
+window.logout=async()=>{
+  try{
+    if(client)await client.auth.signOut();
+    user=null;render();alert("Logged out. Local data remains.");
+  }catch(e){alert(e.message)}
+};
+
 async function cloudSave(){
- if(!confirm("Local data Cloud मध्ये Save करायचा? आधी JSON Backup घेतला आहे याची खात्री करा."))return;
- try{
-   const existing=await cloudGet();
-   if(existing&&!confirm("Cloud मध्ये आधीच डेटा आहे. Save केल्यास त्याच user चा Cloud payload बदलू शकतो. खात्री आहे?"))return;
-   const payload={...data,meta:{...(data.meta||{}),savedAt:stamp(),version:1}};
-   const {error}=await sb.from(DB_TABLE).upsert(
-     {user_id:user.id,payload,updated_at:stamp()},
-     {onConflict:"user_id"}
-   );
-   if(error)throw error;
-   data=payload;
-   localStorage.setItem("osi_erp_"+user.id,JSON.stringify(data));
-   localStorage.setItem("osi_erp_time_"+user.id,stamp());
-   dirty=false;
-   say("Cloud Save यशस्वी. Dashboard आणि records तपासा.");
- }catch(e){say("Cloud Save failed: "+e.message,true);}
-}
-async function cloudMerge(){
- if(!confirm("Merge आधी local JSON Backup डाउनलोड केला जाईल. समान ID असलेल्या records मध्ये local आवृत्ती प्राधान्याने ठेवायची. पुढे जाऊ?"))return;
- exportJSON();
- try{
-   const row=await cloudGet();
-   if(!row){say("Cloud record नाही. आधी Cloud Save किंवा Backup तपासा.",true);return;}
-   if(!validData(row.payload)){say("Cloud payload चुकीचा आहे; merge रद्द केला.",true);return;}
-   const merged=mergeData(data,row.payload);
-   if(!confirm("Merge preview counts: "+JSON.stringify(counts(merged))+". ही merged आवृत्ती Cloud आणि Local दोन्हीकडे सेव्ह करायची?"))return;
-   const {error}=await sb.from(DB_TABLE).upsert(
-     {user_id:user.id,payload:merged,updated_at:stamp()},
-     {onConflict:"user_id"}
-   );
-   if(error)throw error;
-   data=merged;
-   localStorage.setItem("osi_erp_"+user.id,JSON.stringify(data));
-   localStorage.setItem("osi_erp_time_"+user.id,stamp());
-   dirty=false;
-   editingId=null;
-   render();
-   say("Merge पूर्ण. रेकॉर्डची संख्या तपासा.");
- }catch(e){say("Merge failed: "+e.message,true);}
+  let c=init();
+  if(!c)throw Error("Cloud config missing");
+  let {data:{user:u},error:ue}=await c.auth.getUser();
+  if(ue)throw ue;
+  if(!u)throw Error("Login first");
+  let {error}=await c.from("erp_data").upsert({
+    user_id:u.id,payload:db,updated_at:new Date().toISOString()
+  },{onConflict:"user_id"});
+  if(error)throw error;
+  user=u;
 }
 
-function showApp(){
- document.getElementById("login-screen").classList.add("hidden");
- document.getElementById("app").classList.remove("hidden");
- document.getElementById("logout").classList.remove("hidden");
- document.getElementById("auth-label").textContent=user.email||"Logged in";
- loadLocal();
- editingId=null;
- current="dashboard";
- render();
- say("Login यशस्वी. Local data लोड झाला. Cloud तपासण्यासाठी Cloud Save / Sync उघडा.");
-}
-function showLogin(){
- document.getElementById("login-screen").classList.remove("hidden");
- document.getElementById("app").classList.add("hidden");
- document.getElementById("logout").classList.add("hidden");
- document.getElementById("auth-label").textContent="Login आवश्यक";
-}
-
-async function start(){
- if(!window.supabase){
-   loginSay("Supabase library load झाली नाही. Internet तपासा.",true);
-   return;
- }
- if(SUPABASE_ANON_KEY==="PASTE_YOUR_ANON_PUBLIC_KEY_HERE"){
-   loginSay("index.html मध्ये तुमची Supabase anon/public किंवा publishable key टाका.",true);
-   return;
- }
- try{
-   sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-   const {data:sessionData,error}=await sb.auth.getSession();
-   if(error)throw error;
-   if(sessionData.session){
-     user=sessionData.session.user;
-     showApp();
-   }
-   sb.auth.onAuthStateChange((_event,session)=>{
-     setTimeout(()=>{
-       if(session){
-         user=session.user;
-         showApp();
-       }else{
-         user=null;
-         editingId=null;
-         showLogin();
-       }
-     },0);
-   });
-   loginSay("Supabase तयार आहे. Login करा.");
- }catch(e){
-   loginSay("Supabase setup error: "+e.message,true);
- }
-}
-
-document.getElementById("login-btn").onclick=async()=>{
- try{
-   const email=document.getElementById("email").value.trim();
-   const password=document.getElementById("password").value;
-   if(!email||!password)throw new Error("Email आणि password भरा.");
-   if(!sb)throw new Error("Supabase key तपासा.");
-   const {error}=await sb.auth.signInWithPassword({email,password});
-   if(error)throw error;
-   loginSay("Login यशस्वी.");
- }catch(e){loginSay(e.message,true);}
+window.sync=async()=>{
+  try{
+    let c=init();
+    if(!c)throw Error("Save cloud settings first");
+    let {data:{user:u},error:ue}=await c.auth.getUser();
+    if(ue)throw ue;
+    if(!u)throw Error("Login first");
+    user=u;
+    let {data,error}=await c.from("erp_data").select("payload").eq("user_id",u.id).maybeSingle();
+    if(error)throw error;
+    if(data&&data.payload){
+      let remote=norm(data.payload),merged=empty();
+      T.forEach(t=>{
+        let m=new Map();
+        remote[t].forEach(x=>{if(x&&x.id)m.set(x.id,x)});
+        db[t].forEach(x=>{if(x&&x.id)m.set(x.id,x)});
+        merged[t]=[...m.values()];
+      });
+      db=merged;
+    }
+    persist();
+    await cloudSave();
+    render();
+    alert("Sync complete. Local and cloud records merged by ID.");
+  }catch(e){
+    alert("Sync failed: "+e.message+"\nLocal data remains. Download backup and check setup.");
+  }
 };
 
-document.getElementById("signup-btn").onclick=async()=>{
- try{
-   const email=document.getElementById("email").value.trim();
-   const password=document.getElementById("password").value;
-   if(!email||password.length<6)throw new Error("Email भरा आणि किमान 6 अक्षरांचा password वापरा.");
-   if(!sb)throw new Error("Supabase key तपासा.");
-   const {data:res,error}=await sb.auth.signUp({email,password});
-   if(error)throw error;
-   if(!res.session)loginSay("Signup झाले. Email confirmation पूर्ण करून Login करा.");
-   else loginSay("Signup यशस्वी.");
- }catch(e){loginSay(e.message,true);}
-};
+try{persist()}catch(e){}
+render();
 
-document.getElementById("logout").onclick=async()=>{
- if(dirty&&!confirm("अलीकडील बदल Cloud मध्ये सेव्ह केले असतील याची खात्री आहे का? Logout करायचे?"))return;
- try{
-   const {error}=await sb.auth.signOut();
-   if(error)throw error;
-   user=null;
-   editingId=null;
-   showLogin();
- }catch(e){say(e.message,true);}
-};
+try{
+  let c=init();
+  if(c)c.auth.getSession().then(({data})=>{
+    if(data.session){user=data.session.user;render()}
+  });
+}catch(e){}
 
-start();
+})();
 </script>
 </body>
 </html>
