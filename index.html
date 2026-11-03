@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="mr">
 <head>
@@ -9,8 +10,9 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Arial,sans-serif}
 button,input,select,textarea{font:inherit}
-header{background:var(--navy);color:white;padding:15px}
+header{background:var(--navy);color:white;padding:15px;display:flex;align-items:center;gap:14px}
 header h1{margin:0;font-size:22px}
+.logo{width:64px;height:64px;object-fit:contain;background:white;border-radius:8px;padding:3px}
 .wrap{max-width:1400px;margin:auto;padding:12px}
 .panel,.sidebar,.stat{background:white;border:1px solid var(--line);border-radius:10px}
 .panel{padding:14px;margin-bottom:12px;min-width:0}
@@ -32,11 +34,9 @@ header h1{margin:0;font-size:22px}
 table{width:100%;border-collapse:collapse;min-width:650px;font-size:12px}
 th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left}
 th{background:#f7f9fc}
-.filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0}
-.filters input,.filters select{padding:10px;border:1px solid #cbd5e1;border-radius:7px;min-width:0}
 #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .login-card{width:100%;max-width:400px;background:white;border:1px solid var(--line);border-radius:16px;padding:28px;box-shadow:0 12px 35px #12304a18}
-.login-logo{width:78px;height:78px;display:block;margin:0 auto 12px}
+.login-card .logo{display:block;margin:0 auto 12px;width:90px;height:90px}
 .login-card h1{text-align:center;color:var(--navy);font-size:22px;margin:0}
 .login-card p{text-align:center;color:#64748b}
 .login-card label{display:block;font-weight:bold;margin:14px 0 5px}
@@ -46,12 +46,20 @@ th{background:#f7f9fc}
 #accountBar{display:none;background:#e8f2fc;padding:8px 12px;text-align:right}
 body:not(.logged-in) #erpHeader,body:not(.logged-in) #accountBar,body:not(.logged-in) #erpWrap{display:none!important}
 body.logged-in #loginScreen{display:none!important}
-body.logged-in #erpHeader{display:block}
-body.logged-in #accountBar{display:block}
+body.logged-in #erpHeader,body.logged-in #accountBar{display:block}
 .notice{padding:10px;background:#fff8e6;border:1px solid #f3d38a;border-radius:8px;margin-bottom:12px}
-@media(max-width:800px){.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:repeat(3,1fr)}.nav{font-size:11px;padding:7px}.formgrid,.filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:480px){.formgrid,.filters{grid-template-columns:1fr}.sidebar{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media print{#erpHeader,#accountBar,.sidebar,.noprint,.btn{display:none!important}.layout{display:block}.panel{border:0}}
+.invoice-paper{background:white;border:1px solid #dbe3ec;padding:24px;max-width:900px;margin:auto}
+.invoice-head{display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:2px solid #12304a;padding-bottom:15px}
+.invoice-head h2{margin:0;color:#12304a}
+.amount-words{background:#f3f6fa;border:1px solid #dbe3ec;padding:12px;margin-top:14px;border-radius:6px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:repeat(3,1fr)}.nav{font-size:11px;padding:7px}.formgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.formgrid{grid-template-columns:1fr}.sidebar{grid-template-columns:repeat(2,1fr)}.invoice-paper{padding:12px}}
+@media print{
+ body{background:white}
+ #erpHeader,#accountBar,.sidebar,.noprint,.btn{display:none!important}
+ .layout{display:block}.panel{border:0}
+ .invoice-paper{border:0;padding:0;max-width:none}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
@@ -61,19 +69,14 @@ body.logged-in #accountBar{display:block}
 
 <section id="loginScreen">
  <div class="login-card">
-  <svg class="login-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-   <rect width="100" height="100" rx="20" fill="#12304a"/>
-   <circle cx="50" cy="50" r="35" fill="none" stroke="#fff" stroke-width="3"/>
-   <text x="50" y="48" text-anchor="middle" font-size="23" font-weight="bold" fill="#fff">OSI</text>
-   <path d="M28 61H72" stroke="#fff" stroke-width="2"/>
-  </svg>
+  <img class="logo" src="https://omsaiinstuments.netlify.app/assets/om-sai-logo.png" alt="Om Sai Instruments Logo" onerror="this.style.display='none'">
   <h1>OM SAI INSTRUMENTS</h1>
   <p>ERP Login</p>
   <form id="loginForm">
-   <label for="loginEmail">Email</label>
-   <input id="loginEmail" type="email" autocomplete="username" required placeholder="Enter your email">
-   <label for="loginPassword">Password</label>
-   <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Enter password">
+   <label>Email</label>
+   <input id="loginEmail" type="email" autocomplete="username" required>
+   <label>Password</label>
+   <input id="loginPassword" type="password" autocomplete="current-password" required>
    <button class="btn" type="submit">Login</button>
   </form>
   <div id="loginError" role="alert"></div>
@@ -81,9 +84,10 @@ body.logged-in #accountBar{display:block}
 </section>
 
 <header id="erpHeader">
- <h1>OM SAI INSTRUMENTS ERP</h1>
- Industrial Instruments • Sales • Purchase • Inventory
+ <img class="logo" src="https://omsaiinstuments.netlify.app/assets/om-sai-logo.png" alt="Company Logo" onerror="this.style.display='none'">
+ <div><h1>OM SAI INSTRUMENTS ERP</h1>Industrial Instruments • Sales • Purchase • Inventory</div>
 </header>
+
 <div id="accountBar">
  <span id="accountEmail"></span>
  <button class="btn secondary" onclick="go('backup')">Backup / Cloud Setup</button>
@@ -91,96 +95,137 @@ body.logged-in #accountBar{display:block}
 </div>
 
 <div class="wrap" id="erpWrap">
- <div class="notice"><b>महत्त्वाचे:</b> नियमितपणे JSON Backup डाउनलोड करा. Cloud साठी Supabase Project URL आणि Publishable/Anon Key आवश्यक आहे.</div>
- <div class="layout">
-  <nav class="sidebar" id="nav"></nav>
-  <main id="app"></main>
- </div>
+ <div class="notice"><b>टीप:</b> नियमितपणे JSON Backup डाउनलोड करा. या Invoice फॉरमॅटमध्ये GST गणना नाही.</div>
+ <div class="layout"><nav class="sidebar" id="nav"></nav><main id="app"></main></div>
 </div>
 
 <script>
-(()=>{"use strict";
+(()=>{
+"use strict";
 const KEY="omSaiInstrumentsERP_v3",CFG="omSaiERP_cloud_config_v1";
-const T=["products","customers","suppliers","sales","purchases","stock","serials","payments"];
+const T=["products","customers","suppliers","sales","purchases","stock","serials","payments","quotations"];
 const menus=[
 ["dashboard","Dashboard"],["products","Product Master"],["customers","Customer Master"],
-["sales","Sales / Tax Invoice"],["purchases","Purchase Entry"],["stockio","Stock In / Out"],
-["stockreg","Stock Register"],["serials","Serial Number Register"],["suppliers","Supplier Master"],
-["payments","Payment / Outstanding"],["reports","Reports / Export"],["backup","Backup / Cloud Setup"]
+["quotations","Quotation"],["sales","Invoice"],["purchases","Purchase Entry"],
+["stockio","Stock In / Out"],["stockreg","Stock Register"],["serials","Serial Number Register"],
+["suppliers","Supplier Master"],["payments","Payment / Outstanding"],["reports","Reports / Export"],["backup","Backup / Cloud Setup"]
 ];
-const $=x=>document.getElementById(x);
-const N=x=>Number(x)||0;
+const $=x=>document.getElementById(x),N=x=>Number(x)||0;
 const M=x=>"₹"+N(x).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
 const id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 const today=()=>new Date().toISOString().slice(0,10);
 const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clean=x=>String(x??"").trim().replace(/\s+/g," ");
-const norm=x=>Object.fromEntries(T.map(k=>[k,Array.isArray(x?.[k])?x[k]:[]]));
+function norm(x){const o={};T.forEach(k=>o[k]=Array.isArray(x?.[k])?x[k]:[]);return o}
 function load(){for(const k of [KEY,"omSaiInstrumentsERP_v2"]){try{const x=JSON.parse(localStorage.getItem(k)||"null");if(x)return norm(x.data||x)}catch(e){}}return norm({})}
 let db=load(),page="dashboard",client=null,user=null,editingRecord=null,editingProductId=null;
 function persist(){localStorage.setItem(KEY,JSON.stringify(db))}
 function cfg(){try{return JSON.parse(localStorage.getItem(CFG)||"{}")}catch(e){return {}}}
 function init(){const c=cfg();if(!c.url||!c.key||!window.supabase)return null;if(!client)client=window.supabase.createClient(c.url,c.key);return client}
-function setAuthStatus(msg){const e=$("loginError");if(e&&!user)e.textContent=msg}
 function balance(pid){const p=db.products.find(x=>x.id===pid);if(!p)return 0;return N(p.opening)+db.stock.filter(x=>x.product===pid&&x.direction==="In").reduce((s,x)=>s+N(x.qty),0)+db.purchases.filter(x=>x.product===pid).reduce((s,x)=>s+N(x.qty),0)-db.stock.filter(x=>x.product===pid&&x.direction==="Out").reduce((s,x)=>s+N(x.qty),0)-db.sales.filter(x=>x.product===pid).reduce((s,x)=>s+N(x.qty),0)}
+function words(num){
+ num=Math.floor(Math.abs(N(num)));
+ if(num===0)return "Zero";
+ const a=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+ const b=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+ function under(n){if(n<20)return a[n];if(n<100)return b[Math.floor(n/10)]+(n%10?" "+a[n%10]:"");return a[Math.floor(n/100)]+" Hundred"+(n%100?" "+under(n%100):"")}
+ let out=[];
+ [[10000000,"Crore"],[100000,"Lakh"],[1000,"Thousand"],[100,"Hundred"]].forEach(([v,w])=>{if(num>=v){let q=Math.floor(num/v);out.push(under(q)+" "+w);num%=v}});
+ if(num)out.push(under(num));return out.join(" ");
+}
+function amountWords(n){const rupees=Math.floor(N(n)),paise=Math.round((N(n)-rupees)*100);return "Indian Rupees "+words(rupees)+(paise?" and "+words(paise)+" Paise":"")+" Only."}
 function tbl(head,rows){return `<div class="tablewrap"><table><thead><tr>${head.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${rows.length?rows.join(""):`<tr><td colspan="${head.length}">No records found</td></tr>`}</tbody></table></div>`}
 function field(n,t,type="text",req=false,extra=""){return `<div class="field"><label>${t}${req?" *":""}</label><input name="${n}" type="${type}" ${req?"required":""} ${extra}></div>`}
 function sel(n,t,arr,req=true,label=x=>x.name||x.code||x.serial){return `<div class="field"><label>${t}${req?" *":""}</label><select name="${n}" ${req?"required":""}><option value="">Select ${t}</option>${arr.map(x=>`<option value="${esc(x.id)}">${esc(label(x))}</option>`).join("")}</select></div>`}
 function setFormValues(f,obj){if(!f||!obj)return;for(const [k,v] of Object.entries(obj)){const nm=k==="partyId"&&f.elements.party?"party":k;const el=f.elements[nm];if(el&&el.type!=="file")el.value=v??""}}
-function form(title,fields){return `<section class="panel"><h2>${title}</h2><form id="f" class="formgrid">${fields}</form><button class="btn" id="saveBtn" form="f">Save</button><button class="btn secondary" type="button" onclick="cancelEdit()">Clear / Cancel Edit</button></section>`}
-function list(type,heads,cols){return tbl([...heads,"Action"],db[type].map(x=>`<tr>${cols.map(fn=>`<td>${esc(fn(x))}</td>`).join("")}<td>${type==="sales"?`<button class="btn" onclick="downloadInvoicePDF('${esc(x.id)}')">PDF</button>`:""}<button class="btn" onclick="editRecord('${type}','${esc(x.id)}')">Edit</button><button class="btn danger" onclick="del('${type}','${esc(x.id)}')">Delete</button></td></tr>`))}
-function attach(type,maker){const f=$("f");if(!f)return;f.onsubmit=async e=>{e.preventDefault();if(!f.reportValidity())return;const v=Object.fromEntries(new FormData(f).entries());const old=editingRecord?.type===type?db[type].find(x=>x.id===editingRecord.id):null;let r;try{r=maker(v,old)}catch(err){alert(err.message);return}if(!r)return;if(old){const ix=db[type].findIndex(x=>x.id===old.id);db[type][ix]={...old,...r,id:old.id}}else{r.id=id();db[type].push(r)}try{persist()}catch(err){alert("Save failed. Backup घ्या.");return}editingRecord=null;editingProductId=null;render();if(user)try{await cloudSave()}catch(err){alert("Local save झाले; Cloud sync अयशस्वी: "+err.message)}else alert(old?"Record updated locally.":"Record saved locally.")}}
+function form(title,fields){return `<section class="panel"><h2>${title}</h2><form id="f" class="formgrid">${fields}</form><button class="btn" id="saveBtn" form="f">Save</button><button class="btn secondary" type="button" onclick="cancelEdit()">Clear / Cancel</button></section>`}
+function list(type,heads,cols){return tbl([...heads,"Action"],db[type].map(x=>`<tr>${cols.map(fn=>`<td>${esc(fn(x))}</td>`).join("")}<td>${type==="sales"?`<button class="btn" onclick="downloadDocumentPDF('sales','${esc(x.id)}')">PDF</button>`:""}${type==="quotations"?`<button class="btn" onclick="downloadDocumentPDF('quotations','${esc(x.id)}')">PDF</button>${!x.converted?`<button class="btn" onclick="convertQuotation('${esc(x.id)}')">Convert to Invoice</button>`:"<span>Converted</span>"}`:""}<button class="btn" onclick="editRecord('${type}','${esc(x.id)}')">Edit</button><button class="btn danger" onclick="del('${type}','${esc(x.id)}')">Delete</button></td></tr>`))}
+function attach(type,maker){const f=$("f");if(!f)return;f.onsubmit=async e=>{e.preventDefault();const v=Object.fromEntries(new FormData(f).entries());const old=editingRecord?.type===type?db[type].find(x=>x.id===editingRecord.id):null;let r;try{r=maker(v,old)}catch(err){alert(err.message);return}if(!r)return;if(old){const ix=db[type].findIndex(x=>x.id===old.id);db[type][ix]={...old,...r,id:old.id}}else{r.id=id();db[type].push(r)}try{persist()}catch(err){alert("Save failed. Backup घ्या.");return}editingRecord=null;editingProductId=null;render();if(user)try{await cloudSave()}catch(err){alert("Local save झाले; Cloud sync अयशस्वी: "+err.message)}else alert("Record saved locally.")}}
 window.cancelEdit=()=>{editingRecord=null;editingProductId=null;render()};
 window.go=p=>{if(!user)return;page=p;editingRecord=null;editingProductId=null;render()};
-window.editRecord=(type,rid)=>{const x=db[type].find(y=>y.id===rid);if(!x)return alert("Record not found.");if(type==="products"){editingProductId=rid;editingRecord=null}else{editingRecord={type,id:rid};editingProductId=null}render();setFormValues($("f"),type==="sales"||type==="purchases"?{...x,party:x.partyId}:x);if($("saveBtn"))$("saveBtn").textContent="Update";window.scrollTo({top:0,behavior:"smooth"})};
-window.del=async(type,rid)=>{if(!confirm("ही नोंद Delete करायची?"))return;db[type]=db[type].filter(x=>x.id!==rid);persist();render();if(user)try{await cloudSave()}catch(e){alert("Cloud sync failed: "+e.message)}};
+window.editRecord=(type,rid)=>{const x=db[type].find(y=>y.id===rid);if(!x)return;if(type==="products"){editingProductId=rid}else editingRecord={type,id:rid};render();setFormValues($("f"),type==="sales"||type==="purchases"?{...x,party:x.partyId}:x);if($("saveBtn"))$("saveBtn").textContent="Update"};
+window.del=async(type,rid)=>{if(!confirm("ही नोंद Delete करायची?"))return;db[type]=db[type].filter(x=>x.id!==rid);persist();render();if(user)try{await cloudSave()}catch(e){alert(e.message)}};
 function duplicateProduct(v,exclude=null){if(!clean(v.code)||!clean(v.name))throw Error("Product Code आणि Product Name आवश्यक आहेत.");if(db.products.some(p=>p.id!==exclude&&p.code.toLowerCase()===clean(v.code).toLowerCase()))throw Error("Duplicate Product Code.");}
-window.downloadInvoicePDF=function(invoiceId){try{const x=db.sales.find(y=>y.id===invoiceId);if(!x)return alert("Invoice सापडले नाही.");if(!window.jspdf?.jsPDF)return alert("PDF library load झाली नाही.");const {jsPDF}=window.jspdf,d=new jsPDF();d.setFontSize(18);d.text("OM SAI INSTRUMENTS",14,18);d.setFontSize(12);d.text("SALES / TAX INVOICE",14,27);d.line(14,31,196,31);d.text("Invoice: "+x.doc,14,40);d.text("Date: "+x.date,14,47);d.text("Bill To: "+x.partyName,14,54);d.autoTable({startY:62,head:[["Product","Qty","Rate","Taxable","GST %","GST"]],body:[[x.productName,x.qty,M(x.rate),M(x.subtotal),x.gst+"%",M(x.gstAmount)]],theme:"grid"});let y=d.lastAutoTable.finalY+12;[["Taxable",x.subtotal],["GST",x.gstAmount],["Total",x.total],["Paid",x.paid],["Balance",x.total-x.paid]].forEach((a,i)=>d.text(a[0]+": "+M(a[1]),140,y+i*7));d.save("Invoice-"+x.doc+".pdf")}catch(e){alert("PDF तयार करता आली नाही: "+e.message)}};
+
+window.downloadDocumentPDF=function(type,rid){
+ const x=db[type].find(y=>y.id===rid);if(!x)return alert("Record not found.");
+ if(!window.jspdf?.jsPDF)return alert("PDF library load झाली नाही.");
+ const {jsPDF}=window.jspdf,d=new jsPDF();
+ d.setFontSize(18);d.text("OM SAI INSTRUMENTS",14,18);
+ d.setFontSize(11);d.text(type==="quotations"?"QUOTATION":"INVOICE",14,26);
+ d.line(14,30,196,30);
+ d.setFontSize(10);d.text("Document No: "+x.doc,14,39);d.text("Date: "+x.date,14,46);
+ d.text("Bill To: "+x.partyName,14,53);
+ if(x.address)d.text("Address: "+String(x.address).slice(0,90),14,60);
+ d.autoTable({startY:67,head:[["Description","Qty","Rate","Amount"]],body:[[x.productName,x.qty,M(x.rate),M(x.subtotal)]],theme:"grid"});
+ let y=d.lastAutoTable.finalY+10;
+ d.text("Final Amount: "+M(x.total),140,y);
+ d.text("Amount in Words:",14,y+10);
+ const lines=d.splitTextToSize(amountWords(x.total),175);d.text(lines,14,y+17);
+ d.text("Terms & Conditions: "+(x.terms||"Payment as agreed."),14,y+34);
+ d.text("For OM SAI INSTRUMENTS",135,y+55);d.text("Authorized Signature",145,y+70);
+ d.save((type==="quotations"?"Quotation-":"Invoice-")+x.doc+".pdf");
+};
+window.convertQuotation=async rid=>{
+ const q=db.quotations.find(x=>x.id===rid);if(!q||q.converted)return alert("Quotation आधीच convert झाले आहे किंवा सापडले नाही.");
+ if(!confirm("या Quotation वरून Invoice तयार करायचे?"))return;
+ const doc="OSI-"+new Date().getFullYear()+"-"+String(db.sales.length+1).padStart(4,"0");
+ const inv={...q,id:id(),doc,quotationId:q.id,converted:false,paid:0};
+ db.sales.push(inv);q.converted=true;q.invoiceDoc=doc;
+ persist();page="sales";render();
+ if(user)try{await cloudSave()}catch(e){alert("Invoice local save झाले; Cloud sync अयशस्वी: "+e.message)}
+ alert("Invoice तयार झाले: "+doc);
+};
 
 function render(){
  if(!user){document.body.classList.remove("logged-in");$("nav").innerHTML="";$("app").innerHTML="";return}
  document.body.classList.add("logged-in");$("accountEmail").textContent=user.email||"";
  $("nav").innerHTML=menus.map(m=>`<button class="nav ${page===m[0]?"active":""}" onclick="go('${m[0]}')">${m[1]}</button>`).join("");
  let h="",a=null;
- if(page==="dashboard")h=`<section class="panel"><h2>Dashboard</h2><p class="small">Logged in: ${esc(user.email||"")}</p><div class="stats">${[["Products",db.products.length],["Customers",db.customers.length],["Sales Invoices",db.sales.length],["Suppliers",db.suppliers.length],["Total Sales",M(db.sales.reduce((s,x)=>s+N(x.total),0))],["Purchases",M(db.purchases.reduce((s,x)=>s+N(x.total),0))]].map(x=>`<div class="stat"><strong>${x[1]}</strong>${x[0]}</div>`).join("")}</div></section><section class="panel"><h2>Low Stock Alert</h2>${tbl(["Product","Available","Reorder"],db.products.filter(p=>balance(p.id)<=N(p.reorder)).map(p=>`<tr><td>${esc(p.name)}</td><td>${balance(p.id)}</td><td>${N(p.reorder)}</td></tr>`))}</section>`;
- if(page==="products"){const p=db.products.find(x=>x.id===editingProductId);h=`<section class="panel"><h2>${p?"Edit Product":"Add Product"}</h2><form id="f" class="formgrid">${field("code","Product Code","text",true)}${field("name","Product Name","text",true)}${field("make","Make / Brand")}${field("model","Model")}${field("unit","Unit")}${field("opening","Opening Stock","number",false,'min="0" step="any"')}${field("reorder","Reorder Level","number",false,'min="0" step="any"')}${field("cost","Purchase Cost ₹","number",false,'min="0" step="any"')}${field("price","Selling Price ₹","number",false,'min="0" step="any"')}</form><button class="btn" id="saveBtn" form="f">${p?"Update Product":"Save Product"}</button><button class="btn secondary" onclick="cancelEdit()">Cancel</button></section><section class="panel"><h2>Product Search</h2><input id="productSearch" placeholder="Search code, name, make..." oninput="renderProductTable()"><div id="productTableArea"></div></section>`;a=["products",v=>{duplicateProduct(v,editingProductId);return {code:clean(v.code),name:clean(v.name),make:clean(v.make),model:clean(v.model),unit:clean(v.unit)||"pcs",opening:Math.max(0,N(v.opening)),reorder:Math.max(0,N(v.reorder)),cost:Math.max(0,N(v.cost)),price:Math.max(0,N(v.price))}}]}
- if(page==="customers"||page==="suppliers"){const t=page,old=editingRecord?.type===t?db[t].find(x=>x.id===editingRecord.id):null;h=form((old?"Edit ":"Add ")+(t==="customers"?"Customer":"Supplier"),field("name","Name","text",true)+field("mobile","Mobile")+field("email","Email","email")+field("gstin","GSTIN")+field("city","City")+field("address","Address"))+`<section class="panel"><h2>${t} List</h2>${list(t,["Name","Mobile","Email","GSTIN","City","Address"],[x=>x.name,x=>x.mobile,x=>x.email,x=>x.gstin,x=>x.city,x=>x.address])}</section>`;a=[t,v=>({name:clean(v.name),mobile:v.mobile,email:v.email,gstin:v.gstin,city:v.city,address:v.address})]}
- if(page==="sales"||page==="purchases"){const sale=page==="sales",t=sale?"sales":"purchases",parties=sale?db.customers:db.suppliers;h=form(sale?"Sales / Tax Invoice":"Purchase Entry",field("doc","Invoice / Bill No.","text",true)+sel("party",sale?"Customer":"Supplier",parties)+field("date","Date","date",true)+sel("product","Product",db.products)+field("qty","Quantity","number",true,'min=".001" step="any"')+field("rate","Rate ₹","number",true,'min="0" step="any"')+field("gst","GST %","number",false,'min="0" max="100" step="any"')+field("paid","Paid ₹","number",false,'min="0" step="any"'))+`<section class="panel"><h2>${sale?"Sales Invoices":"Purchase Bills"}</h2>${list(t,["No.","Party","Date","Product","Qty","Taxable","GST","Total","Paid","Balance"],[x=>x.doc,x=>x.partyName,x=>x.date,x=>x.productName,x=>x.qty,x=>M(x.subtotal),x=>M(x.gstAmount),x=>M(x.total),x=>M(x.paid),x=>M(x.total-x.paid)])}<button class="btn secondary" onclick="csv('${t}')">Export CSV</button></section>`;a=[t,(v,old)=>{const p=db.products.find(x=>x.id===v.product),party=parties.find(x=>x.id===v.party);if(!p||!party)throw Error("Select product and party.");if(db[t].some(x=>x.id!==old?.id&&x.doc===v.doc))throw Error("Document number already exists.");const qty=N(v.qty),rate=N(v.rate),gst=N(v.gst),subtotal=qty*rate,gstAmount=subtotal*gst/100,total=subtotal+gstAmount,paid=N(v.paid);if(qty<=0||rate<0||gst<0||gst>100||paid<0||paid>total)throw Error("Quantity, GST किंवा Payment तपासा.");let available=balance(p.id);if(sale&&old?.product===p.id)available+=N(old.qty);if(sale&&qty>available)throw Error("Insufficient stock. Available: "+available);return {doc:clean(v.doc),partyId:party.id,partyName:party.name,date:v.date,product:p.id,productName:p.name,qty,rate,gst,subtotal,gstAmount,total,paid}}]}
- if(page==="stockio"){h=form("Stock In / Out",sel("product","Product",db.products,true,p=>p.name+" (Stock "+balance(p.id)+")")+'<div class="field"><label>Direction</label><select name="direction"><option>In</option><option>Out</option></select></div>'+field("qty","Quantity","number",true,'min=".001" step="any"')+field("date","Date","date",true)+field("reference","Reference")+field("notes","Notes"))+`<section class="panel"><h2>Stock History</h2>${list("stock",["Date","Product","Direction","Qty","Reference","Notes"],[x=>x.date,x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.direction,x=>x.qty,x=>x.reference,x=>x.notes])}</section>`;a=["stock",v=>{if(!db.products.some(p=>p.id===v.product)||N(v.qty)<=0)throw Error("Product आणि Quantity तपासा.");if(v.direction==="Out"&&N(v.qty)>balance(v.product))throw Error("Insufficient stock.");return {...v,qty:N(v.qty)}}]}
- if(page==="stockreg")h=`<section class="panel"><h2>Stock Register</h2><button class="btn secondary" onclick="csv('stockreg')">Export CSV</button>${tbl(["Code","Product","Opening","In","Out","Balance","Status"],db.products.map(p=>{const ins=db.stock.filter(x=>x.product===p.id&&x.direction==="In").reduce((s,x)=>s+N(x.qty),0)+db.purchases.filter(x=>x.product===p.id).reduce((s,x)=>s+N(x.qty),0),outs=db.stock.filter(x=>x.product===p.id&&x.direction==="Out").reduce((s,x)=>s+N(x.qty),0)+db.sales.filter(x=>x.product===p.id).reduce((s,x)=>s+N(x.qty),0),b=balance(p.id);return `<tr><td>${esc(p.code)}</td><td>${esc(p.name)}</td><td>${N(p.opening)}</td><td>${ins}</td><td>${outs}</td><td>${b}</td><td>${b<=N(p.reorder)?"LOW":"OK"}</td></tr>`}))}</section>`;
- if(page==="serials"){h=form("Serial Number Register",sel("product","Product",db.products)+field("serial","Serial Number","text",true)+'<div class="field"><label>Status</label><select name="status"><option>In Stock</option><option>Sold</option><option>Under Calibration</option><option>Sent for Repair</option></select></div>'+field("customer","Customer / Location")+field("calibration","Last Calibration","date")+field("nextcal","Next Calibration Due","date")+field("certificate","Certificate No.")+field("warranty","Warranty Until","date"))+`<section class="panel"><h2>Serial Register</h2>${list("serials",["Product","Serial","Status","Customer","Last Cal.","Next Due","Certificate","Warranty"],[x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.serial,x=>x.status,x=>x.customer,x=>x.calibration,x=>x.nextcal,x=>x.certificate,x=>x.warranty])}</section>`;a=["serials",v=>{if(db.serials.some(x=>x.serial===v.serial&&x.id!==editingRecord?.id))throw Error("Serial number already exists.");return v}]}
- if(page==="payments"){h=form("Payment Entry",'<div class="field"><label>Type</label><select name="type"><option>Receipt from Customer</option><option>Payment to Supplier</option></select></div>'+field("party","Party","text",true)+field("date","Date","date",true)+field("amount","Amount ₹","number",true,'min=".01" step="any"')+field("reference","Invoice / Reference")+field("notes","Notes"))+`<section class="panel"><h2>Payments</h2>${list("payments",["Type","Party","Date","Amount","Reference","Notes"],[x=>x.type,x=>x.party,x=>x.date,x=>M(x.amount),x=>x.reference,x=>x.notes])}</section><section class="panel"><h2>Invoice Outstanding</h2>${tbl(["Type","Party","Doc","Total","Paid","Balance"],[...db.sales.map(x=>`<tr><td>Sale</td><td>${esc(x.partyName)}</td><td>${esc(x.doc)}</td><td>${M(x.total)}</td><td>${M(x.paid)}</td><td>${M(x.total-x.paid)}</td></tr>`),...db.purchases.map(x=>`<tr><td>Purchase</td><td>${esc(x.partyName)}</td><td>${esc(x.doc)}</td><td>${M(x.total)}</td><td>${M(x.paid)}</td><td>${M(x.total-x.paid)}</td></tr>`)])}</section>`;a=["payments",v=>{if(N(v.amount)<=0)throw Error("Enter valid amount.");return {...v,amount:N(v.amount)}}]}
- if(page==="reports")h=`<section class="panel"><h2>Reports / Export</h2><p>Total Sales: <b>${M(db.sales.reduce((s,x)=>s+N(x.total),0))}</b></p><p>Total Purchases: <b>${M(db.purchases.reduce((s,x)=>s+N(x.total),0))}</b></p><p>Sales Outstanding: <b>${M(db.sales.reduce((s,x)=>s+N(x.total)-N(x.paid),0))}</b></p><p>Purchase Outstanding: <b>${M(db.purchases.reduce((s,x)=>s+N(x.total)-N(x.paid),0))}</b></p><button class="btn" onclick="window.print()">Print</button>${T.map(t=>`<button class="btn secondary" onclick="csv('${t}')">${t} CSV</button>`).join("")}<button class="btn secondary" onclick="csv('stockreg')">Stock CSV</button></section>`;
- if(page==="backup")h=`<section class="panel"><h2>Backup / Restore</h2><button class="btn" onclick="backup()">Download JSON Backup</button><div class="field"><label>Restore JSON Backup</label><input type="file" accept=".json,application/json" onchange="restore(event)"></div><hr><h2>Supabase Cloud Setup</h2><p class="small">पहिल्यांदा वापरत असल्यास, खाली URL आणि Publishable/Anon Key सेव्ह करा. मग Logout करून Login करा. Secret/service_role key वापरू नका.</p><div class="formgrid"><div class="field"><label>Supabase Project URL</label><input id="cloudUrl" type="url" placeholder="https://project.supabase.co"></div><div class="field"><label>Publishable / Anon Key</label><input id="cloudKey" type="password" placeholder="Supabase key"></div></div><button class="btn" onclick="saveCloudSettings()">Save Cloud Settings</button><button class="btn secondary" onclick="createAccount()">Create Account</button><button class="btn" onclick="sync()">Sync / Merge Cloud</button><p id="cloudStatus" class="small"></p><h2>Supabase SQL Setup</h2><pre id="sql" style="white-space:pre-wrap;overflow-wrap:anywhere;background:#f7f9fc;padding:10px">create table if not exists public.erp_data (
- user_id uuid primary key references auth.users(id) on delete cascade,
- payload jsonb not null default '{}'::jsonb,
- updated_at timestamptz not null default now()
-);
-alter table public.erp_data enable row level security;
-create policy "read own ERP" on public.erp_data for select to authenticated using (auth.uid() = user_id);
-create policy "insert own ERP" on public.erp_data for insert to authenticated with check (auth.uid() = user_id);
-create policy "update own ERP" on public.erp_data for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);</pre><button class="btn secondary" onclick="copySQL()">Copy SQL</button></section>`;
+ if(page==="dashboard")h=`<section class="panel"><h2>Dashboard</h2><div class="stats">${[["Products",db.products.length],["Customers",db.customers.length],["Quotations",db.quotations.length],["Invoices",db.sales.length],["Sales",M(db.sales.reduce((s,x)=>s+N(x.total),0))],["Purchases",M(db.purchases.reduce((s,x)=>s+N(x.total),0))]].map(x=>`<div class="stat"><strong>${x[1]}</strong>${x[0]}</div>`).join("")}</div></section>`;
+ if(page==="products"){const p=db.products.find(x=>x.id===editingProductId);h=`<section class="panel"><h2>${p?"Edit Product":"Add Product"}</h2><form id="f" class="formgrid">${field("code","Product Code","text",true)}${field("name","Product Name","text",true)}${field("make","Make / Brand")}${field("model","Model")}${field("unit","Unit")}${field("opening","Opening Stock","number",false,'min="0" step="any"')}${field("reorder","Reorder Level","number",false,'min="0" step="any"')}${field("cost","Purchase Cost ₹","number",false,'min="0" step="any"')}${field("price","Selling Price ₹","number",false,'min="0" step="any"')}</form><button class="btn" id="saveBtn" form="f">Save Product</button><input id="productSearch" placeholder="Search products" oninput="renderProductTable()"><div id="productTableArea"></div></section>`;a=["products",v=>{duplicateProduct(v,editingProductId);return {code:clean(v.code),name:clean(v.name),make:clean(v.make),model:clean(v.model),unit:clean(v.unit)||"pcs",opening:N(v.opening),reorder:N(v.reorder),cost:N(v.cost),price:N(v.price)}}]}
+ if(page==="customers"||page==="suppliers"){const t=page;h=form(t==="customers"?"Customer Master":"Supplier Master",field("name","Name","text",true)+field("mobile","Mobile")+field("email","Email","email")+field("gstin","GSTIN (optional)")+field("city","City")+field("address","Address"))+`<section class="panel"><h2>Records</h2>${list(t,["Name","Mobile","Email","City","Address"],[x=>x.name,x=>x.mobile,x=>x.email,x=>x.city,x=>x.address])}</section>`;a=[t,v=>({name:clean(v.name),mobile:v.mobile,email:v.email,gstin:v.gstin,city:v.city,address:v.address})]}
+ if(page==="quotations"||page==="sales"){
+  const quote=page==="quotations",t=page,parties=db.customers;
+  const auto=quote?"QTN-"+new Date().getFullYear()+"-"+String(db.quotations.length+1).padStart(4,"0"):"OSI-"+new Date().getFullYear()+"-"+String(db.sales.length+1).padStart(4,"0");
+  h=form(quote?"Create Professional Quotation":"Create Professional Invoice",
+  field("doc","Document Number","text",true,`value="${auto}"`)+sel("party","Customer",parties)+field("date","Date","date",true,`value="${today()}"`)+sel("product","Product",db.products)+field("qty","Quantity","number",true,'min=".001" step="any"')+field("rate","Rate ₹","number",true,'min="0" step="any"')+field("discount","Discount ₹","number",false,'min="0" step="any"')+field("paid","Paid ₹","number",false,'min="0" step="any"')+field("validity","Quotation Valid Until","date",false)+`<div class="field" style="grid-column:1/-1"><label>Terms & Conditions</label><input name="terms" value="Prices are as stated above. Please contact us for payment terms."></div>`)
+  +`<section class="panel"><h2>${quote?"Quotation List":"Invoice List"}</h2>${list(t,["No.","Customer","Date","Product","Qty","Rate","Discount","Final Amount","Amount in Words"],[x=>x.doc,x=>x.partyName,x=>x.date,x=>x.productName,x=>x.qty,M.bind(null),x=>M(x.discount),x=>M(x.total),x=>amountWords(x.total)])}</section>`;
+  a=[t,(v,old)=>{
+   const p=db.products.find(x=>x.id===v.product),party=parties.find(x=>x.id===v.party);
+   if(!p||!party)throw Error("Customer आणि Product निवडा.");
+   if(db[t].some(x=>x.id!==old?.id&&x.doc===v.doc))throw Error("Document number आधीपासून आहे.");
+   const qty=N(v.qty),rate=N(v.rate),discount=N(v.discount),subtotal=qty*rate,total=Math.max(0,subtotal-discount),paid=N(v.paid);
+   if(qty<=0||rate<0||discount>subtotal||paid<0||paid>total)throw Error("Quantity, Rate, Discount किंवा Paid amount तपासा.");
+   if(!quote){let available=balance(p.id);if(old?.product===p.id)available+=N(old.qty);if(qty>available)throw Error("Stock कमी आहे. Available: "+available)}
+   return {doc:clean(v.doc),partyId:party.id,partyName:party.name,address:party.address||"",date:v.date,product:p.id,productName:p.name,qty,rate,discount,subtotal,total,paid,terms:v.terms||"",validity:v.validity||"",converted:false};
+  }];
+ }
+ if(page==="purchases"){h=form("Purchase Entry",field("doc","Bill No.","text",true)+sel("party","Supplier",db.suppliers)+field("date","Date","date",true)+sel("product","Product",db.products)+field("qty","Quantity","number",true,'min=".001" step="any"')+field("rate","Rate ₹","number",true,'min="0" step="any"')+field("paid","Paid ₹","number",false,'min="0" step="any"'))+`<section class="panel"><h2>Purchase Bills</h2>${list("purchases",["No.","Supplier","Date","Product","Qty","Total","Paid"],[x=>x.doc,x=>x.partyName,x=>x.date,x=>x.productName,x=>x.qty,x=>M(x.total),x=>M(x.paid)])}</section>`;a=["purchases",v=>{const p=db.products.find(x=>x.id===v.product),party=db.suppliers.find(x=>x.id===v.party);if(!p||!party)throw Error("Supplier आणि Product निवडा.");const subtotal=N(v.qty)*N(v.rate);return {doc:v.doc,partyId:party.id,partyName:party.name,date:v.date,product:p.id,productName:p.name,qty:N(v.qty),rate:N(v.rate),subtotal,total:subtotal,paid:N(v.paid)}}]}
+ if(page==="stockio"){h=form("Stock In / Out",sel("product","Product",db.products)+`<div class="field"><label>Direction</label><select name="direction"><option>In</option><option>Out</option></select></div>`+field("qty","Quantity","number",true,'min=".001" step="any"')+field("date","Date","date",true)+field("reference","Reference")+field("notes","Notes"))+`<section class="panel"><h2>Stock History</h2>${list("stock",["Date","Product","Direction","Qty","Reference"],[x=>x.date,x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.direction,x=>x.qty,x=>x.reference])}</section>`;a=["stock",v=>{if(N(v.qty)<=0)throw Error("Quantity तपासा.");if(v.direction==="Out"&&N(v.qty)>balance(v.product))throw Error("Stock कमी आहे.");return {...v,qty:N(v.qty)}}]}
+ if(page==="stockreg")h=`<section class="panel"><h2>Stock Register</h2>${tbl(["Code","Product","Opening","Balance"],db.products.map(p=>`<tr><td>${esc(p.code)}</td><td>${esc(p.name)}</td><td>${N(p.opening)}</td><td>${balance(p.id)}</td></tr>`))}</section>`;
+ if(page==="serials"){h=form("Serial Number Register",sel("product","Product",db.products)+field("serial","Serial Number","text",true)+field("status","Status")+field("customer","Customer / Location")+field("calibration","Last Calibration","date")+field("nextcal","Next Calibration Due","date")+field("certificate","Certificate No.")+field("warranty","Warranty Until","date"))+`<section class="panel"><h2>Serial Register</h2>${list("serials",["Product","Serial","Status","Customer"],[x=>db.products.find(p=>p.id===x.product)?.name||"",x=>x.serial,x=>x.status,x=>x.customer])}</section>`;a=["serials",v=>v]}
+ if(page==="payments"){h=form("Payment Entry",field("type","Type")+field("party","Party","text",true)+field("date","Date","date",true)+field("amount","Amount ₹","number",true,'min=".01" step="any"')+field("reference","Reference")+field("notes","Notes"))+`<section class="panel"><h2>Payments</h2>${list("payments",["Type","Party","Date","Amount"],[x=>x.type,x=>x.party,x=>x.date,x=>M(x.amount)])}</section>`;a=["payments",v=>({...v,amount:N(v.amount)})]}
+ if(page==="reports")h=`<section class="panel"><h2>Reports / Export</h2><p>Total Sales: <b>${M(db.sales.reduce((s,x)=>s+N(x.total),0))}</b></p><p>Total Purchases: <b>${M(db.purchases.reduce((s,x)=>s+N(x.total),0))}</b></p><button class="btn" onclick="window.print()">Print</button>${T.map(t=>`<button class="btn secondary" onclick="csv('${t}')">${t} CSV</button>`).join("")}</section>`;
+ if(page==="backup")h=`<section class="panel"><h2>Backup / Restore</h2><button class="btn" onclick="backup()">Download JSON Backup</button><div class="field"><label>Restore JSON</label><input type="file" accept=".json" onchange="restore(event)"></div><hr><h2>Supabase Cloud Setup</h2><div class="formgrid"><div class="field"><label>Supabase URL</label><input id="cloudUrl" type="url"></div><div class="field"><label>Publishable / Anon Key</label><input id="cloudKey" type="password"></div></div><button class="btn" onclick="saveCloudSettings()">Save Cloud Settings</button><button class="btn secondary" onclick="createAccount()">Create Account</button><button class="btn" onclick="sync()">Sync / Merge Cloud</button><p id="cloudStatus" class="small"></p><p class="small">फक्त Publishable/Anon Key वापरा. Secret किंवा service_role key वापरू नका.</p></section>`;
  $("app").innerHTML=h;
- if(page==="products"){const p=db.products.find(x=>x.id===editingProductId);if(p){setFormValues($("f"),p);$("f").onsubmit=e=>{e.preventDefault();const v=Object.fromEntries(new FormData($("f")).entries());try{duplicateProduct(v,p.id);db.products=db.products.map(x=>x.id===p.id?{...p,...v,opening:N(v.opening),reorder:N(v.reorder),cost:N(v.cost),price:N(v.price)}:x);persist();editingProductId=null;render()}catch(err){alert(err.message)}}}else attach("products",v=>{duplicateProduct(v);return {...v,opening:N(v.opening),reorder:N(v.reorder),cost:N(v.cost),price:N(v.price)}});renderProductTable()}
- else if(a){const old=editingRecord?.type===a[0]?db[a[0]].find(x=>x.id===editingRecord.id):null;if(old)setFormValues($("f"),a[0]==="sales"||a[0]==="purchases"?{...old,party:old.partyId}:old);if($("saveBtn")&&old)$("saveBtn").textContent="Update";attach(a[0],a[1])}
+ if(page==="products"){const p=db.products.find(x=>x.id===editingProductId);if(p)setFormValues($("f"),p);attach("products",v=>{duplicateProduct(v,editingProductId);return {...v,opening:N(v.opening),reorder:N(v.reorder),cost:N(v.cost),price:N(v.price)}});renderProductTable()}
+ else if(a){const old=editingRecord?.type===a[0]?db[a[0]].find(x=>x.id===editingRecord.id):null;if(old)setFormValues($("f"),old);attach(a[0],a[1])}
  if(page==="backup"){const c=cfg();$("cloudUrl").value=c.url||"";$("cloudKey").value=c.key||""}
 }
-window.renderProductTable=()=>{if(page!=="products")return;const q=($("productSearch")?.value||"").toLowerCase();const rows=db.products.filter(p=>[p.code,p.name,p.make,p.model].join(" ").toLowerCase().includes(q));$("productTableArea").innerHTML=tbl(["Code","Name","Make","Model","Unit","Opening","Stock","Reorder","Cost","Price","Action"],rows.map(p=>`<tr><td>${esc(p.code)}</td><td>${esc(p.name)}</td><td>${esc(p.make)}</td><td>${esc(p.model)}</td><td>${esc(p.unit)}</td><td>${N(p.opening)}</td><td>${balance(p.id)}</td><td>${N(p.reorder)}</td><td>${M(p.cost)}</td><td>${M(p.price)}</td><td><button class="btn" onclick="editRecord('products','${esc(p.id)}')">Edit</button><button class="btn danger" onclick="del('products','${esc(p.id)}')">Delete</button></td></tr>`))};
+window.renderProductTable=()=>{if(page!=="products")return;const q=($("productSearch")?.value||"").toLowerCase();const rows=db.products.filter(p=>[p.code,p.name,p.make,p.model].join(" ").toLowerCase().includes(q));$("productTableArea").innerHTML=tbl(["Code","Name","Make","Model","Stock","Price","Action"],rows.map(p=>`<tr><td>${esc(p.code)}</td><td>${esc(p.name)}</td><td>${esc(p.make)}</td><td>${esc(p.model)}</td><td>${balance(p.id)}</td><td>${M(p.price)}</td><td><button class="btn" onclick="editRecord('products','${esc(p.id)}')">Edit</button><button class="btn danger" onclick="del('products','${esc(p.id)}')">Delete</button></td></tr>`))};
 window.backup=()=>{const b=new Blob([JSON.stringify({version:3,exportedAt:new Date().toISOString(),data:db},null,2)],{type:"application/json"});const u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download="om-sai-erp-backup-"+today()+".json";a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
 window.restore=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!confirm("Restore replaces local data. Continue?"))return;db=norm(x.data||x);persist();render();alert("Backup restored.")}catch(err){alert("Invalid JSON backup")}};r.readAsText(f)};
 window.csv=t=>{let rows;if(t==="stockreg")rows=[["Code","Product","Opening","Balance"],...db.products.map(p=>[p.code,p.name,p.opening,balance(p.id)])];else{const arr=db[t]||[],keys=arr.length?Object.keys(arr[0]):[];rows=[keys,...arr.map(x=>keys.map(k=>x[k]))]}const s="\ufeff"+rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\r\n");const b=new Blob([s],{type:"text/csv;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=t+"-"+today()+".csv";a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
-window.saveCloudSettings=()=>{const url=$("cloudUrl").value.trim().replace(/\/+$/,""),key=$("cloudKey").value.trim();if(!/^https:\/\/.+\.supabase\.co$/.test(url)||!key)return alert("Valid Supabase URL आणि Publishable/Anon Key भरा.");localStorage.setItem(CFG,JSON.stringify({url,key}));client=null;init();$("cloudStatus").textContent="Cloud settings saved. Logout करून पुन्हा Login करा.";alert("Cloud settings saved.")};
+window.saveCloudSettings=()=>{const url=$("cloudUrl").value.trim().replace(/\/+$/,""),key=$("cloudKey").value.trim();if(!/^https:\/\/.+\.supabase\.co$/.test(url)||!key)return alert("Valid Supabase URL आणि Publishable/Anon Key भरा.");localStorage.setItem(CFG,JSON.stringify({url,key}));client=null;init();alert("Cloud settings saved. Logout करून पुन्हा Login करा.")};
 window.createAccount=async()=>{try{const c=init();if(!c)throw Error("आधी Cloud Settings सेव्ह करा.");const email=prompt("Account email:");if(!email)return;const password=prompt("Password (किमान 8 अक्षरे):");if(!password||password.length<8)throw Error("Password किमान 8 अक्षरांचा हवा.");const {error}=await c.auth.signUp({email,password});if(error)throw error;alert("Account request पूर्ण झाली. Email confirmation लागू असल्यास ईमेल तपासा.")}catch(e){alert(e.message)}};
-window.globalLogin=async()=>{const er=$("loginError");er.textContent="";try{const c=init();if(!c)throw Error("Supabase सेटअप उपलब्ध नाही. पहिल्यांदा वापरत असल्यास कोडमधील CFG सेटिंग्ज किंवा आधी जतन केलेली Cloud Settings तपासा.");const email=$("loginEmail").value.trim(),password=$("loginPassword").value;if(!email||!password)throw Error("Email आणि Password भरा.");const {data,error}=await c.auth.signInWithPassword({email,password});if(error)throw error;user=data.user;render();$("loginError").textContent="";await sync(false)}catch(e){er.textContent=e.message||"Login failed."}};
-window.globalLogout=async()=>{try{const c=init();if(c){const {error}=await c.auth.signOut();if(error)throw error}}catch(e){alert("Logout failed: "+e.message);return}user=null;page="dashboard";document.body.classList.remove("logged-in");$("loginScreen").style.display="flex";$("erpWrap").style.display="none";$("erpHeader").style.display="none";$("accountBar").style.display="none";$("app").innerHTML="";$("nav").innerHTML="";$("loginPassword").value=""};
+window.globalLogin=async()=>{const er=$("loginError");er.textContent="";try{const c=init();if(!c)throw Error("Supabase Cloud Settings उपलब्ध नाहीत. आधी सेटअप करा.");const {data,error}=await c.auth.signInWithPassword({email:$("loginEmail").value.trim(),password:$("loginPassword").value});if(error)throw error;user=data.user;render();await sync(false)}catch(e){er.textContent=e.message||"Login failed."}};
+window.globalLogout=async()=>{try{const c=init();if(c)await c.auth.signOut()}catch(e){}user=null;page="dashboard";document.body.classList.remove("logged-in");$("loginScreen").style.display="flex";$("app").innerHTML="";$("nav").innerHTML="";$("loginPassword").value=""};
 async function cloudSave(){const c=init();if(!c)throw Error("Cloud config missing");const {data:{user:u},error:ue}=await c.auth.getUser();if(ue)throw ue;if(!u)throw Error("Login first");const {error}=await c.from("erp_data").upsert({user_id:u.id,payload:db,updated_at:new Date().toISOString()},{onConflict:"user_id"});if(error)throw error;user=u}
-window.sync=async(showAlert=true)=>{try{const c=init();if(!c)throw Error("Cloud settings सेव्ह करा.");const {data:{user:u},error:ue}=await c.auth.getUser();if(ue)throw ue;if(!u)throw Error("Login करा.");user=u;const {data,error}=await c.from("erp_data").select("payload").eq("user_id",u.id).maybeSingle();if(error)throw error;if(data?.payload){const remote=norm(data.payload),merged=norm({});T.forEach(t=>{const m=new Map();remote[t].forEach(x=>{if(x?.id)m.set(x.id,x)});db[t].forEach(x=>{if(x?.id)m.set(x.id,x)});merged[t]=[...m.values()]});db=merged}persist();await cloudSave();render();if($("cloudStatus"))$("cloudStatus").textContent="Sync complete: "+u.email;if(showAlert)alert("Cloud sync complete.")}catch(e){if($("cloudStatus"))$("cloudStatus").textContent="Sync failed: "+e.message;if(showAlert)alert("Sync failed: "+e.message);else $("loginError").textContent="Login झाले; Cloud sync अयशस्वी: "+e.message}};
-window.copySQL=()=>navigator.clipboard?.writeText($("sql").textContent).then(()=>alert("SQL copied")).catch(()=>alert("SQL manually select करून copy करा."));
+window.sync=async(showAlert=true)=>{try{const c=init();if(!c)throw Error("Cloud settings सेव्ह करा.");const {data:{user:u},error:ue}=await c.auth.getUser();if(ue)throw ue;if(!u)throw Error("Login करा.");user=u;const {data,error}=await c.from("erp_data").select("payload").eq("user_id",u.id).maybeSingle();if(error)throw error;if(data?.payload){const remote=norm(data.payload),merged=norm({});T.forEach(t=>{const m=new Map();remote[t].forEach(x=>{if(x?.id)m.set(x.id,x)});db[t].forEach(x=>{if(x?.id)m.set(x.id,x)});merged[t]=[...m.values()]});db=merged}persist();await cloudSave();render();if($("cloudStatus"))$("cloudStatus").textContent="Sync complete";if(showAlert)alert("Cloud sync complete.")}catch(e){if(showAlert)alert("Sync failed: "+e.message);else $("loginError").textContent="Login झाले; Cloud sync अयशस्वी: "+e.message}};
 $("loginForm").addEventListener("submit",e=>{e.preventDefault();globalLogin()});
-/* Existing saved cloud configuration is reused */
-try{const c=init();if(c)c.auth.getSession().then(({data,error})=>{if(!error&&data.session){user=data.session.user;render()}else{document.body.classList.remove("logged-in");$("loginScreen").style.display="flex"}}).catch(()=>{})}catch(e){}
+try{const c=init();if(c)c.auth.getSession().then(({data,error})=>{if(!error&&data.session){user=data.session.user;render()}})}catch(e){}
 document.body.classList.remove("logged-in");
-$("loginScreen").style.display="flex";
 })();
 </script>
 </body>
