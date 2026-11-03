@@ -980,6 +980,35 @@ window.convertQuotation=async function(rid){
  alert("Invoice created: "+inv.doc);
 };
 
+window.toggleFirstSetup=function(){
+ const box=document.getElementById("firstSetup");
+ if(box){
+  box.style.display=box.style.display==="none"?"block":"none";
+ }
+};
+
+window.saveFirstSetup=function(){
+ const url=document.getElementById("firstUrl").value.trim().replace(/\/+$/,"");
+ const key=document.getElementById("firstKey").value.trim();
+ const status=document.getElementById("firstSetupStatus");
+
+ if(!/^https:\/\/[a-zA-Z0-9-]+\.supabase\.co$/.test(url)||!key){
+  status.textContent="Valid Supabase URL and Publishable Key enter करा.";
+  return;
+ }
+
+ try{
+  localStorage.setItem(CFG,JSON.stringify({url,key}));
+  const c=init();
+
+  if(!c)throw Error("Supabase client सुरू झाले नाही.");
+
+  status.textContent="Cloud settings या ब्राउझरमध्ये सेव्ह झाल्या. आता Login करा.";
+ }catch(e){
+  status.textContent="Setup failed: "+e.message;
+ }
+};
+
 window.setup=function(){
  const url=$("url").value.trim().replace(/\/+$/,"");
  const key=$("key").value.trim();
